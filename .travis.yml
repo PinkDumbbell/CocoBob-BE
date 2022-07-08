@@ -18,3 +18,19 @@ notifications:
     recipients:
     - jmkabc31@ajou.ac.kr
     - dre12am14@gmail.com
+before_deploy:
+  - zip -r cocobob * #현재 위치의 모든 파일을 newsum 이름으로 압축
+  - mkdir -p deploy #deploy 디렉토리를 Travis CI가 실행중인 위치에 생성
+  - mv newsum.zip deploy/cocobob.zip #deploy 폴더로 이동
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: cocobob-storage # S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: PinkDumbbell/CocoBob-BE #Github 주소
+      branch: main
