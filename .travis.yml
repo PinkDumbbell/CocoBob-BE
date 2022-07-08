@@ -30,6 +30,7 @@ deploy:
     region: ap-northeast-2
     skip_cleanup: true
     acl: public_read
+    local_dir: cocobob-deploy # before_deploy에서 생성한 디렉토리
     wait-until-deployed: true
     on:
       repo: PinkDumbbell/CocoBob-BE #Github 주소
