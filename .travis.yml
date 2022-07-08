@@ -1,23 +1,20 @@
 language: java
 jdk:
-  - openjdk11
-
+- openjdk11
 branches:
   only:
-    - main
-
-# Travis CI 서버의 Home
+  - main
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.gradle'
+  - "$HOME/.m2/repository"
+  - "$HOME/.gradle"
 before_install:
-  - chmod +x gradlew
-
+- openssl aes-256-cbc -K $encrypted_f1c9d72eb7c5_key -iv $encrypted_f1c9d72eb7c5_iv
+  -in application-secret.yml.enc -out application-secret.yml -d
+- chmod +x gradlew
 script: "./gradlew clean build"
-
-# CI 실행 완료시 메일로 알람
 notifications:
   email:
     recipients:
-      - jmkabc31@ajou.ac.kr  #빌드 결과를 받아 볼 이메일 주소
+    - jmkabc31@ajou.ac.kr
+    - dre12am14@gmail.com
