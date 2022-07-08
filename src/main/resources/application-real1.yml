@@ -1,0 +1,21 @@
+
+spring:
+  profiles:
+    include: secret
+  config:
+    use-legacy-processing: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+server:
+  port: 8081
