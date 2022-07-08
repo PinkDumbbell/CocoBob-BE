@@ -4,7 +4,7 @@ jdk:
 
 branches:
   only:
-    - CB-94-be-aws-ec-2-백엔드-서버-환경-구축-및-배포-자동화
+    - main
 
 # Travis CI 서버의 Home
 cache:
