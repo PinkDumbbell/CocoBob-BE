@@ -32,6 +32,17 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew test
 
+      - name: Generate Application Environment Variables File
+        run: |
+          echo "spring:" >> ./src/main/resources/application-secret.yml
+          echo "  datasource:" >> ./src/main/resources/application-secret.yml
+          echo "    url: ${{ secrets.DATASOURCE_URL }}" >> ./src/main/resources/application-secret.yml
+          echo "    username: admin" >> ./src/main/resources/application-secret.yml
+          echo "    password: ${{ secrets.DATASOURCE_PASSWORD }}>> ./src/main/resources/application-secret.yml
+          echo "    driver-class-name: org.mariadb.jdbc.Driver >> ./src/main/resources/application-secret.yml
+          
+
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
