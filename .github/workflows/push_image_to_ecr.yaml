@@ -35,8 +35,8 @@ jobs:
           echo "  datasource:" >> ./src/main/resources/application-secret.yml
           echo "    url: $DATASOURCE_URL" >> ./src/main/resources/application-secret.yml
           echo "    username: admin" >> ./src/main/resources/application-secret.yml
-          echo "    password: $DATASOURCE_PASSWORD >> ./src/main/resources/application-secret.yml
-          echo "    driver-class-name: org.mariadb.jdbc.Driver >> ./src/main/resources/application-secret.yml
+          echo "    password: $DATASOURCE_PASSWORD" >> ./src/main/resources/application-secret.yml
+          echo "    driver-class-name: org.mariadb.jdbc.Driver" >> ./src/main/resources/application-secret.yml
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle
