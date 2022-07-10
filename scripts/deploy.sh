@@ -1,11 +1,11 @@
-#!/bin/bash
+                                                                                                 8,20         모두#!/bin/bash
 
-REPOSITORY=/home/ec2-user/CocoBob-BE/travis/build
+REPOSITORY=/home/ec2-user/CocoBob-BE/travis/build/build
 PROJECT_NAME=cocobob-be-build
 
 echo "> Build 파일 복사"
 
-cp $REPOSITORY/build/libs/*.jar $REPOSITORY/
+cp $REPOSITORY/libs/*.jar $REPOSITORY/
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
 
@@ -33,4 +33,4 @@ chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
-nohup java -jar /home/ec2-user/CocoBob-BE/travis/build/build/libs/cocobob-0.0.1-SNAPSHOT.jar
+nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
