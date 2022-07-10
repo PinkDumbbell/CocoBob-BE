@@ -20,8 +20,8 @@ before_deploy:
   - cp appspec.yml before-deploy/
   - cp build/libs/*.jar before-deploy/
   - cd before-deploy && zip -r before-deploy * # before-deploy로 이동 후 전체 압축
-  - cd ../ && mkdir -p deploy # 상위 디렉토리로 이동 후 deploy 디렉토리 생성
-  - mv before-deploy/before-deploy.zip deploy/aws-springboot2-webservice.zip # deploy로 zip파일 이동
+  - cd ../ && mkdir -p cocobob-deploy-be # 상위 디렉토리로 이동 후 deploy 디렉토리 생성
+  - mv before-deploy/before-deploy.zip cocobob-deploy-be/aws-springboot2-webservice.zip # deploy로 zip파일 이동
 
 #  - zip -r cocobob-be-build * #현재 위치의 모든 파일을 newsum 이름으로 압축
 #  - mkdir -p cocobob-deploy-be #ocobob-deploy 디렉토리를 Travis CI가 실행중인 위치에 생성
