@@ -13,11 +13,7 @@ before_install:
   -in ./src/main/resources/application-secret.yml.enc -out ./src/main/resources/application-secret.yml -d
 - chmod +x gradlew
 script: "./gradlew clean build"
-notifications:
-  email:
-    recipients:
-    - jmkabc31@ajou.ac.kr
-    - dre12am14@gmail.com
+
 before_deploy:
   - zip -r cocobob-be-build * #현재 위치의 모든 파일을 newsum 이름으로 압축
   - mkdir -p cocobob-deploy-be #ocobob-deploy 디렉토리를 Travis CI가 실행중인 위치에 생성
@@ -29,7 +25,7 @@ deploy:
     bucket: cocobob-storage # S3 버킷
     region: ap-northeast-2
     skip_cleanup: true
-    acl: public_read
+    acl: private
     local_dir: cocobob-deploy-be # before_deploy에서 생성한 디렉토리
     wait-until-deployed: true
     on:
@@ -49,3 +45,9 @@ deploy:
     on:
       repo: PinkDumbbell/CocoBob-BE
       branch: main
+
+notifications:
+  email:
+    recipients:
+      - jmkabc31@ajou.ac.kr
+      - dre12am14@gmail.com
