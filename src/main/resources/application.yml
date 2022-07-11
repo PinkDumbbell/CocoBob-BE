@@ -1,6 +1,29 @@
+#spring:
+#  profiles:
+#    include: secret
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+#---
 spring:
   profiles:
     include: secret
+    group:
+      "real1": "real1_port"
+---
+spring:
+  config:
+    activate:
+      on-profile: "real1_port"
   jpa:
     hibernate:
       ddl-auto: create
@@ -8,6 +31,38 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+---
+spring:
+  profiles:
+    include: secret
+    group:
+      "real2": "real2_port"
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "real2_port"
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+server:
+  port: 8082
 
 logging:
   level:
