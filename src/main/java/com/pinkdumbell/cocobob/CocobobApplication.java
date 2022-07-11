@@ -11,5 +11,6 @@ public class CocobobApplication {
 		System.out.println("test");
 		System.out.println("test");
 		System.out.println("test");
+		System.out.println("test");
 	}
 }
