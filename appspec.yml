@@ -7,6 +7,6 @@ files:
 
 hooks:
   BeforeInstall:
-    - location: deploy.sh
+    - location: ~/CocoBob-BE-CI,CD-test/script/deploy.sh
       timeout: 300
       runas: root
