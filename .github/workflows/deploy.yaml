@@ -68,9 +68,20 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY"
 
+      - name: create deploy script zip
+        run: zip deploy-script.zip ./deploy.sh
+        shell: bash
+
+      - name: Upload to S3
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run:
+          aws s3 cp --region ap-northeast-2 ./deploy-script.zip s3://cocobob-storage/cocobob-be-dev/deploy-script.zip
+
       - name: Deploy
         run: aws deploy create-deployment
           --application-name cocobob-be-dev
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name cocobob-be-dev
-          --s3-location bucket=cocobob-storage,key=cocobob-deploy/cocobob-fe-dev-build.zip,bundleType=zip
+          --s3-location bucket=cocobob-storage,key=cocobob-be-dev/deploy-script.zip,bundleType=zip
