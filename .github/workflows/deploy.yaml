@@ -73,5 +73,5 @@ jobs:
           --application-name cocobob-be-dev
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name cocobob-be-dev
-          --s3-location bucket=cocobob-storage,key=cocobob-be-dev/deploy.sh.zip,bundleType=zip
+          --s3-location bucket=cocobob-storage,key=cocobob-be-dev/deploy.zip,bundleType=zip
 
