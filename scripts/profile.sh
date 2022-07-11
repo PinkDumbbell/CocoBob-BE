@@ -2,13 +2,13 @@
 
 function find_idle_profile()
 {
-    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://3.36.209.141/)
+    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://http://54.180.115.150//)
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
         CURRENT_PROFILE=real2
     else
-        CURRENT_PROFILE=$(sudo curl -s http://3.36.209.141/)
+        CURRENT_PROFILE=$(sudo curl -s http://http://54.180.115.150//)
     fi
 
     if [ ${CURRENT_PROFILE} == real1 ]
