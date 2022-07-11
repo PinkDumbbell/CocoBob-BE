@@ -9,4 +9,4 @@ hooks:
   BeforeInstall:
     - location: ~/CocoBob-BE-CI,CD-test/script/deploy.sh
       timeout: 300
-      runas: root
+      runas: ec2-user
