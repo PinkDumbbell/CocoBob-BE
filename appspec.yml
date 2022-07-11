@@ -14,7 +14,7 @@ hooks:
   BeforeInstall: # 이전 도커 이미지 삭제
     - location: /home/ec2-user/CocoBob-BE-CI,CD-test/script/test.sh
       timeout: 300
-      runas: root
+      runas: ec2-user
 #  AfterInstall:
 #    - location: scripts/change_permissions.sh
 #      timeout: 300
