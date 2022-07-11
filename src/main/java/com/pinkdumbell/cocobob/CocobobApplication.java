@@ -10,7 +10,5 @@ public class CocobobApplication {
 		SpringApplication.run(CocobobApplication.class, args);
 		System.out.println("test");
 		System.out.println("test");
-		System.out.println("test");
-		System.out.println("test");
 	}
 }
