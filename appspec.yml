@@ -1,25 +1,12 @@
 version: 0.0
 os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/deploy
+    overwrite: yes
 
 hooks:
-  BeforeInstall: # 이전 도커 이미지 삭제
-    - location: /home/ec2-user/CocoBob-BE-CI,CD-test/script/test.sh
-      timeout: 300
-      runas: ec2-user
-  AfterInstall:
-    - location: /home/ec2-user/CocoBob-BE-CI,CD-test/script/test.sh
+  BeforeInstall:
+    - location: /home/ec2-user/CocoBob-BE-CI,CD-test/script
       timeout: 300
       runas: root
-#  ApplicationStart:
-#    - location: scripts/start_server.sh
-#    - location: scripts/create_test_db.sh
-#      timeout: 300
-#      runas: root
-#  ApplicationStop:
-#    - location: scripts/stop_server.sh
-#      timeout: 300
-#      runas: root
-#  ValidateService:
-#    - location:
-#      timeout:
-#      runas:
