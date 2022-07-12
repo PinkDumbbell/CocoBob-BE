@@ -13,10 +13,10 @@ permissions:
     mode: 4755
 
 hooks:
-#  AfterInstall:
-#    - location: stop.sh
-#      timeout: 60
-#      runas: root
+  AfterInstall:
+    - location: stop.sh
+      timeout: 60
+      runas: root
 
   ApplicationStart:
     - location: start.sh
@@ -25,6 +25,5 @@ hooks:
 
   ValidateService:
     - location: health.sh
-    - location: stop.sh
       timeout: 120
       runas: root
