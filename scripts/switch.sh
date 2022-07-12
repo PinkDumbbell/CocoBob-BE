@@ -11,6 +11,6 @@ function switch_proxy() {
     echo "> Port 전환"
     echo "set \$service_url http://15.164.20.79:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
 
-    sudo docker exec -d nginx nginx -s reload
-    echo "> docker exec -it nginx nginx -s reload"
+    sudo sudo nginx -s reload
+    echo "> sudo nginx -s reload"
 }
