@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ec2-user/app/step4/zip/
+    destination: /home/ec2-user/app/zip/
     overwrite: yes
 
 permissions:
