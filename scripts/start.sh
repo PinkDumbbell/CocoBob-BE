@@ -11,6 +11,7 @@ echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/*.jar $REPOSITORY/"
 
 cp $REPOSITORY/zip/*.jar $REPOSITORY      # 새로운 jar file 계속 덮어쓰기
+cp $REPOSITORY/zip/Dockerfile $REPOSITORY     # 새로운 Dockerfile 계속 덮어쓰기
 
 echo "> 새 어플리케이션 배포"
 JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
