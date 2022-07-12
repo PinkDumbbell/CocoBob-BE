@@ -8,6 +8,9 @@ IDLE_PORT=$(find_idle_port)
 
 IMAGE_URI="163378391403.dkr.ecr.ap-northeast-2.amazonaws.com/cocobob/be-api:latest"
 
+echo "> Login"
+aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 163378391403.dkr.ecr.ap-northeast-2.amazonaws.com
+
 echo "> Delete Existing Image"
 echo "docker rmi -f $IMAGE_URI"
 docker rmi -f $IMAGE_URI
