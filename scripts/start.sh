@@ -6,7 +6,7 @@ source ${ABSDIR}/profile.sh
 
 IDLE_PORT=$(find_idle_port)
 
-IMAGE_URI=163378391403.dkr.ecr.ap-northeast-2.amazonaws.com/cocobob/be-api:latest
+IMAGE_URI="163378391403.dkr.ecr.ap-northeast-2.amazonaws.com/cocobob/be-api:latest"
 
 echo "> Delete Existing Image"
 echo "docker rmi -f $(IMAGE_URI)"
