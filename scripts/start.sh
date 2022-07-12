@@ -24,4 +24,5 @@ echo "> 새 어플리케이션 배포"
 IDLE_PROFILE=$(find_idle_profile)
 
 echo "> 새로운 어플리케이션을 profile=$IDLE_PROFILE 로 실행합니다."
-docker run -it --name "$IDLE_PROFILE" -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT
+echo "> docker run -it --name $IDLE_PROFILE -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT"
+docker run -it --name $IDLE_PROFILE -d -e active=$IDLE_PROFILE -p $IDLE_PORT:$IDLE_PORT
