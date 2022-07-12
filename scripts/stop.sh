@@ -18,7 +18,8 @@ else
 #  sudo rm -f ~/deploy-log.log
 #  sudo touch ~/deploy-log.log
 #  sudo chmod 777 ~/deploy-log.log
-
+  sudo touch ~/1.log
+  sudo touch ~/2.log
   echo "> docker stop" ${IDLE_PROFILE}
   sudo docker stop -f ${IDLE_PROFILE}
   echo "> docker rm" ${IDLE_PROFILE}
