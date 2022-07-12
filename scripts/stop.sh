@@ -17,6 +17,6 @@ then
 else
   echo "> docker stop ${IDLE_PROFILE}"
   echo "> docker rm ${IDLE_PROFILE}"
-  sudo docker stop ${IDLE_PROFILE} && sudo docker rm -f ${IDLE_PROFILE}    # 컨테이너 이름을 지정해서 사용하기 때문에.. 꼭 컨테이너 삭제도 같이 해주셔야 합니다. (나중에 다시 띄울거기 때문에..)
+  sudo docker stop ${IDLE_PROFILE} && sudo docker container rm -f ${IDLE_PROFILE}    # 컨테이너 이름을 지정해서 사용하기 때문에.. 꼭 컨테이너 삭제도 같이 해주셔야 합니다. (나중에 다시 띄울거기 때문에..)
   sleep 15
 fi
