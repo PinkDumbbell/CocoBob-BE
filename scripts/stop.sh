@@ -16,7 +16,7 @@ then
   echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
 #  echo "> docker stop ${IDLE_PROFILE}" > ~/deploy-log.log
-  sudo "sudo docker stop ${IDLE_PROFILE} && sudo docker rm ${IDLE_PROFILE}"
+  echo "sudo docker stop ${IDLE_PROFILE} && sudo docker rm ${IDLE_PROFILE}"
   sudo docker stop -f ${IDLE_PROFILE} && sudo docker rm -f ${IDLE_PROFILE} > ~/deploy-log.log
 #  echo "> docker rm ${IDLE_PROFILE}" > ~/deploy-log.log
 #  sudo docker rm ${IDLE_PROFILE} > ~/deploy-log.log
