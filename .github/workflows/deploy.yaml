@@ -69,7 +69,7 @@ jobs:
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY"
 
       - name: Create Deploy Script Zip
-        run: zip deploy-script.zip ./scripts/ ./appspec.yml
+        run: zip -r deploy-script.zip ./scripts ./appspec.yml
         shell: bash
 
       - name: Upload to S3
