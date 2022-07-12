@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /
+  - source:  /
     destination: /home/ec2-user/deploy
     overwrite: yes
 
@@ -13,6 +13,16 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: deploy.sh
-      timeout: 300
+    - location: scripts/stop.sh
+      timeout: 60
+      runas: root
+
+  ApplicationStart:
+    - location: scripts/start.sh
+      timeout: 60
+      runas: root
+
+  ValidateService:
+    - location: scripts/health.sh
+      timeout: 60
       runas: root

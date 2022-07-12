@@ -68,8 +68,8 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY"
 
-      - name: create deploy script zip
-        run: zip deploy-script.zip ./deploy.sh ./appspec.yml
+      - name: Create Deploy Script Zip
+        run: zip deploy-script.zip ./scripts ./appspec.yml
         shell: bash
 
       - name: Upload to S3
