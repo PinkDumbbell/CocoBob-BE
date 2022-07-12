@@ -9,12 +9,12 @@ IDLE_PORT=$(find_idle_port)
 IMAGE_URI="163378391403.dkr.ecr.ap-northeast-2.amazonaws.com/cocobob/be-api:latest"
 
 echo "> Delete Existing Image"
-echo "docker rmi -f $(IMAGE_URI)"
-docker rmi -f $(IMAGE_URI)
+echo "docker rmi -f $IMAGE_URI"
+docker rmi -f $IMAGE_URI
 
 echo "> Pull Image From ECR"
-echo "> docker pull $(IMAGE_URI)"
-docker pull $(IMAGE_URI)
+echo "> docker pull $IMAGE_URI"
+docker pull $IMAGE_URI
 
 echo "> 새 어플리케이션 배포"
 
