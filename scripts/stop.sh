@@ -17,7 +17,7 @@ then
 else
 #  echo "> docker stop ${IDLE_PROFILE}" > ~/deploy-log.log
   sudo "sudo docker stop ${IDLE_PROFILE} && sudo docker rm ${IDLE_PROFILE}"
-  sudo docker stop ${IDLE_PROFILE} && sudo docker rm ${IDLE_PROFILE} > ~/deploy-log.log
+  sudo docker stop -f ${IDLE_PROFILE} && sudo docker rm -f ${IDLE_PROFILE} > ~/deploy-log.log
 #  echo "> docker rm ${IDLE_PROFILE}" > ~/deploy-log.log
 #  sudo docker rm ${IDLE_PROFILE} > ~/deploy-log.log
   sleep 5
