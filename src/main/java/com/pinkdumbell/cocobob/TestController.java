@@ -11,6 +11,6 @@ public class TestController {
 
     @GetMapping("")
     public String test() {
-        return portNum;
+        return "portNum is" + portNum;
     }
 }
