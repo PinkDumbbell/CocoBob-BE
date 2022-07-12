@@ -6,7 +6,7 @@ files:
     overwrite: yes
 
 hooks:
-  BeforeInstall:
-    - location: ~/CocoBob-BE-CI,CD-test/script/deploy.sh
+  AfterInstall:
+    - location: deploy.sh
       timeout: 300
-      runas: ec2-user
+      runas: root

@@ -1,1 +1,2 @@
-echo "It's test"
+cd ~
+ls -al > test
