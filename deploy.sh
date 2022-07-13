@@ -1,2 +1,0 @@
-cd ~
-ls -al > test
