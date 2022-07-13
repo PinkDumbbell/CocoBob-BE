@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.domain.auth.Token;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,7 @@ public class User {
     private String email;
 
     private String password;
+
+    @OneToOne(mappedBy = "user")
+    private Token token;
 }
