@@ -10,9 +10,14 @@ import javax.persistence.*;
 @Entity
 public class Token {
     @Id
+    @JoinColumn(name = "user_id")
+    private Long id;
+
+    @Column(name = "refresh_token", length = 500)
+    private String refreshToken;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "refresh_token")
-    private String refreshToken;
 }
