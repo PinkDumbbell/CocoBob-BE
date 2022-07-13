@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class TestController {
+public class PortController {
 
     private final Environment env;
     
@@ -19,7 +19,7 @@ public class TestController {
     private String portNum;
 
     @GetMapping("")
-    public String test() {
+    public String getCurrentPortNum () {
         List<String> profile = Arrays.asList(env.getActiveProfiles());
         List<String> realProfiles = Arrays.asList("real1", "real2");
         String defaultProfile = profile.isEmpty() ? "default" : profile.get(0);
