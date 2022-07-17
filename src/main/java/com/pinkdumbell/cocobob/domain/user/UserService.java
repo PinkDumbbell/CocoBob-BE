@@ -15,11 +15,10 @@ public class UserService {
 
     @Transactional
     public UserCreateResponseDto signup(UserCreateRequestDto requestDto) {
-        Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
-
-        if (user.isPresent()) {
-            throw new RuntimeException("해당 이메일을 가진 사용자가 이미 존재합니다.");
-        }
+        userRepository.findByEmail(requestDto.getEmail())
+                .ifPresent(userWithDuplicatedEmail -> {
+                    throw new RuntimeException("해당 이메일을 가진 사용자가 이미 존재합니다.");
+                });
 
         return new UserCreateResponseDto(
                 userRepository.save(User.builder()
