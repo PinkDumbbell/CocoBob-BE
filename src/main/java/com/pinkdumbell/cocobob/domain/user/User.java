@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
@@ -27,9 +28,11 @@ public class User {
     private Token token;
 
     @Builder
-    public User(UserCreateRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.email = requestDto.getEmail();
-        this.password = requestDto.getPassword();
+    public User(@NotBlank String username,
+                @NotBlank String email,
+                @NotBlank String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 }
