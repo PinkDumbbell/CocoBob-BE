@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional
     public UserCreateResponseDto signup(UserCreateRequestDto requestDto) {
         Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
 
