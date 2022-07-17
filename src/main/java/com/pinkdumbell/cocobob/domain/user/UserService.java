@@ -1,13 +1,14 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,5 +29,14 @@ public class UserService {
                                 .username(requestDto.getUsername())
                                 .password(requestDto.getPassword())
                                 .build()));
+    }
+
+    @Transactional(readOnly = true)
+    public EmailDuplicationCheckResponseDto checkEmailDuplicated(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(userWithDuplicatedEmail -> {
+                    throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+                });
+        return new EmailDuplicationCheckResponseDto("해당 이메일은 사용할 수 있습니다.");
     }
 }
