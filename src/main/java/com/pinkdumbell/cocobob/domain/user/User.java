@@ -24,6 +24,8 @@ public class User {
     private String email;
 
     private String password;
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token token;
@@ -31,9 +33,11 @@ public class User {
     @Builder
     public User(@NotBlank String username,
                 @NotBlank String email,
-                @NotBlank String password) {
+                @NotBlank String password,
+                @NotBlank UserRole userRole) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = userRole;
     }
 }

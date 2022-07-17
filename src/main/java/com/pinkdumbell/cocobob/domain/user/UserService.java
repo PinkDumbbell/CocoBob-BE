@@ -2,6 +2,8 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +30,10 @@ public class UserService {
                                 .username(requestDto.getUsername())
                                 .password(requestDto.getPassword())
                                 .build()));
+    }
+
+    public UserLoginResponseDto login(UserLoginRequestDto requestDto){
+        User user = userRepository.findByEmail(requestDto.ge)
+
     }
 }
