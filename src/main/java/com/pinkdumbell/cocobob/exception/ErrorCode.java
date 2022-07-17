@@ -12,7 +12,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Getter
 public enum ErrorCode {
     DUPLICATED_EMAIL(BAD_REQUEST, "해당 이메일을 가진 사용자가 존재합니다."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR")
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않은 계정입니다.")
     ;
 
     private final HttpStatus httpStatus;

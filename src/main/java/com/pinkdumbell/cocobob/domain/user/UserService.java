@@ -33,7 +33,14 @@ public class UserService {
     }
 
     public UserLoginResponseDto login(UserLoginRequestDto requestDto){
-        User user = userRepository.findByEmail(requestDto.ge)
+
+        User user = userRepository.findByEmail(requestDto.getEmail())
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            }
+            );
+        return new UserLoginResponseDto(user);
+
 
     }
 }
