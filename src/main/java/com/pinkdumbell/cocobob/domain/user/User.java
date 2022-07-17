@@ -24,7 +24,7 @@ public class User {
 
     private String password;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token token;
 
     @Builder
