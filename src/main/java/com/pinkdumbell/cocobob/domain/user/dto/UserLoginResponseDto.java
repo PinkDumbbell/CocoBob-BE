@@ -12,11 +12,11 @@ public class UserLoginResponseDto {
     private final String role;
     private final String accessToken;
 
-    public UserLoginResponseDto(User entity, String Token) {
+    public UserLoginResponseDto(User entity, String token) {
         this.userId = entity.getId();
         this.email = entity.getEmail();
         this.username = entity.getUsername();
         this.role = entity.getRole().toString();
-        this.accessToken = Token;
+        this.accessToken = token;
     }
 }
