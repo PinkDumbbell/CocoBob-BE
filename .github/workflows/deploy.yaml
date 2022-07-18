@@ -30,6 +30,8 @@ jobs:
         env:
           DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
           DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_VALID_TIME: ${{ secrets.JWT_VALID_TIME }}
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
           echo "  datasource:" >> ./src/main/resources/application-secret.yml
