@@ -1,4 +1,7 @@
 spring:
+  jwt:
+    secretKey: "test"
+    validTime: 999999
   h2:
     console:
       enabled: true
