@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     @Value("${spring.jwt.validTime}")
-    private long tokenValidTime; 
+    private long tokenValidTime;
 
     @PostConstruct
     protected void init() {
