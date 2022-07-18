@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UserLoginRequestDto {
+
     @NotBlank(message = "사용자 이름이 필요합니다.")
     private String username;
     @NotBlank(message = "이메일이 필요합니다.")

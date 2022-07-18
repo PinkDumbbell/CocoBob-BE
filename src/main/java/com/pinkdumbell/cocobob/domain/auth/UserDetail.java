@@ -18,7 +18,7 @@ public class UserDetail implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     @Builder
-    UserDetail(String email, String password, List<GrantedAuthority> authorities){
+    UserDetail(String email, String password, List<GrantedAuthority> authorities) {
         this.email = email;
         this.password = password;
         this.authorities = authorities;

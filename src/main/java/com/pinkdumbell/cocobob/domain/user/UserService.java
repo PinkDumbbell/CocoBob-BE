@@ -19,6 +19,7 @@ import java.util.Optional;
 @Transactional
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -27,25 +28,25 @@ public class UserService {
 
     public UserCreateResponseDto signup(UserCreateRequestDto requestDto) {
         userRepository.findByEmail(requestDto.getEmail())
-                .ifPresent(userWithDuplicatedEmail -> {
-                    throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
-                });
+            .ifPresent(userWithDuplicatedEmail -> {
+                throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
+            });
 
         return new UserCreateResponseDto(
-                userRepository.save(User.builder()
-                                .email(requestDto.getEmail())
-                                .username(requestDto.getUsername())
-                                .password(bCryptPasswordEncoder.encode(requestDto.getPassword()))
-                                .build()));
+            userRepository.save(User.builder()
+                .email(requestDto.getEmail())
+                .username(requestDto.getUsername())
+                .password(bCryptPasswordEncoder.encode(requestDto.getPassword()))
+                .build()));
     }
 
-    public UserLoginResponseDto login(UserLoginRequestDto requestDto){
+    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
 
         User user = userRepository.findByEmail(requestDto.getEmail())
             .orElseThrow(() -> {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
-        return new UserLoginResponseDto(user,jwtTokenProvider.createToken(requestDto.getEmail()));
+        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()));
     }
 
     @Transactional(readOnly = true)

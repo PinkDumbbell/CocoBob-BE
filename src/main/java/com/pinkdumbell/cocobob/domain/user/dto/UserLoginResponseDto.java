@@ -5,13 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class UserLoginResponseDto {
+
     private final Long userId;
     private final String email;
     private final String username;
     private final String role;
     private final String accessToken;
 
-    public UserLoginResponseDto(User entity,String Token) {
+    public UserLoginResponseDto(User entity, String Token) {
         this.userId = entity.getId();
         this.email = entity.getEmail();
         this.username = entity.getUsername();

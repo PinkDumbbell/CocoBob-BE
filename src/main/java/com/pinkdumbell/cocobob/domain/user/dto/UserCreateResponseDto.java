@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class UserCreateResponseDto {
+
     @ApiModelProperty(notes = "사용자 아이디", example = "23")
     private final Long userId;
     @ApiModelProperty(notes = "사용자 이메일", example = "test@test.com")
@@ -14,6 +15,7 @@ public class UserCreateResponseDto {
     private final String username;
 
     private final String role;
+
     public UserCreateResponseDto(User entity) {
         this.userId = entity.getId();
         this.email = entity.getEmail();

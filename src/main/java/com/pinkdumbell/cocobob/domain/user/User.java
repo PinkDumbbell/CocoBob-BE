@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "\"user\"")
 @Entity
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -32,8 +33,8 @@ public class User {
 
     @Builder
     public User(@NotBlank String username,
-                @NotBlank String email,
-                @NotBlank String password) {
+        @NotBlank String email,
+        @NotBlank String password) {
         this.username = username;
         this.email = email;
         this.password = password;

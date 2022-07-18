@@ -17,17 +17,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+
     @Bean
-    public BCryptPasswordEncoder encoder(){
+    public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .httpBasic().disable() // rest api이므로 기본설정 미사용
             .csrf().disable() // rest api이므로 csrf 보안 미사용
             .formLogin().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
             .and()
             .authorizeRequests()
             .antMatchers("/v1/users/**").permitAll()
@@ -41,11 +44,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .and()
 //            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
 //            .and()
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // jwt 필터 추가
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter.class); // jwt 필터 추가
     }
 
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

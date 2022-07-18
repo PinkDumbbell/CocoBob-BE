@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
+
     private final UserDetailService userDetailService;
 
     @Value("${spring.jwt.secretKey}")
@@ -46,13 +47,15 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailService.loadUserByUsername(getUserEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "",
+            userDetails.getAuthorities());
     }
 
     public String getUserEmail(String token) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-        } catch(ExpiredJwtException e) {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                .getSubject();
+        } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
     }
@@ -65,7 +68,7 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
