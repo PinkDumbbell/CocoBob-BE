@@ -34,4 +34,17 @@ public class ProfileController {
                 .findAny()
                 .orElse(defaultProfile);
     }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello";
+    }
+    @GetMapping("/admin")
+    public String admin() {
+        return "ADMIN";
+    }
+    @GetMapping("/manager")
+    public String usertest() {
+        return "USERTEST";
+    }
 }

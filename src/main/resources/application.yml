@@ -1,6 +1,5 @@
 spring:
-  jwt:
-    secretKey: "PinkDumbbell"
+
   profiles:
     include: secret
   jpa:

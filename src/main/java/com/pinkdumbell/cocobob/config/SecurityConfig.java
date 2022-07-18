@@ -24,9 +24,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
             .and()
             .authorizeRequests()
-            .antMatchers("/v1/users").permitAll()
+            .antMatchers("/v1/users/**").permitAll()
             .antMatchers("/social/**").permitAll()
             .antMatchers("/exception/**").permitAll()
+            .antMatchers("/admin").hasRole("ADMIN")
+            .antMatchers("/manager").hasRole("USER")
             .anyRequest().authenticated()
             .and()
 //            .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())

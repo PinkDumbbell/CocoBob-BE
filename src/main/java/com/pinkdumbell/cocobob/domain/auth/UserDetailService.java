@@ -28,7 +28,7 @@ public class UserDetailService implements UserDetailsService {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(user.getRole().toString()));
+        roles.add(new SimpleGrantedAuthority(user.getRole().getKey()));
 
         return UserDetail.builder()
             .email(user.getEmail())

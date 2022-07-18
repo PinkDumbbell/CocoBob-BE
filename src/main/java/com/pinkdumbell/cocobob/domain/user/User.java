@@ -33,11 +33,10 @@ public class User {
     @Builder
     public User(@NotBlank String username,
                 @NotBlank String email,
-                @NotBlank String password,
-                @NotBlank UserRole userRole) {
+                @NotBlank String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = userRole;
+        this.role = UserRole.USER;
     }
 }
