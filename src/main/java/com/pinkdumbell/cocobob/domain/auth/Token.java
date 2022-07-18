@@ -16,7 +16,8 @@ import javax.validation.constraints.NotBlank;
 public class Token {
 
     @Id
-    @JoinColumn(name = "user_id")
+//    @JoinColumn(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "refresh_token", length = 500)
@@ -28,9 +29,9 @@ public class Token {
     private User user;
 
     @Builder
-    public Token(Long id, String refreshToken, User user) {
+    public Token(Long id, String value, User user) {
         this.id = id;
-        this.value = refreshToken;
+        this.value = value;
         this.user = user;
     }
 }

@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.Token;
+import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
@@ -21,11 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final TokenRepository tokenRepository;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -45,6 +48,7 @@ public class UserService {
                 .build()));
     }
 
+    @Transactional
     public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
 
         User user = userRepository.findByEmail(requestDto.getEmail())
@@ -58,14 +62,13 @@ public class UserService {
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
-        Token newUserToken = Token.builder()
-                .id(user.getId())
-                .refreshToken(refreshToken)
-                .user(user)
-                .build();
+//        Token newUserToken = tokenRepository.save(Token.builder()
+//                .id(user.getId())
+//                .value(refreshToken)
+//                .user(user).build());
 
-        user.updateRefreshToken(newUserToken);
-        System.out.println("login user.getRefreshToken "+user.getRefreshToken());
+        user.updateRefreshToken(refreshToken);
+        System.out.println("login user.getRefreshToken "+user.getToken());
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),refreshToken);
     }
 
@@ -84,28 +87,25 @@ public class UserService {
         if (!jwtTokenProvider.validateTokenExpiration(requestDto.getRefreshToken()))
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
 
-        User user = findMemberByToken(requestDto);
+        User user = findUserByToken(requestDto);
 
-        if (!user.getRefreshToken().getValue().equals(requestDto.getRefreshToken()))
+        if (!user.getToken().equals(requestDto.getRefreshToken()))
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
 
         String accessToken = jwtTokenProvider.createToken(user.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
-        Token newUserToken = Token.builder()
-                .id(user.getId())
-                .refreshToken(refreshToken)
-                .user(user)
-                .build();
-
-
-        user.updateRefreshToken(newUserToken);
-
-        System.out.println("reIssue user.getRefreshToken "+user.getRefreshToken());
+//        Token newUserToken = tokenRepository.save(Token.builder()
+//                .id(user.getId())
+//                .value(refreshToken)
+//                .user(user).build());
+        
+        user.updateRefreshToken(refreshToken);
+        System.out.println("reIssue user.getRefreshToken "+user.getToken());
         return new TokenResponseDto(accessToken, refreshToken);
     }
 
-    public User findMemberByToken(TokenRequestDto requestDto) {
+    public User findUserByToken(TokenRequestDto requestDto) {
         Authentication auth = jwtTokenProvider.getAuthentication(requestDto.getAccessToken());
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String username = userDetails.getUsername();

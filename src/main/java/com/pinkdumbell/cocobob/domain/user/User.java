@@ -31,17 +31,20 @@ public class User {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token refreshToken;
 
+    private String token;
+
     @Builder
     public User(@NotBlank String username,
         @NotBlank String email,
-        @NotBlank String password, Token refreshToken) {
+        @NotBlank String password) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = UserRole.USER; // 일반 회원 기본 권한 USER
     }
 
-    public void updateRefreshToken(Token refreshToken) {
-        this.refreshToken = refreshToken;
+    public void updateRefreshToken(/*Token refreshToken*/ String refreshToken) {
+//        this.refreshToken = refreshToken;
+        this.token = refreshToken;
     }
 }
