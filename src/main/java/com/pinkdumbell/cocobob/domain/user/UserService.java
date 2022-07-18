@@ -9,7 +9,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public UserCreateResponseDto signup(UserCreateRequestDto requestDto) {
         userRepository.findByEmail(requestDto.getEmail())
@@ -33,7 +35,7 @@ public class UserService {
                 userRepository.save(User.builder()
                                 .email(requestDto.getEmail())
                                 .username(requestDto.getUsername())
-                                .password(requestDto.getPassword())
+                                .password(bCryptPasswordEncoder.encode(requestDto.getPassword()))
                                 .build()));
     }
 
