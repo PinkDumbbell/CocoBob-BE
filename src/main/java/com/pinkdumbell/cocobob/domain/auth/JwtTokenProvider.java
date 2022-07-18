@@ -55,7 +55,7 @@ public class JwtTokenProvider {
     public String getUserEmail(String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject();
+                .getSubject(); //토큰 속 이메일 claim
         } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
