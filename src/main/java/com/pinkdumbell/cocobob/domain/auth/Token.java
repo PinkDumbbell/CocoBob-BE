@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class Token {
+
     @Id
     @JoinColumn(name = "user_id")
     private Long id;
