@@ -1,13 +1,11 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
 import com.pinkdumbell.cocobob.domain.user.User;
-import com.pinkdumbell.cocobob.domain.user.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 
 @Getter

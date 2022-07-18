@@ -1,9 +1,6 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
-import com.pinkdumbell.cocobob.domain.user.UserRole;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
