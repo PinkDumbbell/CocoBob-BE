@@ -46,6 +46,9 @@ public class UserService {
             .orElseThrow(() -> {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
+        if (!bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()));
     }
 
