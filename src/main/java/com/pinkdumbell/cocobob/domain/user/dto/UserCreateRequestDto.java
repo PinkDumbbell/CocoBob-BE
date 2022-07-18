@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 public class UserCreateRequestDto {
-
     @ApiModelProperty(notes = "사용자 이름", example = "이호용", required = true)
     @NotBlank(message = "사용자 이름이 필요합니다.")
     private String username;

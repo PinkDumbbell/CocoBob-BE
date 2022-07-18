@@ -16,22 +16,21 @@ import java.util.Set;
 @Configuration
 @EnableWebMvc
 public class SwaggerConfig {
-
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder().title("Cocobob API Docs")
-            .description("API Docs for CocoBob").build();
+                .description("API Docs for CocoBob").build();
     }
 
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-            .consumes(getConsumeContentTypes())
-            .produces(getProduceContentTypes())
-            .apiInfo(swaggerInfo()).select()
-            .apis(RequestHandlerSelectors.basePackage("com.pinkdumbell.cocobob"))
-            .paths(PathSelectors.any())
-            .build()
-            .useDefaultResponseMessages(false);
+                .consumes(getConsumeContentTypes())
+                .produces(getProduceContentTypes())
+                .apiInfo(swaggerInfo()).select()
+                .apis(RequestHandlerSelectors.basePackage("com.pinkdumbell.cocobob"))
+                .paths(PathSelectors.any())
+                .build()
+                .useDefaultResponseMessages(false);
     }
 
     private Set<String> getConsumeContentTypes() {

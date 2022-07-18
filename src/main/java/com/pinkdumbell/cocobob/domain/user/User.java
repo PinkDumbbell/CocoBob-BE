@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "\"user\"")
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -25,19 +24,16 @@ public class User {
     private String email;
 
     private String password;
-    @Enumerated(value = EnumType.STRING)
-    private UserRole role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token token;
 
     @Builder
     public User(@NotBlank String username,
-        @NotBlank String email,
-        @NotBlank String password) {
+                @NotBlank String email,
+                @NotBlank String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = UserRole.USER;
     }
 }
