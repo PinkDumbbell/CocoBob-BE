@@ -8,8 +8,8 @@ public class UserLoginResponseDto {
     private final Long userId;
     private final String email;
     private final String username;
-
     private final String role;
+
     public UserLoginResponseDto(User entity) {
         this.userId = entity.getId();
         this.email = entity.getEmail();
