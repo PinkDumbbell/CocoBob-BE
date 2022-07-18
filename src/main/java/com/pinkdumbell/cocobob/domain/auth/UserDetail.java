@@ -11,11 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetail implements UserDetails {
 
-    private String email;
+    private final String email;
 
-    private String password;
+    private final String password;
 
-    private List<GrantedAuthority> authorities;
+    private final List<GrantedAuthority> authorities;
 
     @Builder
     UserDetail(String email, String password, List<GrantedAuthority> authorities) {

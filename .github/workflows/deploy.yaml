@@ -41,7 +41,7 @@ jobs:
           echo "    driver-class-name: org.mariadb.jdbc.Driver" >> ./src/main/resources/application-secret.yml
           echo "  jwt:" >> ./src/main/resources/application-secret.yml
           echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
-          echo "    validTime: $JWT_VALID_TIME" >> ./src/main/resources/application-secret.yml
+          echo "    accessTokenValidTime: $JWT_VALID_TIME" >> ./src/main/resources/application-secret.yml
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle

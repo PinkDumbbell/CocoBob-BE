@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
@@ -49,6 +51,11 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<UserLoginResponseDto> Login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenResponseDto> reIssue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(userService.reIssue(tokenRequestDto));
     }
 
 

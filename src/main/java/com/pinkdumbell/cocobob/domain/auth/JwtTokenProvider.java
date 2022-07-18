@@ -26,8 +26,13 @@ public class JwtTokenProvider {
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
 
-    @Value("${spring.jwt.validTime}")
-    private long tokenValidTime;
+    @Value("${spring.jwt.accessTokenValidTime}")
+    private long accessTokenValidTime;
+
+    @Value("${spring.jwt.refreshTokenValidTime}")
+    private long refreshTokenValidTime;
+
+
 
     @PostConstruct
     protected void init() {
@@ -41,9 +46,19 @@ public class JwtTokenProvider {
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + tokenValidTime))
+            .setExpiration(new Date(now.getTime() + accessTokenValidTime))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
+    }
+
+    public String createRefreshToken() {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public Authentication getAuthentication(String token) {
