@@ -30,8 +30,6 @@ public class User {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token refreshToken;
 
-    private String token;
-
     @Builder
     public User(@NotBlank String username,
         @NotBlank String email,
@@ -42,8 +40,8 @@ public class User {
         this.role = UserRole.USER; // 일반 회원 기본 권한 USER
     }
 
-    public void updateRefreshToken(/*Token refreshToken*/ String refreshToken) {
-//        this.refreshToken = refreshToken;
-        this.token = refreshToken;
+    public void updateRefreshToken(Token refreshToken /*String refreshToken*/) {
+        this.refreshToken = refreshToken;
+//        this.token = refreshToken;
     }
 }

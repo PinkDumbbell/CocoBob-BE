@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -59,14 +60,14 @@ public class UserService {
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
-//        Token newUserToken = tokenRepository.save(Token.builder()
-//                .id(user.getId())
-//                .value(refreshToken)
-//                .user(user).build());
+        Token newUserToken = tokenRepository.save(Token.builder()
+            .value(refreshToken)
+            .user(user).build());
 
-        user.updateRefreshToken(refreshToken);
-        System.out.println("login user.getRefreshToken "+user.getToken());
-        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),refreshToken);
+        user.updateRefreshToken(newUserToken);
+
+        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
+            refreshToken);
     }
 
     @Transactional(readOnly = true)
@@ -81,24 +82,27 @@ public class UserService {
 
     @Transactional
     public TokenResponseDto reIssue(TokenRequestDto requestDto) {
-        if (!jwtTokenProvider.validateTokenExpiration(requestDto.getRefreshToken()))
+        if (!jwtTokenProvider.validateTokenExpiration(requestDto.getRefreshToken())) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
 
         User user = findUserByToken(requestDto);
 
-        if (!user.getToken().equals(requestDto.getRefreshToken()))
+        if (!user.getRefreshToken().getValue().equals(requestDto.getRefreshToken())) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
 
         String accessToken = jwtTokenProvider.createToken(user.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
-//        Token newUserToken = tokenRepository.save(Token.builder()
-//                .id(user.getId())
-//                .value(refreshToken)
-//                .user(user).build());
-        
-        user.updateRefreshToken(refreshToken);
-        System.out.println("reIssue user.getRefreshToken "+user.getToken());
+        Token newUserToken = tokenRepository.findById(user.getId())
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+            });
+
+        newUserToken.setValue(refreshToken);
+
+        user.updateRefreshToken(newUserToken);
         return new TokenResponseDto(accessToken, refreshToken);
     }
 

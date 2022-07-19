@@ -6,15 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import lombok.Setter;
 
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Token {
 
     @Id
-//    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,7 +30,6 @@ public class Token {
 
     @Builder
     public Token(Long id, String value, User user) {
-        this.id = id;
         this.value = value;
         this.user = user;
     }
