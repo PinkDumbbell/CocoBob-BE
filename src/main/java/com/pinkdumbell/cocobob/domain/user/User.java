@@ -2,7 +2,6 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.breed;
+package com.pinkdumbell.cocobob.domain.pet.breed;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
