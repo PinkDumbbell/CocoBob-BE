@@ -82,13 +82,16 @@ public class UserService {
 
     @Transactional
     public TokenResponseDto reIssue(TokenRequestDto requestDto) {
-        if (!jwtTokenProvider.validateTokenExpiration(requestDto.getRefreshToken())) {
+        String TOKEN_PREFIX = "Bearer ";
+        String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
+
+        if (!jwtTokenProvider.validateTokenExpiration(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         User user = findUserByToken(requestDto);
 
-        if (!user.getRefreshToken().getValue().equals(requestDto.getRefreshToken())) {
+        if (!user.getRefreshToken().getValue().equals(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
@@ -107,7 +110,9 @@ public class UserService {
     }
 
     public User findUserByToken(TokenRequestDto requestDto) {
-        Authentication auth = jwtTokenProvider.getAuthentication(requestDto.getAccessToken());
+        String TOKEN_PREFIX = "Bearer ";
+        String rawAccessToken = requestDto.getAccessToken().replace(TOKEN_PREFIX,"");
+        Authentication auth = jwtTokenProvider.getAuthentication(rawAccessToken);
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String username = userDetails.getUsername();
 

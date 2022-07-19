@@ -17,13 +17,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class JwtAuthenticationFilter extends GenericFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final String TOKEN_PREFIX = "Bearer ";
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
-        if (token != null && jwtTokenProvider.validateTokenExpiration(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
+        if (token != null && jwtTokenProvider.validateTokenExpiration(token.replace(TOKEN_PREFIX,""))) {
+            Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX,""));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         chain.doFilter(request, response);
