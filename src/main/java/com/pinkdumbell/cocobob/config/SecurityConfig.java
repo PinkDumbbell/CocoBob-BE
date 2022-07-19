@@ -4,8 +4,10 @@ import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.filter.JwtAuthenticationFilter;
 import com.pinkdumbell.cocobob.domain.auth.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,30 +26,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+            .antMatchers("/swagger-resources",
+                "/swagger-resources/**",
+                "/swagger-ui.html",
+                "/swagger-ui/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .httpBasic().disable() // rest api이므로 기본설정 미사용
+        http.httpBasic().disable() // rest api이므로 기본설정 미사용
             .csrf().disable() // rest api이므로 csrf 보안 미사용
-            .formLogin().disable()
-            .sessionManagement()
+            .formLogin().disable().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
-            .and()
-            .authorizeRequests()
-            .antMatchers("/").permitAll()
-            .antMatchers("/v1/users/**").permitAll()
-            .antMatchers("/social/**").permitAll()
-            .antMatchers("/exception/**").permitAll()
-            .antMatchers("/admin").hasRole("ADMIN")
-            .antMatchers("/manager").hasRole("USER")
-            .anyRequest().authenticated()
-            .and()
+            .and().authorizeRequests().antMatchers("/").permitAll().antMatchers("/v1/users/**")
+            .permitAll().antMatchers("/social/**").permitAll().antMatchers("/exception/**")
+            .permitAll().antMatchers("/admin").hasRole("ADMIN").antMatchers("/manager")
+            .hasRole("USER").anyRequest().authenticated().and()
 //            .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //            .and()
 //            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
 //            .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class); // jwt 인가 필터 추가
-            http.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class); //jwt 토큰 만료 필터
+        http.addFilterBefore(new JwtExceptionFilter(),
+            JwtAuthenticationFilter.class); //jwt 토큰 만료 필터
     }
 
 
