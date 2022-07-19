@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -84,8 +85,12 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("유효하지 않은 토큰");
         } catch (ExpiredJwtException e) {
-            throw new JwtException("토큰 기한 만료");
+            throw new JwtException("ACCESS 토큰 기한 만료");
+        } catch(SignatureException e){
+            throw new JwtException("사용자 인증 실패");
         } catch (Exception e) {
             return false;
         }

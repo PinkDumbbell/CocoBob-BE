@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (JwtException e) {
-            throw new JwtException("ACCESS 토큰 기한 만료");
+            throw new JwtException(e.getMessage());
         }
 
         chain.doFilter(request, response);
