@@ -10,7 +10,6 @@ import lombok.Setter;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 public class Token {
@@ -32,5 +31,9 @@ public class Token {
     public Token(Long id, String value, User user) {
         this.value = value;
         this.user = user;
+    }
+
+    public void updateRefreshTokenValue(String newToken){
+        this.value = newToken;
     }
 }

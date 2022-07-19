@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok(userService.login(requestDto));
     }
 
-    @GetMapping("/reissue")
+    @GetMapping("/token")
     public ResponseEntity<TokenResponseDto> reIssue(
         @RequestHeader("accessToken") String accessToken,
         @RequestHeader("refreshToken") String refreshToken) {

@@ -62,26 +62,26 @@ class UserControllerTest {
     @DisplayName("사용자가 회원가입 후 올바른 토큰을 얻을 수 있다.")
     void 회원가입후_로그인을_하였을_경우() throws Exception {
         //SET UP
-        final String Username = "TESTER";
-        final String Email = "test@test.com";
-        final String Password = "password";
-        final String expectAccessToken = jwtTokenProvider.createToken(Email);
-        final String expectRefreshToken = jwtTokenProvider.createRefreshToken();
+        final String username = "TESTER";
+        final String email = "test@test.com";
+        final String password = "password";
 
         //회원가입
         UserCreateRequestDto requestDto = UserCreateRequestDto.builder()
-            .username(Username)
-            .email(Email)
-            .password(Password)
+            .username(username)
+            .email(email)
+            .password(password)
             .build();
-        UserCreateResponseDto userSignedUp = userService.signup(requestDto);
+        UserCreateResponseDto userCreateResponseDto = userService.signup(requestDto);
 
         //로그인 요청 정보 초기화
-        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto(Username,Email,Password);
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
+            .email(email)
+            .password(password)
+            .build();
 
         //EXECUTE & EXPECT
         // 로그인 실행
-        System.out.println(new ObjectMapper().writeValueAsString(userLoginRequestDto));
         mvc.perform(post("/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))

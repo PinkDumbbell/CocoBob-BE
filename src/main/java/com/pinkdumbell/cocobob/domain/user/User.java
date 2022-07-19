@@ -40,8 +40,7 @@ public class User {
         this.role = UserRole.USER; // 일반 회원 기본 권한 USER
     }
 
-    public void updateRefreshToken(Token refreshToken /*String refreshToken*/) {
+    public void updateRefreshToken(Token refreshToken) {
         this.refreshToken = refreshToken;
-//        this.token = refreshToken;
     }
 }

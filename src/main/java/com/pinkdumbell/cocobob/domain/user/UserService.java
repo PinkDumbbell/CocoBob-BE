@@ -84,12 +84,12 @@ public class UserService {
     public TokenResponseDto reIssue(TokenRequestDto requestDto) {
         String TOKEN_PREFIX = "Bearer ";
         String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
-        System.out.println("refreshToken "+ rawRefreshToken);
+
         if (!jwtTokenProvider.validateTokenExpiration(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        User user = findUserByToken(requestDto);
+        User user = findUserByToken(requestDto.getAccessToken());
 
         if (!user.getRefreshToken().getValue().equals(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
@@ -103,20 +103,20 @@ public class UserService {
                 throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
             });
 
-        newUserToken.setValue(refreshToken);
+        newUserToken.updateRefreshTokenValue(refreshToken);
 
         user.updateRefreshToken(newUserToken);
         return new TokenResponseDto(accessToken, refreshToken);
     }
 
-    public User findUserByToken(TokenRequestDto requestDto) {
+    public User findUserByToken(String accessToken) {
         String TOKEN_PREFIX = "Bearer ";
-        String rawAccessToken = requestDto.getAccessToken().replace(TOKEN_PREFIX,"");
+        String rawAccessToken = accessToken.replace(TOKEN_PREFIX,"");
         Authentication auth = jwtTokenProvider.getAuthentication(rawAccessToken);
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        String username = userDetails.getUsername();
+        String email = userDetails.getUsername(); // email을 스프링 시큐리티 username으로 사용
 
-        return userRepository.findByEmail(username).orElseThrow(() -> {
+        return userRepository.findByEmail(email).orElseThrow(() -> {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         });
     }
