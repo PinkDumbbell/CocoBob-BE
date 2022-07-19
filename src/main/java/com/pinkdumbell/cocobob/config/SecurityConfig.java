@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.config;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.filter.JwtAuthenticationFilter;
+import com.pinkdumbell.cocobob.domain.auth.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
 //            .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class); // jwt 필터 추가
+                UsernamePasswordAuthenticationFilter.class); // jwt 인가 필터 추가
+            http.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class); //jwt 토큰 만료 필터
     }
 
 

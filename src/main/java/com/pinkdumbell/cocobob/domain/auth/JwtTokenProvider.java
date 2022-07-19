@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
@@ -79,10 +80,12 @@ public class JwtTokenProvider {
         return req.getHeader("Authorization");
     }
 
-    public boolean validateTokenExpiration(String token) throws ExpiredJwtException{
+    public boolean validateTokenExpiration(String token) throws JwtException {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("토큰 기한 만료");
         } catch (Exception e) {
             return false;
         }
