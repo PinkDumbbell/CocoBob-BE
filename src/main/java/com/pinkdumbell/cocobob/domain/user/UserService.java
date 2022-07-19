@@ -84,7 +84,7 @@ public class UserService {
     public TokenResponseDto reIssue(TokenRequestDto requestDto) {
         String TOKEN_PREFIX = "Bearer ";
         String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
-
+        System.out.println("refreshToken "+ rawRefreshToken);
         if (!jwtTokenProvider.validateTokenExpiration(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }

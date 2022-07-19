@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -31,7 +33,6 @@ public class JwtTokenProvider {
     private long refreshTokenValidTime;
 
 
-
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -53,10 +54,10 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         return Jwts.builder()
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
     }
 
     public Authentication getAuthentication(String token) {
@@ -78,13 +79,14 @@ public class JwtTokenProvider {
         return req.getHeader("Authorization");
     }
 
-    public boolean validateTokenExpiration(String token) {
+    public boolean validateTokenExpiration(String token) throws ExpiredJwtException{
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }
+
     }
 
 }

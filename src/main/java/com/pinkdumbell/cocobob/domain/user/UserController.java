@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,8 +54,14 @@ public class UserController {
         return ResponseEntity.ok(userService.login(requestDto));
     }
 
-    @PostMapping("/reissue")
-    public ResponseEntity<TokenResponseDto> reIssue(@RequestBody TokenRequestDto tokenRequestDto) {
+    @GetMapping("/reissue")
+    public ResponseEntity<TokenResponseDto> reIssue(
+        @RequestHeader("accessToken") String accessToken,
+        @RequestHeader("refreshToken") String refreshToken) {
+        TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
         return ResponseEntity.ok(userService.reIssue(tokenRequestDto));
     }
 

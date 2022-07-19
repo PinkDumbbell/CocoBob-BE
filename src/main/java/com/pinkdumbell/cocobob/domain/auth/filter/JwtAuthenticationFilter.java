@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.GenericFilter;
@@ -24,10 +26,13 @@ public class JwtAuthenticationFilter extends GenericFilter {
         throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
-        if (token != null && jwtTokenProvider.validateTokenExpiration(token.replace(TOKEN_PREFIX,""))) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX,""));
+        if (token != null && jwtTokenProvider.validateTokenExpiration(
+            token.replace(TOKEN_PREFIX, ""))) {
+            Authentication auth = jwtTokenProvider.getAuthentication(
+                token.replace(TOKEN_PREFIX, ""));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
+
         chain.doFilter(request, response);
     }
 }
