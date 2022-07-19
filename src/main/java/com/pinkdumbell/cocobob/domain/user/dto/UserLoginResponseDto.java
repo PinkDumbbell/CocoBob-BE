@@ -1,9 +1,11 @@
 package com.pinkdumbell.cocobob.domain.user.dto;
 
 import com.pinkdumbell.cocobob.domain.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class UserLoginResponseDto {
 
     private final Long userId;

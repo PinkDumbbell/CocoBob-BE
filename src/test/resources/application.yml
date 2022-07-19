@@ -1,6 +1,6 @@
 spring:
   jwt:
-    secretKey: "test"
+      secretKey: "PinkDumbbell"
       accessTokenValidTime: 1800000 #30분
       refreshTokenValidTime: 604800000 #7일
   h2:

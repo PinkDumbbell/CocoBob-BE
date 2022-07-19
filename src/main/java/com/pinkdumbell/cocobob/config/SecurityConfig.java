@@ -40,10 +40,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable() // rest api이므로 csrf 보안 미사용
             .formLogin().disable().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
-            .and().authorizeRequests().antMatchers("/").permitAll().antMatchers("/v1/users/**")
-            .permitAll().antMatchers("/social/**").permitAll().antMatchers("/exception/**")
-            .permitAll().antMatchers("/admin").hasRole("ADMIN").antMatchers("/manager")
-            .hasRole("USER").anyRequest().authenticated().and()
+            .and().authorizeRequests().antMatchers("/").permitAll()
+            .antMatchers("/v1/users/**").permitAll()
+            .antMatchers("/social/**").permitAll()
+            .antMatchers("/exception/**")
+            .permitAll().antMatchers("/admin").hasRole("ADMIN")
+            .antMatchers("/manager").hasRole("USER")
+            .anyRequest().authenticated().and()
 //            .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //            .and()
 //            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
