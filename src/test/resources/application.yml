@@ -1,4 +1,6 @@
 spring:
+  flyway:
+    enabled: false
   jwt:
     secretKey: "test"
     validTime: 999999
