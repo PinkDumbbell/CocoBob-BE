@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Table(name = "\"like\"")
 @Getter
 @NoArgsConstructor
 @Entity
