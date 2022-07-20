@@ -16,7 +16,6 @@ import java.util.List;
 @Table(name = "\"user\"")
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -27,6 +26,13 @@ public class User {
     private String email;
 
     private String password;
+
+    @Enumerated(value = EnumType.STRING)
+    private AccountType accountType;
+
+    @OneToOne
+    @JoinColumn(name = "representative_pet_id")
+    private Pet representativePet;
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
