@@ -57,8 +57,8 @@ public class UserController {
     @ApiOperation(value = "Login", notes = "서비스 자체 로그인")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = UserLoginResponseDto.class),
-        @ApiResponse(code = 404, message = "USER_NOT_FOUND", response = CustomException.class),
-        @ApiResponse(code = 403, message = "INVALID_PASSWORD", response = CustomException.class)
+        @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
+        @ApiResponse(code = 403, message = "INVALID_PASSWORD")
     })
     @PostMapping("")
     public ResponseEntity<UserLoginResponseDto> Login(@RequestBody UserLoginRequestDto requestDto) {
@@ -67,7 +67,7 @@ public class UserController {
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
-        @ApiResponse(code = 401, message = "UNAUTHORIZED", response = CustomException.class),
+        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @GetMapping("/token")
     public ResponseEntity<TokenResponseDto> reissue(
