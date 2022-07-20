@@ -29,10 +29,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
         throws IOException, ServletException, JwtException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         try {
-            if (token != null && jwtTokenProvider.validateTokenExpiration(
-                token.replace(TOKEN_PREFIX, ""))) {
-                Authentication auth = jwtTokenProvider.getAuthentication(
-                    token.replace(TOKEN_PREFIX, ""));
+            if (token != null && jwtTokenProvider.validateTokenExpiration(token.replace(TOKEN_PREFIX, ""))) {
+                Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX, ""));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (JwtException e) {
