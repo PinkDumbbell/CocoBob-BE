@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -35,16 +37,31 @@ public class ProfileController {
             .orElse(defaultProfile);
     }
 
+    @ApiOperation(
+        value = "check access token",
+        notes = "사용중인 access token이 유효한지 테스트하는 페이지"
+    )
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "access Token", required = true, dataType = "string", paramType = "header")})
     @GetMapping("/hello")
     public String hello() {
         return "Hello";
     }
 
+    @ApiOperation(
+        value = "check access authority",
+        notes = "접근하는 사람의 권한이 ADMIN인지 테스트하는 페이지"
+    )
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "access Token", required = true, dataType = "string", paramType = "header")})
     @GetMapping("/admin")
     public String admin() {
         return "ADMIN";
     }
 
+    @ApiOperation(
+        value = "check access authority",
+        notes = "접근하는 사람의 권한이 USER인지 테스트하는 페이지"
+    )
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "access Token", required = true, dataType = "string", paramType = "header")})
     @GetMapping("/manager")
     public String usertest() {
         return "USERTEST";

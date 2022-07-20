@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -53,13 +54,23 @@ public class UserController {
         return ResponseEntity.ok(userService.checkEmailDuplicated(email));
     }
 
+    @ApiOperation(value = "Login", notes = "서비스 자체 로그인")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = UserLoginResponseDto.class),
+        @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
+        @ApiResponse(code = 403, message = "INVALID_PASSWORD")
+    })
     @PostMapping("")
     public ResponseEntity<UserLoginResponseDto> Login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
     }
-
+    @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
+        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
+    })
     @GetMapping("/token")
-    public ResponseEntity<TokenResponseDto> reIssue(
+    public ResponseEntity<TokenResponseDto> reissue(
         @RequestHeader("accessToken") String accessToken,
         @RequestHeader("refreshToken") String refreshToken) {
         TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
