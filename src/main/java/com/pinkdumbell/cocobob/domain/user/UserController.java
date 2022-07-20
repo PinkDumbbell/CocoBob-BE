@@ -1,12 +1,19 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.jar.JarException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +56,24 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<UserLoginResponseDto> Login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
+    }
+
+    @GetMapping("/token")
+    public ResponseEntity<TokenResponseDto> reIssue(
+        @RequestHeader("accessToken") String accessToken,
+        @RequestHeader("refreshToken") String refreshToken) {
+        TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
+
+        try {
+            return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+        } catch (CustomException | JwtException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+
     }
 
 

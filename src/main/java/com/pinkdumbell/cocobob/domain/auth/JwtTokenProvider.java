@@ -1,16 +1,19 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,12 +25,15 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
     private final UserDetailService userDetailService;
-
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
 
-    @Value("${spring.jwt.validTime}")
-    private long tokenValidTime;
+    @Value("${spring.jwt.accessTokenValidTime}")
+    private long accessTokenValidTime;
+
+    @Value("${spring.jwt.refreshTokenValidTime}")
+    private long refreshTokenValidTime;
+
 
     @PostConstruct
     protected void init() {
@@ -41,7 +47,17 @@ public class JwtTokenProvider {
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + tokenValidTime))
+            .setExpiration(new Date(now.getTime() + accessTokenValidTime))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+    }
+
+    public String createRefreshToken() {
+        Date now = new Date();
+
+        return Jwts.builder()
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
@@ -65,13 +81,20 @@ public class JwtTokenProvider {
         return req.getHeader("Authorization");
     }
 
-    public boolean validateTokenExpiration(String token) {
+    public boolean validateTokenExpiration(String token) throws JwtException {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("유효하지 않은 토큰");
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("토큰 기한 만료");
+        } catch(SignatureException e){
+            throw new JwtException("사용자 인증 실패");
         } catch (Exception e) {
             return false;
         }
+
     }
 
 }

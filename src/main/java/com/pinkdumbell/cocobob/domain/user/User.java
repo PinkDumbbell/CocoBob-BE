@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.Token;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ public class User {
     private UserRole role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Token token;
+    private Token refreshToken;
 
     @Builder
     public User(@NotBlank String username,
@@ -38,6 +37,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = UserRole.USER;
+        this.role = UserRole.USER; // 일반 회원 기본 권한 USER
+    }
+
+    public void updateRefreshToken(Token refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
