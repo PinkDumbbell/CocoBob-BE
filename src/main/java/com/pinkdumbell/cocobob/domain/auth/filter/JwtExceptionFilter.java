@@ -1,10 +1,8 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.JwtExceptionResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import java.io.IOException;
-import javax.persistence.Column;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
