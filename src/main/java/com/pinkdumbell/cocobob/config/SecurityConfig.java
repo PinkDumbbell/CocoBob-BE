@@ -52,10 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll().antMatchers("/admin").hasRole("ADMIN")
             .antMatchers("/manager").hasRole("USER")
             .anyRequest().authenticated().and()
-//            .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-//            .and()
-//            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
-//            .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class); // jwt 인가 필터 추가
         http.addFilterBefore(new JwtExceptionFilter(),
