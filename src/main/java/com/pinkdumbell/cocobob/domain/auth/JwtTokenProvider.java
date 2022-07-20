@@ -88,7 +88,7 @@ public class JwtTokenProvider {
         } catch (IllegalArgumentException e) {
             throw new JwtException("유효하지 않은 토큰");
         } catch (ExpiredJwtException e) {
-            throw new JwtException("ACCESS 토큰 기한 만료");
+            throw new JwtException("토큰 기한 만료");
         } catch(SignatureException e){
             throw new JwtException("사용자 인증 실패");
         } catch (Exception e) {

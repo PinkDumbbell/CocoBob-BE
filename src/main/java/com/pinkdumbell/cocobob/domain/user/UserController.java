@@ -5,11 +5,15 @@ import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.jar.JarException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +66,14 @@ public class UserController {
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
-        return ResponseEntity.ok(userService.reIssue(tokenRequestDto));
+
+        try {
+            return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+        } catch (CustomException | JwtException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+
     }
 
 

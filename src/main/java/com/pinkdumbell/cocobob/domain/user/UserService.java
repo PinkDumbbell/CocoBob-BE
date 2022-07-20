@@ -81,7 +81,7 @@ public class UserService {
     }
 
     @Transactional
-    public TokenResponseDto reIssue(TokenRequestDto requestDto) {
+    public TokenResponseDto reissue(TokenRequestDto requestDto) throws CustomException{
         String TOKEN_PREFIX = "Bearer ";
         String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
 
