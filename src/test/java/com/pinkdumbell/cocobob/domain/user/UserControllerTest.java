@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
@@ -91,8 +92,25 @@ class UserControllerTest {
 
     @Test
     @DisplayName("사용자가 회원가입을 하지 않고 로그인 할 수 없다.")
-    void 회원가입_없이_로그인을_하였을_경우() {
+    void 회원가입_없이_로그인을_하였을_경우() throws Exception {
+        //SET UP
+        final String username = "TESTER";
+        final String email = "test@test.com";
+        final String password = "password";
 
+        //로그인 요청 정보 초기화
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        //EXECUTE & EXPECT
+        // 로그인 실행
+        mvc.perform(post("/v1/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
+                .andExpect(status().is4xxClientError())
+                .andDo(print());
     }
 
 }
