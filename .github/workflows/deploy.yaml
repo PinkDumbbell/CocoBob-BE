@@ -31,7 +31,8 @@ jobs:
           DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
           DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          JWT_VALID_TIME: ${{ secrets.JWT_VALID_TIME }}
+          ACCESS_TOKEN_VALID_TIME: ${{ secrets.ACCESS_TOKEN_VALID_TIME }}
+          REFRESH_TOKEN_VALID_TIME: ${{ secrets.REFRESH_TOKEN_VALID_TIME }}
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
           echo "  datasource:" >> ./src/main/resources/application-secret.yml
@@ -41,7 +42,8 @@ jobs:
           echo "    driver-class-name: org.mariadb.jdbc.Driver" >> ./src/main/resources/application-secret.yml
           echo "  jwt:" >> ./src/main/resources/application-secret.yml
           echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
-          echo "    validTime: $JWT_VALID_TIME" >> ./src/main/resources/application-secret.yml
+          echo "    accessTokenValidTime: $ACCESS_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
+          echo "    refreshTokenValidTime: $REFRESH_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle

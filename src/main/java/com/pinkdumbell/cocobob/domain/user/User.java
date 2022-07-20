@@ -31,7 +31,7 @@ public class User {
     private UserRole role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Token token;
+    private Token refreshToken;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Pet> pets = new ArrayList<>();
@@ -43,6 +43,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = UserRole.USER;
+        this.role = UserRole.USER; // 일반 회원 기본 권한 USER
+    }
+
+    public void updateRefreshToken(Token refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

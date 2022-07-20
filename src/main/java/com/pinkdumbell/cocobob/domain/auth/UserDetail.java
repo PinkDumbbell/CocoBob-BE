@@ -1,9 +1,6 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
-import com.pinkdumbell.cocobob.domain.user.UserRole;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetail implements UserDetails {
 
-    private String email;
+    private final String email;
 
-    private String password;
+    private final String password;
 
-    private List<GrantedAuthority> authorities;
+    private final List<GrantedAuthority> authorities;
 
     @Builder
     UserDetail(String email, String password, List<GrantedAuthority> authorities) {
