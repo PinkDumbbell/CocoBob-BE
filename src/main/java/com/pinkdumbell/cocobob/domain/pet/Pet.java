@@ -22,7 +22,8 @@ public class Pet {
 
     private String profilePhotoPath;
 
-    private Boolean sex;
+    @Enumerated(EnumType.STRING)
+    private PetSex sex;
 
     private Boolean isSpayed;
 
