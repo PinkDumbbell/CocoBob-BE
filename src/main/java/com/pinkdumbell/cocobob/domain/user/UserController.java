@@ -58,7 +58,7 @@ public class UserController {
         @ApiResponse(code = 403, message = "INVALID_PASSWORD")
     })
     @PostMapping("")
-    public ResponseEntity<UserLoginResponseDto> Login(@RequestBody UserLoginRequestDto requestDto) {
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
     }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
