@@ -13,8 +13,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class PetProblemId implements Serializable {
-    @Column(name = "pet_id")
-    private Long pet;
-    @Column(name = "problem_id")
-    private Long problem;
+    private Long petId;
+    private Long problemId;
 }

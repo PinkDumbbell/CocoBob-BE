@@ -17,10 +17,10 @@ public class PetProblem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
-    @MapsId("pet")
+    @MapsId("petId")
     private Pet pet;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
-    @MapsId("problem")
+    @MapsId("problemId")
     private Problem problem;
 }
