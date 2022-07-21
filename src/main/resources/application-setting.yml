@@ -16,3 +16,4 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    com.amazonaws.util.EC2MetadataUtils: ERROR
