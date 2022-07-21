@@ -13,8 +13,6 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class DailyAbnormalId implements Serializable {
-    @Column(name = "abnormal_id")
-    private Long abnormal;
-    @Column(name = "daily_id")
-    private Long daily;
+    private Long abnormalId;
+    private Long dailyId;
 }

@@ -16,10 +16,10 @@ public class DailyAbnormal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_id")
-    @MapsId("daily")
+    @MapsId("dailyId")
     private Daily daily;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abnormal_id")
-    @MapsId("abnormal")
+    @MapsId("abnormalId")
     private Abnormal abnormal;
 }
