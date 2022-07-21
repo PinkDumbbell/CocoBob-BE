@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,7 @@ public class Pet {
 
     private String name;
 
-    private String profilePhotoPath;
+    private String thumbnailPath;
 
     @Enumerated(EnumType.STRING)
     private PetSex sex;
@@ -50,5 +51,18 @@ public class Pet {
     @OneToOne(mappedBy = "pet", fetch = FetchType.LAZY)
     private PetImage petImage;
 
+    @Builder
+    public Pet(String name,
+               PetSex sex,
+               int age,
+               LocalDate birthday) {
+        this.name = name;
+        this.sex = sex;
+        this.age = age;
+        this.birthday = birthday;
+    }
 
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
+    }
 }
