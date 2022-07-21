@@ -15,11 +15,11 @@ public class ProductProblem {
     private ProductProblemId productProblemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("product")
+    @MapsId("productId")
     @JoinColumn(name = "product_id")
     private Product product;
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("problem")
+    @MapsId("problemId")
     @JoinColumn(name = "problem_id")
     private Problem problem;
 }

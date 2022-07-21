@@ -13,8 +13,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @Embeddable
 public class ProductProblemId implements Serializable {
-    @Column(name = "product_id")
-    private Long product;
-    @Column(name = "problem_id")
-    private Long problem;
+    private Long productId;
+    private Long problemId;
 }
