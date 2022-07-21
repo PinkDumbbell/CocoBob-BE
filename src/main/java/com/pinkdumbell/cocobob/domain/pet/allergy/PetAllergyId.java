@@ -13,8 +13,6 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class PetAllergyId implements Serializable {
-    @Column(name = "pet_id")
-    private Long pet;
-    @Column(name = "allergy_id")
-    private Long allergy;
+    private Long petId;
+    private Long allergyId;
 }
