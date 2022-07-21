@@ -22,7 +22,7 @@ public class Pet {
 
     private String profilePhotoPath;
 
-    private int sex;
+    private Boolean sex;
 
     private Boolean isSpayed;
 
