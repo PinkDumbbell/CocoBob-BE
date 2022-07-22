@@ -39,6 +39,12 @@ dependencies {
 	// AWS_S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// Image Resizing
+	implementation 'com.github.downgoon:marvin:1.5.5'
+	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
+	// To Use MockMultipartFile
+	compileOnly group: 'org.springframework', name: 'spring-test'
+
 	implementation 'junit:junit:4.13.1'
 
 	compileOnly 'org.projectlombok:lombok'
