@@ -56,20 +56,17 @@ public class ImageService {
         return marvinImage;
     }
 
-    private ByteArrayOutputStream writeResizedImage(MarvinImage marvinImage, String contentType) {
-        try {
-            BufferedImage bufferedImageNoAlpha = marvinImage.getBufferedImageNoAlpha();
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImageNoAlpha,
-                    contentType.substring(contentType.lastIndexOf("/") + 1),
-                    byteArrayOutputStream);
-            byteArrayOutputStream.flush();
+    private ByteArrayOutputStream writeResizedImage(MarvinImage marvinImage, String contentType) throws IOException {
+        BufferedImage bufferedImageNoAlpha = marvinImage.getBufferedImageNoAlpha();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImageNoAlpha,
+                contentType.substring(contentType.lastIndexOf("/") + 1),
+                byteArrayOutputStream);
+        byteArrayOutputStream.flush();
 
-            return byteArrayOutputStream;
-        } catch (IOException e) {
-            throw new RuntimeException("이미지 리사이징 실패");
-        }
+        return byteArrayOutputStream;
     }
+
     private String createResizedImageName(String originalImageName) {
         return "resized_".concat(originalImageName);
     }
