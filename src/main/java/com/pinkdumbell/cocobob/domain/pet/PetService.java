@@ -6,6 +6,8 @@ import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +33,7 @@ public class PetService {
                 .bodyWeight(requestDto.getBodyWeight())
                 .activityLevel(requestDto.getActivityLevel())
                 .breed(breedRepository.findById(requestDto.getBreedId())
-                        .orElseThrow(() -> new RuntimeException("해당 종 없음")))
+                        .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
                 .build());
         if (requestDto.getPetImage() != null) {
             petImageRepository.save(new PetImage(
