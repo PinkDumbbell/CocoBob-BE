@@ -38,11 +38,11 @@ create table pet
 (
     pet_id         bigint auto_increment
         primary key,
-    activity_level int          not null,
-    age            int          not null,
+    activity_level int          null,
+    age            int          null,
     birthday       date         null,
     body_weight    float        null,
-    fat_level      int          not null,
+    fat_level      int          null,
     is_pregnant    bit          null,
     is_spayed      bit          null,
     name           varchar(255) null,
