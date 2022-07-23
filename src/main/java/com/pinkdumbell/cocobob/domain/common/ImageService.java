@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob.domain.common;
 
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import marvin.image.MarvinImage;
 import org.marvinproject.image.transform.scale.Scale;
@@ -25,7 +27,7 @@ public class ImageService {
 
     private void isImage(MultipartFile image) {
         if(!image.getContentType().startsWith("image")) {
-            throw new RuntimeException("not image");
+            throw new CustomException(ErrorCode.NOT_IMAGE);
         }
     }
 
@@ -41,7 +43,7 @@ public class ImageService {
                     originalImage.getContentType(),
                     writeResizedImage(marvinImage, originalImage.getContentType()).toByteArray());
         } catch (IOException e) {
-            throw new RuntimeException("이미지 리사이징 실패");
+            throw new CustomException(ErrorCode.FAIL_TO_RESIZE_IMAGE);
         }
     }
 
