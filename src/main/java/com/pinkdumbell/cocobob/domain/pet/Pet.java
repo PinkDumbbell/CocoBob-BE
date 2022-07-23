@@ -28,7 +28,7 @@ public class Pet {
 
     private Boolean isSpayed;
 
-    private int age;
+    private Integer age;
 
     private LocalDate birthday;
 
@@ -36,9 +36,10 @@ public class Pet {
 
     private Boolean isPregnant;
 
-    private int fatLevel;
+    @Column(nullable = true)
+    private Integer fatLevel;
 
-    private int activityLevel;
+    private Integer activityLevel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -54,12 +55,12 @@ public class Pet {
     @Builder
     public Pet(String name,
                PetSex sex,
-               int age,
+               Integer age,
                LocalDate birthday,
                Boolean isSpayed,
                Boolean isPregnant,
                Float bodyWeight,
-               int activityLevel,
+               Integer activityLevel,
                Breed breed) {
         this.name = name;
         this.sex = sex;
