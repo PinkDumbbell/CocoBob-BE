@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
 import com.pinkdumbell.cocobob.domain.common.ImageService;
+import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PetService {
     private final PetRepository petRepository;
     private final PetImageRepository petImageRepository;
+    private final BreedRepository breedRepository;
     private final ImageService imageService;
     final int RESIZE_TARGET_WIDTH = 300;
 
@@ -24,6 +26,12 @@ public class PetService {
                 .sex(requestDto.getSex())
                 .age(requestDto.getAge())
                 .birthday(requestDto.getBirthday())
+                .isSpayed(requestDto.getIsSpayed())
+                .isPregnant(requestDto.getIsPregnant())
+                .bodyWeight(requestDto.getBodyWeight())
+                .activityLevel(requestDto.getActivityLevel())
+                .breed(breedRepository.findById(requestDto.getBreedId())
+                        .orElseThrow(() -> new RuntimeException("해당 종 없음")))
                 .build());
         if (requestDto.getPetImage() != null) {
             petImageRepository.save(new PetImage(
