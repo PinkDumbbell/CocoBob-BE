@@ -55,11 +55,21 @@ public class Pet {
     public Pet(String name,
                PetSex sex,
                int age,
-               LocalDate birthday) {
+               LocalDate birthday,
+               Boolean isSpayed,
+               Boolean isPregnant,
+               Float bodyWeight,
+               int activityLevel,
+               Breed breed) {
         this.name = name;
         this.sex = sex;
         this.age = age;
         this.birthday = birthday;
+        this.isSpayed = isSpayed;
+        this.isPregnant = isPregnant;
+        this.bodyWeight = bodyWeight;
+        this.activityLevel = activityLevel;
+        this.breed = breed;
     }
 
     public void setThumbnailPath(String thumbnailPath) {
