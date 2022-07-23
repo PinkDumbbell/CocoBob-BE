@@ -16,5 +16,10 @@ public class PetCreateRequestDto {
     private int age;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+    private Boolean isSpayed;
+    private Boolean isPregnant;
+    private Float bodyWeight;
+    private int activityLevel;
+    private Long breedId;
     private MultipartFile petImage;
 }
