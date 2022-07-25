@@ -44,7 +44,6 @@ jobs:
           echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
           echo "    accessTokenValidTime: $ACCESS_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
           echo "    refreshTokenValidTime: $REFRESH_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
-          cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle
         run: ./gradlew build -x test
