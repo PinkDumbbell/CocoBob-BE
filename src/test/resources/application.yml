@@ -22,7 +22,17 @@ spring:
     url: jdbc:h2:mem:testdb:MODE=MariaDB;
     username: sa
     password:
-
+cloud:
+  aws:
+    credentials:
+      accessKey: test
+      secretKey: test
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 logging:
   level:
     org.hibernate.SQL: debug

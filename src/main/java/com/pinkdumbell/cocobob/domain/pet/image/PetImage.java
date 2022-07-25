@@ -21,4 +21,10 @@ public class PetImage {
     @OneToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    public PetImage(String path,
+                    Pet pet) {
+        this.path = path;
+        this.pet = pet;
+    }
 }

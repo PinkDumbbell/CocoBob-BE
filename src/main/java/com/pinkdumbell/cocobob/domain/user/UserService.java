@@ -32,6 +32,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
+    @Transactional
     public UserCreateResponseDto signup(UserCreateRequestDto requestDto) {
         userRepository.findByEmail(requestDto.getEmail())
             .ifPresent(userWithDuplicatedEmail -> {
@@ -109,6 +110,7 @@ public class UserService {
         return new TokenResponseDto(accessToken, refreshToken);
     }
 
+    @Transactional
     public User findUserByToken(String accessToken) {
         String TOKEN_PREFIX = "Bearer ";
         String rawAccessToken = accessToken.replace(TOKEN_PREFIX,"");

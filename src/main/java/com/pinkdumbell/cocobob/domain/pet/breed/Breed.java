@@ -17,4 +17,7 @@ public class Breed {
     private String name;
 
     private String createdBy;
+
+    @Enumerated(EnumType.STRING)
+    private BreedSize size;
 }
