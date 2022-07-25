@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,13 +21,14 @@ public class Pet {
 
     private String name;
 
-    private String profilePhotoPath;
+    private String thumbnailPath;
 
-    private Boolean sex;
+    @Enumerated(EnumType.STRING)
+    private PetSex sex;
 
     private Boolean isSpayed;
 
-    private int age;
+    private Integer age;
 
     private LocalDate birthday;
 
@@ -34,9 +36,10 @@ public class Pet {
 
     private Boolean isPregnant;
 
-    private int fatLevel;
+    @Column(nullable = true)
+    private Integer fatLevel;
 
-    private int activityLevel;
+    private Integer activityLevel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -49,5 +52,28 @@ public class Pet {
     @OneToOne(mappedBy = "pet", fetch = FetchType.LAZY)
     private PetImage petImage;
 
+    @Builder
+    public Pet(String name,
+               PetSex sex,
+               Integer age,
+               LocalDate birthday,
+               Boolean isSpayed,
+               Boolean isPregnant,
+               Float bodyWeight,
+               Integer activityLevel,
+               Breed breed) {
+        this.name = name;
+        this.sex = sex;
+        this.age = age;
+        this.birthday = birthday;
+        this.isSpayed = isSpayed;
+        this.isPregnant = isPregnant;
+        this.bodyWeight = bodyWeight;
+        this.activityLevel = activityLevel;
+        this.breed = breed;
+    }
 
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
+    }
 }
