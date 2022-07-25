@@ -33,10 +33,6 @@ jobs:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           ACCESS_TOKEN_VALID_TIME: ${{ secrets.ACCESS_TOKEN_VALID_TIME }}
           REFRESH_TOKEN_VALID_TIME: ${{ secrets.REFRESH_TOKEN_VALID_TIME }}
-#          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          AWS_REGION: ${{ env.AWS_REGION }}
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
           echo "  datasource:" >> ./src/main/resources/application-secret.yml
@@ -48,18 +44,6 @@ jobs:
           echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
           echo "    accessTokenValidTime: $ACCESS_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
           echo "    refreshTokenValidTime: $REFRESH_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
-#          echo "cloud:" >> ./src/main/resources/application-secret.yml
-#          echo "  aws:" >> ./src/main/resources/application-secret.yml
-#          echo "    s3:" >> ./src/main/resources/application-secret.yml
-#          echo "      bucket: $S3_BUCKET" >> ./src/main/resources/application-secret.yml
-#          echo "    credentials:" >> ./src/main/resources/application-secret.yml
-#          echo "      access-key: $AWS_ACCESS_KEY_ID" >> ./src/main/resources/application-secret.yml
-#          echo "      secret-key: $AWS_SECRET_ACCESS_KEY" >> ./src/main/resources/application-secret.yml
-#          echo "    region:" >> ./src/main/resources/application-secret.yml
-#          echo "      static: $AWS_REGION" >> ./src/main/resources/application-secret.yml
-#          echo "      auto: false" >> ./src/main/resources/application-secret.yml
-#          echo "    stack:" >> ./src/main/resources/application-secret.yml
-#          echo "      auto: false" >> ./src/main/resources/application-secret.yml
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle
