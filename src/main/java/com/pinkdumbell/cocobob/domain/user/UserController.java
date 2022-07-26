@@ -60,6 +60,7 @@ public class UserController {
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
     }
+
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
@@ -76,7 +77,7 @@ public class UserController {
 
         try {
             return ResponseEntity.ok(userService.reissue(tokenRequestDto));
-        } catch (CustomException | JwtException e){
+        } catch (CustomException | JwtException e) {
             throw e;
         }
     }
@@ -87,14 +88,14 @@ public class UserController {
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @DeleteMapping("")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken){
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken) {
 
-        try{
+        try {
             userService.logout(accessToken);
-        } catch (CustomException e){
+        } catch (CustomException e) {
             throw e;
         }
-        return ResponseEntity.ok("로그 아웃 처리 완료 되었습니다.");
+        return ResponseEntity.ok("로그아웃 처리 완료");
     }
 
 }

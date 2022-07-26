@@ -149,7 +149,6 @@ class UserControllerTest {
             .build();
 
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
-        System.out.println(userLoginResponseDto.getAccessToken());
         //EXECUTE & EXPECT
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")

@@ -74,17 +74,17 @@ public class JwtTokenProvider {
 
     public String getUserEmail(String token) {
         try {
-            String userMail = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+            String userEmail = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody()
                 .getSubject();
 
-            User user = userRepository.findByEmail(userMail).orElseThrow(()->{
+            User user = userRepository.findByEmail(userEmail).orElseThrow(() -> {
                 throw new JwtException("회원가입 되지 않은 유저 입니다.");
             });
 
-            if(user.getRefreshToken()!=null){
-                return  userMail; //토큰 속 이메일 claim
-            } else{
+            if (user.getRefreshToken() != null) {
+                return userEmail; //토큰 속 이메일 claim
+            } else {
                 throw new JwtException("로그아웃된 계정입니다.");
             }
 
@@ -103,13 +103,13 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (IllegalArgumentException e) {
-            throw new JwtException("유효하지 않은 토큰(IllegalArgumentException)");
+            throw new JwtException("유효하지 않은 토큰");
         } catch (ExpiredJwtException e) {
-            throw new JwtException("토큰 기한 만료(ExpiredJwtException)");
+            throw new JwtException("토큰 기한 만료");
         } catch (SignatureException e) {
-            throw new JwtException("유효하지 않은 토큰(SignatureException)");
+            throw new JwtException("잘못 서명된 토큰");
         } catch (Exception e) {
-            throw new JwtException("유효하지 않은 토큰(etc)");
+            throw new JwtException("유효하지 않은 토큰");
         }
 
 

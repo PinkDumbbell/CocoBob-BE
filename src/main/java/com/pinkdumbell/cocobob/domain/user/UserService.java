@@ -59,25 +59,21 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
         if (user.getRefreshToken() == null) {
             Token newUserToken = tokenRepository.save(Token.builder()
-                .value(refreshToken)
+                .value(newRefreshToken)
                 .user(user).build());
             user.updateRefreshToken(newUserToken);
         } else {
-            Token userRefreshToken = tokenRepository.findById(user.getRefreshToken().getId())
-                .orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.BAD_REQUEST);
-                });
-
-            userRefreshToken.updateRefreshTokenValue(refreshToken);
+            Token userRefreshToken = user.getRefreshToken();
+            userRefreshToken.updateRefreshTokenValue(newRefreshToken);
             user.updateRefreshToken(userRefreshToken);
         }
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
-            refreshToken);
+            newRefreshToken);
     }
 
     @Transactional(readOnly = true)
@@ -134,7 +130,7 @@ public class UserService {
         });
     }
 
-    public void logout(String rawAccessToken) throws CustomException {
+    public void logout(String rawAccessToken) {
         String TOKEN_PREFIX = "Bearer ";
         String accessToken = rawAccessToken.replace(TOKEN_PREFIX, "");
         Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
@@ -145,12 +141,11 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
         });
 
-        try{
+        try {
             tokenRepository.delete(findUser.getRefreshToken());
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
         }
-
         findUser.updateRefreshToken(null);
     }
 }
