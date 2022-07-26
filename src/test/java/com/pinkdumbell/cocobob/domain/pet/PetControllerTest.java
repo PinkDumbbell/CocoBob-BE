@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -79,6 +82,7 @@ class PetControllerTest {
         Integer age = 0;
         Integer activityLevel = 10;
         Long breedId = -1L;
+
         MvcResult result = mvc.perform(post("/v1/pets")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .param("birthday", String.valueOf(birthday))
@@ -104,5 +108,38 @@ class PetControllerTest {
                         "활동 수준은 1~5의 값이어야 합니다.",
                         "견종 아이디는 0보다 커야합니다."
                 ));
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("올바른 값이 요청을 통해 들어왔을 때 컨트롤러의 반환값을 테스트")
+    void testReturnOfControllerWithValidInputValues() throws Exception {
+        Float bodyWeight = 5.4F;
+        Integer age = 20;
+        Integer activityLevel = 3;
+        Long breedId = 1L;
+        Boolean isSpayed = true;
+        Boolean isPregnant = false;
+        PetSex sex = PetSex.FEMALE;
+        String name = "코코";
+
+        given(petService.register(any(PetCreateRequestDto.class)))
+                .willReturn(PetCreateResponseDto.builder()
+                        .petId(1L)
+                        .build());
+
+        mvc.perform(post("/v1/pets")
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .param("name", name)
+                        .param("sex", String.valueOf(sex))
+                        .param("isPregnant", String.valueOf(isPregnant))
+                        .param("isSpayed", String.valueOf(isSpayed))
+                        .param("breedId", String.valueOf(breedId))
+                        .param("activityLevel", String.valueOf(activityLevel))
+                        .param("age", String.valueOf(age))
+                        .param("bodyWeight", String.valueOf(bodyWeight))
+                )
+                .andExpect(jsonPath("$.petId").value(1L))
+                .andExpect(status().isOk());
     }
 }
