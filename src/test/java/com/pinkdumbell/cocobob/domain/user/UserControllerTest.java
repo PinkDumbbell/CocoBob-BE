@@ -149,7 +149,7 @@ class UserControllerTest {
             .build();
 
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
-
+        System.out.println(userLoginResponseDto.getAccessToken());
         //EXECUTE & EXPECT
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")
@@ -183,15 +183,9 @@ class UserControllerTest {
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
 
         // 유효하지 않은 토큰 생성
-        Claims claims = Jwts.claims().setSubject(email);
-        Date now = new Date();
 
-        String invalidToken = Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime())) //만료시간을 지금 즉시로 생성
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+        String invalidToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNjU4ODIzMDY3LCJleHAiOjE2NTg4MjQ4Njd9.EzRbUv390S78fQbbAHE87bA-M5QOIpZWQTAFD3z2Zrk";
+
 
         //EXECUTE & EXPECT
         // 로그인 후 접근 가능한 페이지 접근
@@ -307,7 +301,7 @@ class UserControllerTest {
         Date now = new Date();
         String invalidRefreshToken = Jwts.builder()
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime())) //만료된 토큰
+            .setExpiration(new Date(now.getTime()+1000)) //만료된 토큰
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
 

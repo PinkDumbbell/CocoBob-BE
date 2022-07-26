@@ -84,14 +84,15 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (IllegalArgumentException e) {
-            throw new JwtException("유효하지 않은 토큰");
+            throw new JwtException("유효하지 않은 토큰(IllegalArgumentException)");
         } catch (ExpiredJwtException e) {
-            throw new JwtException("토큰 기한 만료");
-        } catch(SignatureException e){
-            throw new JwtException("사용자 인증 실패");
+            throw new JwtException("토큰 기한 만료(ExpiredJwtException)");
+        } catch (SignatureException e) {
+            throw new JwtException("유효하지 않은 토큰(SignatureException)");
         } catch (Exception e) {
-            return false;
+            throw new JwtException("유효하지 않은 토큰(etc)");
         }
+
 
     }
 
