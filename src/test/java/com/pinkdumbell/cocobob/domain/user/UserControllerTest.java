@@ -186,7 +186,6 @@ class UserControllerTest {
 
         String invalidToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNjU4ODIzMDY3LCJleHAiOjE2NTg4MjQ4Njd9.EzRbUv390S78fQbbAHE87bA-M5QOIpZWQTAFD3z2Zrk";
 
-
         //EXECUTE & EXPECT
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")
@@ -218,7 +217,6 @@ class UserControllerTest {
             .build();
 
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
-
 
         //EXECUTE & EXPECT
         // 토큰 재발행
@@ -263,7 +261,6 @@ class UserControllerTest {
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
 
-
         //EXECUTE & EXPECT
         // 토큰 재발행
         mvc.perform(get("/v1/users/token")
@@ -301,10 +298,9 @@ class UserControllerTest {
         Date now = new Date();
         String invalidRefreshToken = Jwts.builder()
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime()+1000)) //만료된 토큰
+            .setExpiration(new Date(now.getTime() + 1000)) //만료된 토큰
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
-
 
         //EXECUTE & EXPECT
         // 토큰 재발행
@@ -337,8 +333,6 @@ class UserControllerTest {
             .password(password)
             .build();
 
-
-
         //EXECUTE & EXPECT
         // 1차 로그인 실행
         mvc.perform(post("/v1/users")
@@ -355,6 +349,95 @@ class UserControllerTest {
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
             .andExpect(jsonPath("$.refreshToken", notNullValue()))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그 아웃 후 access token으로 접근")
+    void 로그아웃후_accessToken_접근() throws Exception {
+        //SET UP
+        final String username = "TESTER";
+        final String email = "test@test.com";
+        final String password = "password";
+
+        //회원가입
+        UserCreateRequestDto requestDto = UserCreateRequestDto.builder()
+            .username(username)
+            .email(email)
+            .password(password)
+            .build();
+        UserCreateResponseDto userCreateResponseDto = userService.signup(requestDto);
+
+        //로그인 요청 정보 초기화
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
+            .email(email)
+            .password(password)
+            .build();
+
+        UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
+
+        // 로그인 후 접근 가능한 페이지 접근
+        mvc.perform(get("/hello")
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+            .andExpect(status().is2xxSuccessful())
+            .andDo(print());
+
+        //EXECUTE & EXPECT
+        //로그 아웃
+        mvc.perform(delete("/v1/users")
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+            .andExpect(status().is2xxSuccessful())
+            .andDo(print());
+
+        //로그 아웃 후 재접근
+        mvc.perform(get("/hello")
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+            .andExpect(status().is4xxClientError())
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그 아웃 후 재로그인")
+    void 로그아웃후_재로그인() throws Exception {
+        //SET UP
+        final String username = "TESTER";
+        final String email = "test@test.com";
+        final String password = "password";
+
+        //회원가입
+        UserCreateRequestDto requestDto = UserCreateRequestDto.builder()
+            .username(username)
+            .email(email)
+            .password(password)
+            .build();
+        UserCreateResponseDto userCreateResponseDto = userService.signup(requestDto);
+
+        //로그인 요청 정보 초기화
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
+            .email(email)
+            .password(password)
+            .build();
+
+        UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
+
+        // 로그인 후 접근 가능한 페이지 접근
+        mvc.perform(get("/hello")
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+            .andExpect(status().is2xxSuccessful())
+            .andDo(print());
+
+        //EXECUTE & EXPECT
+        //로그 아웃
+        mvc.perform(delete("/v1/users")
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+            .andExpect(status().is2xxSuccessful())
+            .andDo(print());
+
+        UserLoginResponseDto userLoginResponseDto_retry = userService.login(userLoginRequestDto);
+        //로그인 후 재접근
+        mvc.perform(get("/hello")
+                .header("Authorization", "Bearer " + userLoginResponseDto_retry.getAccessToken()))
+            .andExpect(status().is2xxSuccessful())
             .andDo(print());
     }
 

@@ -79,9 +79,22 @@ public class UserController {
         } catch (CustomException | JwtException e){
             throw e;
         }
-
-
     }
 
+    @ApiOperation(value = "Logout", notes = "로그아웃")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "로그 아웃 처리 완료 되었습니다.", response = String.class),
+        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
+    })
+    @DeleteMapping("")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken){
+
+        try{
+            userService.logout(accessToken);
+        } catch (CustomException e){
+            throw e;
+        }
+        return ResponseEntity.ok("로그 아웃 처리 완료 되었습니다.");
+    }
 
 }

@@ -95,9 +95,9 @@ public class UserService {
         String TOKEN_PREFIX = "Bearer ";
         String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX, "");
 
-        try{
+        try {
             jwtTokenProvider.validateTokenExpiration(rawRefreshToken);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
@@ -132,5 +132,25 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         });
+    }
+
+    public void logout(String rawAccessToken) throws CustomException {
+        String TOKEN_PREFIX = "Bearer ";
+        String accessToken = rawAccessToken.replace(TOKEN_PREFIX, "");
+        Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String email = userDetails.getUsername(); // email을 스프링 시큐리티 username으로 사용
+
+        User findUser = userRepository.findByEmail(email).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
+        });
+
+        try{
+            tokenRepository.delete(findUser.getRefreshToken());
+        } catch (Exception e){
+            throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
+        }
+
+        findUser.updateRefreshToken(null);
     }
 }
