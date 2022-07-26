@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +60,7 @@ public class UserController {
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
     }
+
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
@@ -77,12 +77,25 @@ public class UserController {
 
         try {
             return ResponseEntity.ok(userService.reissue(tokenRequestDto));
-        } catch (CustomException | JwtException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (CustomException | JwtException e) {
+            throw e;
         }
-
-
     }
 
+    @ApiOperation(value = "Logout", notes = "로그아웃")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "로그 아웃 처리 완료 되었습니다.", response = String.class),
+        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
+    })
+    @DeleteMapping("")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken) {
+
+        try {
+            userService.logout(accessToken);
+        } catch (CustomException e) {
+            throw e;
+        }
+        return ResponseEntity.ok("로그아웃 처리 완료");
+    }
 
 }
