@@ -254,12 +254,7 @@ class UserControllerTest {
         UserLoginResponseDto userLoginResponseDto = userService.login(userLoginRequestDto);
 
         //유효하지 않은 리프레시 토큰 생성
-        Date now = new Date();
-        String invalidRefreshToken = Jwts.builder()
-            .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + 10000)) //임의로 유효기간 10초로 설정
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+        String invalidRefreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTg4Mjc0NTQsImV4cCI6MTY1OTQzMjI1NH0.jlFgztcUQ1gMAxQpdpaf6drx-JBUsSGHCgr1FNFkWos";
 
         //EXECUTE & EXPECT
         // 토큰 재발행
