@@ -61,11 +61,20 @@ public class UserService {
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
-        Token newUserToken = tokenRepository.save(Token.builder()
-            .value(refreshToken)
-            .user(user).build());
+        if (user.getRefreshToken() == null) {
+            Token newUserToken = tokenRepository.save(Token.builder()
+                .value(refreshToken)
+                .user(user).build());
+            user.updateRefreshToken(newUserToken);
+        } else {
+            Token userRefreshToken = tokenRepository.findById(user.getRefreshToken().getId())
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.BAD_REQUEST);
+                });
 
-        user.updateRefreshToken(newUserToken);
+            userRefreshToken.updateRefreshTokenValue(refreshToken);
+            user.updateRefreshToken(userRefreshToken);
+        }
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
             refreshToken);
@@ -82,9 +91,9 @@ public class UserService {
     }
 
     @Transactional
-    public TokenResponseDto reissue(TokenRequestDto requestDto) throws CustomException{
+    public TokenResponseDto reissue(TokenRequestDto requestDto) throws CustomException {
         String TOKEN_PREFIX = "Bearer ";
-        String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
+        String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX, "");
 
         if (!jwtTokenProvider.validateTokenExpiration(rawRefreshToken)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
@@ -113,7 +122,7 @@ public class UserService {
     @Transactional
     public User findUserByToken(String accessToken) {
         String TOKEN_PREFIX = "Bearer ";
-        String rawAccessToken = accessToken.replace(TOKEN_PREFIX,"");
+        String rawAccessToken = accessToken.replace(TOKEN_PREFIX, "");
         Authentication auth = jwtTokenProvider.getAuthentication(rawAccessToken);
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String email = userDetails.getUsername(); // email을 스프링 시큐리티 username으로 사용

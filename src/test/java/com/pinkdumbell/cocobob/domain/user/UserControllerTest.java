@@ -321,5 +321,48 @@ class UserControllerTest {
             .andDo(print());
     }
 
+    @Test
+    @DisplayName("다른 환경에서 로그인 시 로그인후 기존 로그인 해제")
+    void 중복_로그인_확인() throws Exception {
+        //SET UP
+        final String username = "TESTER";
+        final String email = "test@test.com";
+        final String password = "password";
+
+        //회원가입
+        UserCreateRequestDto requestDto = UserCreateRequestDto.builder()
+            .username(username)
+            .email(email)
+            .password(password)
+            .build();
+        UserCreateResponseDto userCreateResponseDto = userService.signup(requestDto);
+
+        //로그인 요청 정보 초기화
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
+            .email(email)
+            .password(password)
+            .build();
+
+
+
+        //EXECUTE & EXPECT
+        // 1차 로그인 실행
+        mvc.perform(post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
+            .andExpect(jsonPath("$.refreshToken", notNullValue()))
+            .andDo(print());
+        // 2차 로그인 실행
+        mvc.perform(post("/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
+            .andExpect(jsonPath("$.refreshToken", notNullValue()))
+            .andDo(print());
+    }
+
 
 }
