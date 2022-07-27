@@ -1,7 +1,9 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,7 +33,7 @@ public class PetController {
 
     })
     @PostMapping("")
-    public ResponseEntity<PetCreateResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
+    public ResponseEntity<PetCreateResponseDto> register(@LoginUser LoginUserInfo loginUserInfo, @ModelAttribute @Valid PetCreateRequestDto requestDto) {
         return ResponseEntity.ok(petService.register(requestDto));
     }
 }
