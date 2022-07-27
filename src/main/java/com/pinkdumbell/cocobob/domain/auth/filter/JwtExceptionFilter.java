@@ -35,9 +35,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             status(401).
             httpStatus(HttpStatus.UNAUTHORIZED).
             code("INVALID ACCESS TOKEN").
-            message(ex.getMessage()).
+            messages(ex.getMessage()).
             build();
 
         response.getWriter().write(jwtExceptionResponse.convertToJson());
+
     }
 }
