@@ -86,7 +86,7 @@ public class UserController {
 
     @ApiOperation(value = "Logout", notes = "로그아웃")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "로그 아웃 처리 완료 되었습니다.", response = String.class),
+        @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = responseDto.class),
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @DeleteMapping("")
@@ -99,7 +99,7 @@ public class UserController {
         }
        
 
-        return ResponseEntity.ok(responseDto.builder().status(200).code("Logout Success").message("로그아웃이 완료되었습니다.").build());
+        return ResponseEntity.ok(responseDto.builder().status(200).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
     }
 
 }
