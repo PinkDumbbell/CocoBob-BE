@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,7 +97,11 @@ public class UserController {
         } catch (CustomException e) {
             throw e;
         }
-        return ResponseEntity.ok("로그아웃 처리 완료");
+        // 응답헤더 지정
+        HttpHeaders resHeaders = new HttpHeaders();
+        resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+
+        return new ResponseEntity<String>("로그아웃 처리 완료되었습니다.",resHeaders, HttpStatus.ACCEPTED);
     }
 
 }
