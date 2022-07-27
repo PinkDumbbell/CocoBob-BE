@@ -59,16 +59,21 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
-        Token newUserToken = tokenRepository.save(Token.builder()
-            .value(refreshToken)
-            .user(user).build());
-
-        user.updateRefreshToken(newUserToken);
+        if (user.getRefreshToken() == null) {
+            Token newUserToken = tokenRepository.save(Token.builder()
+                .value(newRefreshToken)
+                .user(user).build());
+            user.updateRefreshToken(newUserToken);
+        } else {
+            Token userRefreshToken = user.getRefreshToken();
+            userRefreshToken.updateRefreshTokenValue(newRefreshToken);
+            user.updateRefreshToken(userRefreshToken);
+        }
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
-            refreshToken);
+            newRefreshToken);
     }
 
     @Transactional(readOnly = true)
@@ -82,11 +87,13 @@ public class UserService {
     }
 
     @Transactional
-    public TokenResponseDto reissue(TokenRequestDto requestDto) throws CustomException{
+    public TokenResponseDto reissue(TokenRequestDto requestDto) throws CustomException {
         String TOKEN_PREFIX = "Bearer ";
-        String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX,"");
+        String rawRefreshToken = requestDto.getRefreshToken().replace(TOKEN_PREFIX, "");
 
-        if (!jwtTokenProvider.validateTokenExpiration(rawRefreshToken)) {
+        try {
+            jwtTokenProvider.validateTokenExpiration(rawRefreshToken);
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
@@ -113,7 +120,7 @@ public class UserService {
     @Transactional
     public User findUserByToken(String accessToken) {
         String TOKEN_PREFIX = "Bearer ";
-        String rawAccessToken = accessToken.replace(TOKEN_PREFIX,"");
+        String rawAccessToken = accessToken.replace(TOKEN_PREFIX, "");
         Authentication auth = jwtTokenProvider.getAuthentication(rawAccessToken);
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String email = userDetails.getUsername(); // email을 스프링 시큐리티 username으로 사용
@@ -121,5 +128,24 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         });
+    }
+
+    public void logout(String rawAccessToken) {
+        String TOKEN_PREFIX = "Bearer ";
+        String accessToken = rawAccessToken.replace(TOKEN_PREFIX, "");
+        Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String email = userDetails.getUsername(); // email을 스프링 시큐리티 username으로 사용
+
+        User findUser = userRepository.findByEmail(email).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
+        });
+
+        try {
+            tokenRepository.delete(findUser.getRefreshToken());
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
+        }
+        findUser.updateRefreshToken(null);
     }
 }
