@@ -142,4 +142,13 @@ class PetControllerTest {
                 .andExpect(jsonPath("$.petId").value(1L))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("사용자에 요청을 통해서 DB에 기록된 반려견 정보 제공")
+    void provideBreedsInfo() throws Exception{
+        mvc.perform(get("/v1/pets/breeds")).
+                andExpect(status().is2xxSuccessful())
+                .andDo(print());
+    }
 }
