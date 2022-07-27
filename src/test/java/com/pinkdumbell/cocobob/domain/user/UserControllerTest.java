@@ -98,7 +98,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.data.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
+            .andExpect(jsonPath("$.data.authorization", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
             .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
             .andDo(print());
     }
@@ -152,7 +152,7 @@ class UserControllerTest {
         //EXECUTE & EXPECT
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
     }
@@ -220,7 +220,7 @@ class UserControllerTest {
         //EXECUTE & EXPECT
         // 토큰 재발행
         mvc.perform(get("/v1/users/token")
-                .header("authorization", "Bearer " + userLoginResponseDto.getAccessToken())
+                .header("authorization", "Bearer " + userLoginResponseDto.getAuthorization())
                 .header("refresh-token", "Bearer " + userLoginResponseDto.getRefreshToken())
             ).andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.data.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
@@ -258,7 +258,7 @@ class UserControllerTest {
         //EXECUTE & EXPECT
         // 토큰 재발행
         mvc.perform(get("/v1/users/token")
-                .header("authorization", "Bearer " + userLoginResponseDto.getAccessToken())
+                .header("authorization", "Bearer " + userLoginResponseDto.getAuthorization())
                 .header("refresh-token", "Bearer " + invalidRefreshToken)
             ).andExpect(status().is4xxClientError())
             .andDo(print());
@@ -299,7 +299,7 @@ class UserControllerTest {
         //EXECUTE & EXPECT
         // 토큰 재발행
         mvc.perform(get("/v1/users/token")
-                .header("authorization", "Bearer " + userLoginResponseDto.getAccessToken())
+                .header("authorization", "Bearer " + userLoginResponseDto.getAuthorization())
                 .header("refresh-token", "Bearer " + invalidRefreshToken)
             ).andExpect(status().is4xxClientError())
             .andDo(print());
@@ -333,7 +333,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.data.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
+            .andExpect(jsonPath("$.data.authorization", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
             .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
             .andDo(print());
         // 2차 로그인 실행
@@ -341,7 +341,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userLoginRequestDto)))
             .andExpect(status().is2xxSuccessful())
-            .andExpect(jsonPath("$.data.accessToken", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
+            .andExpect(jsonPath("$.data.authorization", notNullValue())) //토큰 값들이 정상적으로 전달되었는지
             .andExpect(jsonPath("$.data.refreshToken", notNullValue()))
             .andDo(print());
     }
@@ -372,20 +372,20 @@ class UserControllerTest {
 
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
 
         //EXECUTE & EXPECT
         //로그 아웃
         mvc.perform(delete("/v1/users")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
 
         //로그 아웃 후 재접근
         mvc.perform(get("/hello")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is4xxClientError())
             .andDo(print());
     }
@@ -416,21 +416,21 @@ class UserControllerTest {
 
         // 로그인 후 접근 가능한 페이지 접근
         mvc.perform(get("/hello")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
 
         //EXECUTE & EXPECT
         //로그 아웃
         mvc.perform(delete("/v1/users")
-                .header("Authorization", "Bearer " + userLoginResponseDto.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
 
         UserLoginResponseDto userLoginResponseDto_retry = userService.login(userLoginRequestDto);
         //로그인 후 재접근
         mvc.perform(get("/hello")
-                .header("Authorization", "Bearer " + userLoginResponseDto_retry.getAccessToken()))
+                .header("Authorization", "Bearer " + userLoginResponseDto_retry.getAuthorization()))
             .andExpect(status().is2xxSuccessful())
             .andDo(print());
     }
