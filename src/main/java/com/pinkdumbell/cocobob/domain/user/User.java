@@ -55,4 +55,12 @@ public class User {
     public void updateRefreshToken(Token refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void addPets(Pet pet) {
+        this.pets.add(pet);
+    }
+
+    public void updateRepresentativePet(Pet pet) {
+        this.representativePet = pet;
+    }
 }
