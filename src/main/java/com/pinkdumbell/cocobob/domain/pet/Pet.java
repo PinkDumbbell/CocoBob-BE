@@ -61,7 +61,8 @@ public class Pet {
                Boolean isPregnant,
                Float bodyWeight,
                Integer activityLevel,
-               Breed breed) {
+               Breed breed,
+               User user) {
         this.name = name;
         this.sex = sex;
         this.age = age;
@@ -71,6 +72,7 @@ public class Pet {
         this.bodyWeight = bodyWeight;
         this.activityLevel = activityLevel;
         this.breed = breed;
+        this.user = user;
     }
 
     public void setThumbnailPath(String thumbnailPath) {
