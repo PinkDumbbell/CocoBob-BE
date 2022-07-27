@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
@@ -31,7 +32,12 @@ public class PetController {
 
     })
     @PostMapping("")
-    public ResponseEntity<PetCreateResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
-        return ResponseEntity.ok(petService.register(requestDto));
+    public ResponseEntity<CommonResponseDto<PetCreateResponseDto>> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
+        return ResponseEntity.ok(CommonResponseDto.<PetCreateResponseDto>builder().
+            status(200).
+            code("SUCESS REGISTER").
+            message("회원가입 정상처리").
+            data(petService.register(requestDto)).
+            build());
     }
 }
