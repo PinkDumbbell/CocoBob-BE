@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
+import com.pinkdumbell.cocobob.domain.common.dto.responseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
@@ -11,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,18 +90,16 @@ public class UserController {
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @DeleteMapping("")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<responseDto> logout(@RequestHeader("Authorization") String accessToken) {
 
         try {
             userService.logout(accessToken);
         } catch (CustomException e) {
             throw e;
         }
-        // 응답헤더 지정
-        HttpHeaders resHeaders = new HttpHeaders();
-        resHeaders.add("Content-Type", "application/json;charset=UTF-8");
+       
 
-        return new ResponseEntity<String>("로그아웃 처리 완료되었습니다.",resHeaders, HttpStatus.ACCEPTED);
+        return ResponseEntity.ok(responseDto.builder().status(200).code("Logout Success").message("로그아웃이 완료되었습니다.").build());
     }
 
 }
