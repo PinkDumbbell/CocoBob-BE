@@ -34,6 +34,6 @@ public class PetController {
     })
     @PostMapping("")
     public ResponseEntity<PetCreateResponseDto> register(@LoginUser LoginUserInfo loginUserInfo, @ModelAttribute @Valid PetCreateRequestDto requestDto) {
-        return ResponseEntity.ok(petService.register(requestDto));
+        return ResponseEntity.ok(petService.register(loginUserInfo, requestDto));
     }
 }
