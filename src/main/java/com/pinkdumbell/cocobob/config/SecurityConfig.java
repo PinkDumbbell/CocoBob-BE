@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable() // rest api이므로 기본설정 미사용
+                .cors().and()
             .csrf().disable() // rest api이므로 csrf 보안 미사용
             .formLogin().disable().sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt로 인증하므로 세션 미사용
@@ -53,9 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/manager").hasRole("USER")
             .anyRequest().authenticated().and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class); // jwt 인가 필터 추가
-        http.addFilterBefore(new JwtExceptionFilter(),
-            JwtAuthenticationFilter.class); //jwt 토큰 만료 필터
+                UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtExceptionFilter(),
+                JwtAuthenticationFilter.class); // jwt 인가 필터 추가
     }
 
 

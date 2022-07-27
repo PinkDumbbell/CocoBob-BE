@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
+import com.pinkdumbell.cocobob.domain.common.dto.responseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
@@ -61,6 +62,7 @@ public class UserController {
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(userService.login(requestDto));
     }
+
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
@@ -77,12 +79,27 @@ public class UserController {
 
         try {
             return ResponseEntity.ok(userService.reissue(tokenRequestDto));
-        } catch (CustomException | JwtException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (CustomException | JwtException e) {
+            throw e;
         }
-
-
     }
 
+    @ApiOperation(value = "Logout", notes = "로그아웃")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = responseDto.class),
+        @ApiResponse(code = 401, message = "UNAUTHORIZED"),
+    })
+    @DeleteMapping("")
+    public ResponseEntity<responseDto> logout(@RequestHeader("Authorization") String accessToken) {
+
+        try {
+            userService.logout(accessToken);
+        } catch (CustomException e) {
+            throw e;
+        }
+       
+
+        return ResponseEntity.ok(responseDto.builder().status(200).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
+    }
 
 }
