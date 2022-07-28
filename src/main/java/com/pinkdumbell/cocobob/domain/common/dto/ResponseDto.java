@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class responseDto {
+public class ResponseDto {
 
     private int status;
     private String code;
