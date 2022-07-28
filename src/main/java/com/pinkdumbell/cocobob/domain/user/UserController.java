@@ -96,7 +96,7 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.builder().status(200).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
     }
 
-    @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급 받습니다.")
+    @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ResponseDto.class),
             @ApiResponse(code = 404, message = "USER NOT FOUND"),
@@ -114,6 +114,11 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.builder().status(200).code("Find Password Success").message("사용자 이메일로 새로운 password를 보냈습니다.").build());
     }
 
+    @ApiOperation(value = "UpdatePassword", notes = "로그인 후 현재 비밀번호를 새로운 비밀번호로 변경")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = ResponseDto.class),
+            @ApiResponse(code = 404, message = "USER NOT FOUND"),
+    })
     @PutMapping("/password")
     public ResponseEntity<ResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
         try {
