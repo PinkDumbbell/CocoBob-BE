@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
+import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.JwtExceptionResponse;
+import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -29,8 +31,14 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setStatus(status.value());
         response.setContentType("application/json; charset=UTF-8");
 
-        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(ex.getMessage(),
-            HttpStatus.UNAUTHORIZED);
+        JwtExceptionResponse jwtExceptionResponse = JwtExceptionResponse.builder().
+            status(401).
+            httpStatus(HttpStatus.UNAUTHORIZED).
+            code("INVALID ACCESS TOKEN").
+            messages(ex.getMessage()).
+            build();
+
         response.getWriter().write(jwtExceptionResponse.convertToJson());
+
     }
 }

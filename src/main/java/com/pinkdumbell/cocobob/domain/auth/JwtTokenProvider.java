@@ -1,5 +1,9 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
+import com.pinkdumbell.cocobob.domain.user.User;
+import com.pinkdumbell.cocobob.domain.user.UserRepository;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -9,6 +13,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
     private final UserDetailService userDetailService;
+    private final UserRepository userRepository;
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
 
@@ -68,8 +74,21 @@ public class JwtTokenProvider {
 
     public String getUserEmail(String token) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject(); //토큰 속 이메일 claim
+            String userEmail = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+            User user = userRepository.findByEmail(userEmail).orElseThrow(() -> {
+                throw new JwtException("회원가입 되지 않은 유저 입니다.");
+            });
+
+            if (user.getRefreshToken() != null) {
+                return userEmail; //토큰 속 이메일 claim
+            } else {
+                throw new JwtException("로그아웃된 계정입니다.");
+            }
+
+
         } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
@@ -87,11 +106,12 @@ public class JwtTokenProvider {
             throw new JwtException("유효하지 않은 토큰");
         } catch (ExpiredJwtException e) {
             throw new JwtException("토큰 기한 만료");
-        } catch(SignatureException e){
-            throw new JwtException("사용자 인증 실패");
+        } catch (SignatureException e) {
+            throw new JwtException("잘못 서명된 토큰");
         } catch (Exception e) {
-            return false;
+            throw new JwtException("유효하지 않은 토큰");
         }
+
 
     }
 

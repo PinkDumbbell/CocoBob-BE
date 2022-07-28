@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -30,7 +31,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (JwtException e) {
-            throw new JwtException(e.getMessage());
+            throw e;
         }
 
         chain.doFilter(request, response);

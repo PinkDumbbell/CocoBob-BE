@@ -139,7 +139,7 @@ class PetControllerTest {
                         .param("age", String.valueOf(age))
                         .param("bodyWeight", String.valueOf(bodyWeight))
                 )
-                .andExpect(jsonPath("$.petId").value(1L))
+                .andExpect(jsonPath("$.data.petId").value(1L))
                 .andExpect(status().isOk());
     }
 
