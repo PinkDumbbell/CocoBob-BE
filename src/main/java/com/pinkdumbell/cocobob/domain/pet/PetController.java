@@ -32,8 +32,8 @@ public class PetController {
 
     })
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto<PetCreateResponseDto>> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.<PetCreateResponseDto>builder().
+    public ResponseEntity<CommonResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
+        return ResponseEntity.ok(CommonResponseDto.builder().
             status(200).
             code("SUCESS REGISTER").
             message("회원가입 정상처리").

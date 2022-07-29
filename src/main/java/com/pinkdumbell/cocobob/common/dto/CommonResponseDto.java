@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 
 @Builder
 @Getter
-
 public class CommonResponseDto<T> {
 
     private final int status;

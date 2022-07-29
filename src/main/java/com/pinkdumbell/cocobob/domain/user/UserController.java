@@ -34,9 +34,9 @@ public class UserController {
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/new")
-    public ResponseEntity<CommonResponseDto<UserCreateResponseDto>> signup(
+    public ResponseEntity<CommonResponseDto> signup(
         @RequestBody @Valid UserCreateRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.<UserCreateResponseDto>builder().
+        return ResponseEntity.ok(CommonResponseDto.builder().
             status(200).
             code("SUCCESS SIGNUP").
             message("회원가입 정상처리").
@@ -51,9 +51,9 @@ public class UserController {
         @ApiResponse(code = 409, message = "해당 이메일을 가진 사용자가 존재합니다")
     })
     @GetMapping("/email")
-    public ResponseEntity<CommonResponseDto<EmailDuplicationCheckResponseDto>> checkEmailDuplicated(
+    public ResponseEntity<CommonResponseDto> checkEmailDuplicated(
         @RequestParam("email") String email) {
-        return ResponseEntity.ok(CommonResponseDto.<EmailDuplicationCheckResponseDto>builder().
+        return ResponseEntity.ok(CommonResponseDto.builder().
             status(200).
             code("SUCCESS CHECK EMAIL").
             message("중복 이메일 확인").
@@ -68,8 +68,8 @@ public class UserController {
         @ApiResponse(code = 403, message = "INVALID_PASSWORD")
     })
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto<UserLoginResponseDto>> login(@RequestBody UserLoginRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.<UserLoginResponseDto>builder().
+    public ResponseEntity<CommonResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
+        return ResponseEntity.ok(CommonResponseDto.builder().
             status(200).
             code("SUCCESS LOGIN").
             message("로그인 정상처리").
@@ -83,7 +83,7 @@ public class UserController {
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @GetMapping("/token")
-    public ResponseEntity<CommonResponseDto<TokenResponseDto>> reissue(
+    public ResponseEntity<CommonResponseDto> reissue(
         @RequestHeader("authorization") String accessToken,
         @RequestHeader("refresh-token") String refreshToken) {
         TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
@@ -92,7 +92,7 @@ public class UserController {
             .build();
 
         try {
-            return ResponseEntity.ok(CommonResponseDto.<TokenResponseDto>builder()
+            return ResponseEntity.ok(CommonResponseDto.builder()
                 .status(201).code("SUCCESS REISSUE")
                 .message("토큰이 재발행 정상처리")
                 .data(userService.reissue(tokenRequestDto))
