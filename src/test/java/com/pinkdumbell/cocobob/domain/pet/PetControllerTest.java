@@ -4,6 +4,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ class PetControllerTest {
     @MockBean
     JwtTokenProvider jwtTokenProvider;
     @MockBean
-    PetService petService;
+    PetService mockPetService;
     @Autowired
     private WebApplicationContext context;
 
@@ -123,7 +124,7 @@ class PetControllerTest {
         PetSex sex = PetSex.FEMALE;
         String name = "코코";
 
-        given(petService.register(any(PetCreateRequestDto.class)))
+        given(mockPetService.register(any(LoginUserInfo.class), any(PetCreateRequestDto.class)))
                 .willReturn(PetCreateResponseDto.builder()
                         .petId(1L)
                         .build());
