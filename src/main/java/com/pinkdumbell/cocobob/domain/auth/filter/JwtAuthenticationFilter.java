@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
                 Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX, ""));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (JwtException | MissingRequestHeaderException e) {
+        } catch (JwtException e) {
             throw e;
         }
 
