@@ -58,7 +58,7 @@ public class UserController {
             super(status, code, message, data);
         }
     }
-    
+
 
     @ApiOperation(value = "signup", notes = "서비스 자체 회원가입")
     @ApiResponses(value = {
