@@ -25,6 +25,13 @@ public class PetController {
 
     private final PetService petService;
 
+    private class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto>{
+
+        public RegisterResponsClass(int status, String code, String message,
+            PetCreateResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
     @ApiOperation(value = "register pet", notes = "반려동물 등록")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = PetCreateResponseDto.class),
@@ -34,11 +41,10 @@ public class PetController {
     })
     @PostMapping("")
     public ResponseEntity<CommonResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.builder().
-            status(HttpStatus.OK.value()).
-            code("SUCCESS REGISTER").
-            message("회원가입 정상처리").
-            data(petService.register(requestDto)).
-            build());
+
+        return ResponseEntity.ok(new RegisterResponsClass(HttpStatus.OK.value(),
+            "SUCCESS REGISTER",
+            "회원가입 정상처리",
+            petService.register(requestDto)));
     }
 }
