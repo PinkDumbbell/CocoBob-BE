@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,7 +94,7 @@ public class UserController {
         }
        
 
-        return ResponseEntity.ok(ResponseDto.builder().status(200).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
+        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
     }
 
     @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급")
@@ -103,7 +104,7 @@ public class UserController {
     })
     @PostMapping("/password")
     public ResponseEntity<ResponseDto> sendNewPassword(@RequestBody UserPasswordRequestDto userPasswordRequestDto){
-        System.out.println(userPasswordRequestDto.getEmail());
+
         try {
             userService.sendNewPassword(userPasswordRequestDto);
         } catch (CustomException e)
@@ -111,7 +112,7 @@ public class UserController {
             throw e;
         }
 
-        return ResponseEntity.ok(ResponseDto.builder().status(200).code("Find Password Success").message("사용자 이메일로 새로운 password를 보냈습니다.").build());
+        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Find Password Success").message("사용자 이메일로 새로운 password를 보냈습니다.").build());
     }
 
     @ApiOperation(value = "UpdatePassword", notes = "로그인 후 현재 비밀번호를 새로운 비밀번호로 변경")
@@ -128,7 +129,7 @@ public class UserController {
             throw e;
         }
 
-        return ResponseEntity.ok(ResponseDto.builder().status(200).code("Change Password Success").message("비밀번호를 성공적으로 변경하였습니다.").build());
+        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Change Password Success").message("비밀번호를 성공적으로 변경하였습니다.").build());
     }
 
 }
