@@ -29,7 +29,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.mockito.BDDMockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @WebMvcTest(PetController.class)
