@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.common;
+package com.pinkdumbell.cocobob.common;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

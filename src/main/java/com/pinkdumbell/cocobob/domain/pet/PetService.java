@@ -1,6 +1,6 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
-import com.pinkdumbell.cocobob.domain.common.ImageService;
+import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;

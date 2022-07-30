@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,13 @@ public class PetController {
 
     private final PetService petService;
 
+    private class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto>{
+
+        public RegisterResponsClass(int status, String code, String message,
+            PetCreateResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
     @ApiOperation(value = "register pet", notes = "반려동물 등록")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = PetCreateResponseDto.class),
@@ -31,7 +40,11 @@ public class PetController {
 
     })
     @PostMapping("")
-    public ResponseEntity<PetCreateResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
-        return ResponseEntity.ok(petService.register(requestDto));
+    public ResponseEntity<CommonResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
+
+        return ResponseEntity.ok(new RegisterResponsClass(HttpStatus.OK.value(),
+            "SUCCESS REGISTER",
+            "회원가입 정상처리",
+            petService.register(requestDto)));
     }
 }
