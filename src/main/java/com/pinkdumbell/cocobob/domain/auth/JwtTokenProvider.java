@@ -13,7 +13,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MissingRequestHeaderException;
 
 @Component
 @RequiredArgsConstructor
@@ -94,7 +94,8 @@ public class JwtTokenProvider {
         }
     }
 
-    public String resolveToken(HttpServletRequest req) {
+    public String resolveToken(HttpServletRequest req) throws MissingRequestHeaderException {
+
         return req.getHeader("Authorization");
     }
 

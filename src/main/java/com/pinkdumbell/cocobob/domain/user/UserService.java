@@ -1,23 +1,24 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
+import com.pinkdumbell.cocobob.common.EmailUtil;
+import com.pinkdumbell.cocobob.domain.user.dto.*;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +31,8 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final EmailUtil emailUtil;
 
 
     @Transactional
@@ -130,6 +133,7 @@ public class UserService {
         });
     }
 
+    @Transactional
     public void logout(String rawAccessToken) {
         String TOKEN_PREFIX = "Bearer ";
         String accessToken = rawAccessToken.replace(TOKEN_PREFIX, "");
@@ -147,5 +151,45 @@ public class UserService {
             throw new CustomException(ErrorCode.INVALID_LOGOUT_REQUEST);
         }
         findUser.updateRefreshToken(null);
+    }
+
+    @Transactional
+    public String sendNewPassword(UserPasswordRequestDto userPasswordRequestDto){
+
+        User user = userRepository.findByEmail(userPasswordRequestDto.getEmail())
+                .orElseThrow(()->{
+                    throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                });
+        String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String specialCharacters = "!@#$";
+        String numbers = "1234567890";
+        String combinedChars = capitalCaseLetters + lowerCaseLetters + specialCharacters + numbers;
+        Random random = new Random();
+        String newPassword = "";
+
+
+        for(int i = 0; i< 13 ; i++) {
+            newPassword += combinedChars.charAt(random.nextInt(combinedChars.length()));
+        }
+
+        user.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+
+        //비밀번호 전송
+        EmailSendResultDto emailSendResultDto = emailUtil.sendEmail(user.getEmail()
+            , "[Petalog] 안녕하세요!" + user.getUsername() + "님 새로운 비밀번호 입니다."
+            , newPassword);
+
+        if(emailSendResultDto.getStatus() == HttpStatus.NOT_FOUND.value()){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return newPassword;
+        
+    }
+    @Transactional
+    public void updatePassword(String accessToken, UserPasswordRequestDto userPasswordRequestDto) {
+        User user = findUserByToken(accessToken);
+        user.updatePassword(bCryptPasswordEncoder.encode(userPasswordRequestDto.getPassword()));
     }
 }

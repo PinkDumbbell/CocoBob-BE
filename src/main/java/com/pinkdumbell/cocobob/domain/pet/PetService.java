@@ -1,7 +1,8 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
-import com.pinkdumbell.cocobob.domain.common.ImageService;
+import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
+import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -56,5 +60,16 @@ public class PetService {
                     imageService.resizeImage(requestDto.getPetImage(), RESIZE_TARGET_WIDTH)));
         }
         return new PetCreateResponseDto(pet);
+    }
+
+    @Transactional
+    public List<BreedsInfoResponseDto> provideBreedsInfo(){
+
+        List<BreedsInfoResponseDto> breedsList = breedRepository.findAll().stream()
+                .map(breed ->
+                    new BreedsInfoResponseDto(breed.getId(), breed.getName(), breed.getSize().toString())
+                ).collect(Collectors.toList());
+
+        return breedsList;
     }
 }

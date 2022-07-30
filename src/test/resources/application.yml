@@ -1,6 +1,8 @@
 spring:
+
   flyway:
     enabled: false
+
   jwt:
       secretKey: "PinkDumbbell"
       accessTokenValidTime: 1800000 #30분
@@ -8,6 +10,7 @@ spring:
   h2:
     console:
       enabled: true
+
   jpa:
     database: h2
     generate-ddl: off
@@ -17,11 +20,13 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb:MODE=MariaDB;
     username: sa
     password:
+
 cloud:
   aws:
     credentials:

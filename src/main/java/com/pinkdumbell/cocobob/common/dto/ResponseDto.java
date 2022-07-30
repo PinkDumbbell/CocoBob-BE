@@ -1,11 +1,11 @@
-package com.pinkdumbell.cocobob.domain.common.dto;
+package com.pinkdumbell.cocobob.common.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class responseDto {
+public class ResponseDto {
 
     private int status;
     private String code;
