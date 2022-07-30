@@ -2,16 +2,18 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.*;
 
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import lombok.RequiredArgsConstructor;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,62 +28,92 @@ public class UserController {
 
     private final UserService userService;
 
+    private class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto>{
+
+        public SignUpResponseClass(int status, String code, String message,
+            UserCreateResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private class CheckEmailResponseClass extends CommonResponseDto<EmailDuplicationCheckResponseDto>{
+
+        public CheckEmailResponseClass(int status, String code, String message,
+            EmailDuplicationCheckResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto>{
+        public LoginResponseClass(int status, String code, String message,
+            UserLoginResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private class ReissueResponseClass extends CommonResponseDto<TokenResponseDto>{
+
+        public ReissueResponseClass(int status, String code, String message,
+            TokenResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+    
+
     @ApiOperation(value = "signup", notes = "서비스 자체 회원가입")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = SignUpResponseClass.class),
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/new")
-    public ResponseEntity<CommonResponseDto> signup(
+    public ResponseEntity<SignUpResponseClass> signup(
         @RequestBody @Valid UserCreateRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
-            code("SUCCESS SIGNUP").
-            message("회원가입 정상처리").
-            data(userService.signup(requestDto)).
-            build());
+
+        return ResponseEntity.ok(new SignUpResponseClass(HttpStatus.OK.value(),
+            "SUCCESS SIGNUP",
+            "회원가입 정상처리",
+            userService.signup(requestDto)));
     }
 
 
     @ApiOperation(value = "check email duplicated", notes = "이메일 중복 확인")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "해당 이메일은 사용할 수 있습니다."),
+        @ApiResponse(code = 200, message = "해당 이메일은 사용할 수 있습니다.",response = CheckEmailResponseClass.class),
         @ApiResponse(code = 409, message = "해당 이메일을 가진 사용자가 존재합니다")
     })
     @GetMapping("/email")
-    public ResponseEntity<CommonResponseDto> checkEmailDuplicated(
+    public ResponseEntity<CheckEmailResponseClass> checkEmailDuplicated(
         @RequestParam("email") String email) {
-        return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
-            code("SUCCESS CHECK EMAIL").
-            message("중복 이메일 확인").
-            data(userService.checkEmailDuplicated(email)).
-            build());
+
+        return ResponseEntity.ok(new CheckEmailResponseClass(HttpStatus.OK.value(),
+            "SUCCESS CHECK EMAIL",
+            "중복 이메일 확인",
+            userService.checkEmailDuplicated(email)));
     }
+
 
     @ApiOperation(value = "Login", notes = "서비스 자체 로그인")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = LoginResponseClass.class),
         @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
         @ApiResponse(code = 403, message = "INVALID_PASSWORD")
     })
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
-        return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
-            code("SUCCESS LOGIN").
-            message("로그인 정상처리").
-            data(userService.login(requestDto)).
-            build());
+    public ResponseEntity<LoginResponseClass> login(@RequestBody UserLoginRequestDto requestDto) {
+
+        return ResponseEntity.ok(new LoginResponseClass(HttpStatus.OK.value(),
+            "SUCCESS LOGIN",
+            "로그인 정상처리",
+            userService.login(requestDto)));
     }
 
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @GetMapping("/token")
-    public ResponseEntity<CommonResponseDto> reissue(
+    public ResponseEntity<ReissueResponseClass> reissue(
         @RequestHeader("authorization") String accessToken,
         @RequestHeader("refresh-token") String refreshToken) {
         TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
@@ -90,16 +122,15 @@ public class UserController {
             .build();
 
         try {
-            return ResponseEntity.ok(CommonResponseDto.builder()
-                .status(201).code("SUCCESS REISSUE")
-                .message("토큰이 재발행 정상처리")
-                .data(userService.reissue(tokenRequestDto))
-                .build());
+
+            return ResponseEntity.ok(new ReissueResponseClass(HttpStatus.ACCEPTED.value(),
+                "SUCCESS REISSUE",
+                "토큰이 재발행 정상처리",
+                userService.reissue(tokenRequestDto)));
         } catch (CustomException | JwtException e) {
             throw e;
         }
     }
-
     @ApiOperation(value = "Logout", notes = "로그아웃")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = CommonResponseDto.class),
@@ -115,8 +146,8 @@ public class UserController {
         }
 
         return ResponseEntity.ok(CommonResponseDto.builder()
-            .status(200).
-            code("Logout Success").
+            .status(HttpStatus.OK.value()).
+            code("SUCCESS LOGOUT").
             message("로그아웃 처리완료 되었습니다.").
             data(null).
             build());

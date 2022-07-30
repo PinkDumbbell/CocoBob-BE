@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 public class JwtExceptionResponse {
     private final int status;
