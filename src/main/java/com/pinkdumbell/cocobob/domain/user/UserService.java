@@ -1,12 +1,12 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.common.EmailUtil;
-import com.pinkdumbell.cocobob.domain.common.dto.EmailSendResultDto;
+import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.domain.user.dto.*;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;

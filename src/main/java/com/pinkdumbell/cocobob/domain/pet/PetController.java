@@ -1,9 +1,11 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -46,12 +48,12 @@ public class PetController {
 
     })
     @PostMapping("")
-    public ResponseEntity<RegisterResponsClass> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
+    public ResponseEntity<RegisterResponsClass> register(@LoginUser LoginUserInfo loginUserInfo, @ModelAttribute @Valid PetCreateRequestDto requestDto) {
 
         return ResponseEntity.ok(new RegisterResponsClass(HttpStatus.OK.value(),
             "SUCCESS REGISTER",
             "회원가입 정상처리",
-            petService.register(requestDto)));
+            petService.register(loginUserInfo, requestDto)));
     }
     @ApiOperation(value = "provide breeds info", notes = "반려동물 견종 정보 제공")
     @ApiResponses(value = {
@@ -61,7 +63,7 @@ public class PetController {
 
     })
     @GetMapping("/breeds")
-    public ResponseEntity<ProvideBreedsResponsClass> provideBreedsInfo(){
+    public ResponseEntity<ProvideBreedsResponsClass> provideBreedsInfo() {
 
         return ResponseEntity.ok(new ProvideBreedsResponsClass(HttpStatus.OK.value(),
                 "SUCCESS PROVIDE BREEDS",

@@ -27,12 +27,6 @@ spring:
     username: sa
     password:
 
-  mail:
-    host: "smtp.gmail.com"
-    port: 465
-    username: "jmkabc31@ajou.ac.kr"
-    password: "a!2755110"
-
 cloud:
   aws:
     credentials:

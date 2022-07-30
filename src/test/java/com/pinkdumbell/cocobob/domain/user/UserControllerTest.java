@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pinkdumbell.cocobob.common.EmailUtil;
+import com.pinkdumbell.cocobob.config.MailConfig;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,6 +56,11 @@ class UserControllerTest {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @MockBean
+    EmailUtil emailUtil;
+
+    @MockBean
+    MailConfig mailConfig;
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
 

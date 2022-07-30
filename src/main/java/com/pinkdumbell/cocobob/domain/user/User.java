@@ -56,6 +56,14 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
+    public void addPets(Pet pet) {
+        this.pets.add(pet);
+    }
+
+    public void updateRepresentativePet(Pet pet) {
+        this.representativePet = pet;
+    }
+
     public void updatePassword(String newPassword){
         this.password = newPassword;
     }

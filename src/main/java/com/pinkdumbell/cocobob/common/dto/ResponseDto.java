@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.common.dto;
+package com.pinkdumbell.cocobob.common.dto;
 
 import lombok.Builder;
 import lombok.Getter;

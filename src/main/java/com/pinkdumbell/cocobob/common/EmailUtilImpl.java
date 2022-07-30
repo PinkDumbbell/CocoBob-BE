@@ -1,6 +1,7 @@
-package com.pinkdumbell.cocobob.domain.common;
+package com.pinkdumbell.cocobob.common;
 
-import com.pinkdumbell.cocobob.domain.common.dto.EmailSendResultDto;
+
+import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,8 +9,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class EmailUtilImpl implements EmailUtil {
