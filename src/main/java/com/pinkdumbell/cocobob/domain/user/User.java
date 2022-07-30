@@ -55,4 +55,8 @@ public class User {
     public void updateRefreshToken(Token refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void updatePassword(String newPassword){
+        this.password = newPassword;
+    }
 }

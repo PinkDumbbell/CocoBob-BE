@@ -1,29 +1,22 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
-import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
+import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.*;
+
 import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ResponseHeader;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
+
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Any;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
 
 import javax.validation.Valid;
 
@@ -145,7 +138,7 @@ public class UserController {
     })
     @DeleteMapping("")
     public ResponseEntity<CommonResponseDto> logout(@RequestHeader("Authorization") String accessToken) {
-
+        
         try {
             userService.logout(accessToken);
         } catch (CustomException e) {
@@ -158,6 +151,52 @@ public class UserController {
             message("로그아웃 처리완료 되었습니다.").
             data(null).
             build());
+    }
+
+    @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+            @ApiResponse(code = 404, message = "USER NOT FOUND"),
+    })
+    @PostMapping("/password")
+    public ResponseEntity<CommonResponseDto> sendNewPassword(@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+
+        try {
+            userService.sendNewPassword(userPasswordRequestDto);
+        } catch (CustomException e)
+        {
+            throw e;
+        }
+
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(HttpStatus.OK.value()).
+            code("Send Email Success").
+            message("새로운 비밀번호를 전송하였습니다.").
+            data(null).
+            build());
+    }
+
+    @ApiOperation(value = "UpdatePassword", notes = "로그인 후 현재 비밀번호를 새로운 비밀번호로 변경")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+            @ApiResponse(code = 404, message = "USER NOT FOUND"),
+    })
+    @PutMapping("/password")
+    public ResponseEntity<CommonResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+        try {
+            userService.updatePassword(accessToken,userPasswordRequestDto);
+        } catch (CustomException e)
+        {
+            throw e;
+        }
+
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(HttpStatus.OK.value()).
+            code("Update Password Success").
+            message("비밀번호가 성공적으로 변경되었습니다.").
+            data(null).
+            build());
+
     }
 
 }
