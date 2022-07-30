@@ -11,12 +11,14 @@ import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
 
 import javax.validation.Valid;
 
@@ -37,7 +39,7 @@ public class UserController {
     public ResponseEntity<CommonResponseDto> signup(
         @RequestBody @Valid UserCreateRequestDto requestDto) {
         return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
+            status(HttpStatus.OK.value()).
             code("SUCCESS SIGNUP").
             message("회원가입 정상처리").
             data(userService.signup(requestDto)).
@@ -54,7 +56,7 @@ public class UserController {
     public ResponseEntity<CommonResponseDto> checkEmailDuplicated(
         @RequestParam("email") String email) {
         return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
+            status(HttpStatus.OK.value()).
             code("SUCCESS CHECK EMAIL").
             message("중복 이메일 확인").
             data(userService.checkEmailDuplicated(email)).
@@ -70,7 +72,7 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<CommonResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
+            status(HttpStatus.OK.value()).
             code("SUCCESS LOGIN").
             message("로그인 정상처리").
             data(userService.login(requestDto)).
@@ -93,7 +95,8 @@ public class UserController {
 
         try {
             return ResponseEntity.ok(CommonResponseDto.builder()
-                .status(201).code("SUCCESS REISSUE")
+                .status(HttpStatus.ACCEPTED.value())
+                .code("SUCCESS REISSUE")
                 .message("토큰이 재발행 정상처리")
                 .data(userService.reissue(tokenRequestDto))
                 .build());
@@ -118,8 +121,8 @@ public class UserController {
        
 
         return ResponseEntity.ok(CommonResponseDto.builder()
-            .status(200).
-            code("Logout Success").
+            .status(HttpStatus.OK.value()).
+            code("SUCCESS LOGOUT").
             message("로그아웃 처리완료 되었습니다.").
             data(null).
             build());

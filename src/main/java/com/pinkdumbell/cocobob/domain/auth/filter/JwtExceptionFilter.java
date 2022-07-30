@@ -32,7 +32,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         response.setContentType("application/json; charset=UTF-8");
 
         JwtExceptionResponse jwtExceptionResponse = JwtExceptionResponse.builder().
-            status(401).
+            status(HttpStatus.OK.value()).
             httpStatus(HttpStatus.UNAUTHORIZED).
             code("INVALID ACCESS TOKEN").
             messages(ex.getMessage()).

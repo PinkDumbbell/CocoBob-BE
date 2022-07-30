@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +35,8 @@ public class PetController {
     @PostMapping("")
     public ResponseEntity<CommonResponseDto> register(@ModelAttribute @Valid PetCreateRequestDto requestDto) {
         return ResponseEntity.ok(CommonResponseDto.builder().
-            status(200).
-            code("SUCESS REGISTER").
+            status(HttpStatus.OK.value()).
+            code("SUCCESS REGISTER").
             message("회원가입 정상처리").
             data(petService.register(requestDto)).
             build());
