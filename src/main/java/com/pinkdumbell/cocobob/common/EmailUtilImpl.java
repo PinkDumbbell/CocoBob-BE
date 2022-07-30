@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.common;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,7 +15,9 @@ import javax.mail.internet.MimeMessage;
 public class EmailUtilImpl implements EmailUtil {
     @Autowired
     private JavaMailSender sender;
-    int status = 404;
+    int status = HttpStatus.NOT_FOUND.value();
+    @Value("${spring.mail.username}")
+    String fromAddress;
     @Override
     public EmailSendResultDto sendEmail(String toAddress, String subject, String body) {
 
@@ -23,6 +26,7 @@ public class EmailUtilImpl implements EmailUtil {
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
+            helper.setFrom(fromAddress);
             helper.setTo(toAddress);
             helper.setSubject(subject);
             helper.setText(body);
