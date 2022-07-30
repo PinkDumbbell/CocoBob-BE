@@ -18,9 +18,9 @@ public class Product {
 
     private String name;
 
-    private Integer price;
+    private String category;
 
-    private String age;
+    private Integer price;
 
     @Column(length = 1000)
     private String thumbnail;
