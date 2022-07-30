@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -137,9 +138,9 @@ public class UserController {
         }
 
         return ResponseEntity.ok(CommonResponseDto.builder()
-            .status(200).
-            code("Logout Success").
-            message("로그아웃 처리완료 되었습니다.").
+            .status(HttpStatus.OK.value()).
+            code("Send Email Success").
+            message("새로운 비밀번호를 전송하였습니다.").
             data(null).
             build());
     }
@@ -159,9 +160,9 @@ public class UserController {
         }
 
         return ResponseEntity.ok(CommonResponseDto.builder()
-            .status(200).
-            code("Logout Success").
-            message("로그아웃 처리완료 되었습니다.").
+            .status(HttpStatus.OK.value()).
+            code("Update Password Success").
+            message("비밀번호가 성공적으로 변경되었습니다.").
             data(null).
             build());
 
