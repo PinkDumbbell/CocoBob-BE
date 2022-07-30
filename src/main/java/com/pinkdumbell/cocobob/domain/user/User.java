@@ -63,4 +63,8 @@ public class User {
     public void updateRepresentativePet(Pet pet) {
         this.representativePet = pet;
     }
+
+    public void updatePassword(String newPassword){
+        this.password = newPassword;
+    }
 }
