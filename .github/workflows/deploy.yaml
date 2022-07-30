@@ -36,7 +36,9 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          PETALOG_NAVER_PASSWORD: ${{secrets.PETALOG_NAVER_PASSWORD}}
           AWS_REGION: ${{ env.AWS_REGION }}
+
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
           echo "  datasource:" >> ./src/main/resources/application-secret.yml
@@ -48,6 +50,11 @@ jobs:
           echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
           echo "    accessTokenValidTime: $ACCESS_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
           echo "    refreshTokenValidTime: $REFRESH_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
+          echo "  mail:" >> ./src/main/resources/application-secret.yml
+          echo "    host: \"smtp.naver.com\"" >> ./src/main/resources/application-secret.yml
+          echo "    port: 465" >> ./src/main/resources/application-secret.yml
+          echo "    username: \"petalog@naver.com\"" >> ./src/main/resources/application-secret.yml
+          echo "    password: $PETALOG_NAVER_PASSWORD" >> ./src/main/resources/application-secret.yml
           echo "cloud:" >> ./src/main/resources/application-secret.yml
           echo "  aws:" >> ./src/main/resources/application-secret.yml
           echo "    s3:" >> ./src/main/resources/application-secret.yml
