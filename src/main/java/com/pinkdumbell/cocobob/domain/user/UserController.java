@@ -122,7 +122,7 @@ public class UserController {
     @PutMapping("/password")
     public ResponseEntity<ResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
         try {
-            userService.UpdatePassword(accessToken,userPasswordRequestDto);
+            userService.updatePassword(accessToken,userPasswordRequestDto);
         } catch (CustomException e)
         {
             throw e;

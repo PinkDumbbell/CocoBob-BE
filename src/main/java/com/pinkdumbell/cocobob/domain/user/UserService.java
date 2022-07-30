@@ -6,10 +6,12 @@ import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.domain.common.EmailUtil;
+import com.pinkdumbell.cocobob.domain.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.user.dto.*;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -174,15 +176,19 @@ public class UserService {
         user.updatePassword(bCryptPasswordEncoder.encode(newPassword));
 
         //비밀번호 전송
-        emailUtil.sendEmail(user.getEmail()
-                , "[Petalog] 안녕하세요!"+user.getUsername()+"님 새로운 비밀번호 입니다."
-                , newPassword);
+        EmailSendResultDto emailSendResultDto = emailUtil.sendEmail(user.getEmail()
+            , "[Petalog] 안녕하세요!" + user.getUsername() + "님 새로운 비밀번호 입니다."
+            , newPassword);
+
+        if(emailSendResultDto.getStatus() == HttpStatus.NOT_FOUND.value()){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
 
         return newPassword;
         
     }
     @Transactional
-    public void UpdatePassword(String accessToken, UserPasswordRequestDto userPasswordRequestDto) {
+    public void updatePassword(String accessToken, UserPasswordRequestDto userPasswordRequestDto) {
         User user = findUserByToken(accessToken);
         user.updatePassword(bCryptPasswordEncoder.encode(userPasswordRequestDto.getPassword()));
     }

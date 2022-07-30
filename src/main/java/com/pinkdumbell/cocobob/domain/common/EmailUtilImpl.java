@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.common;
 
+import com.pinkdumbell.cocobob.domain.common.dto.EmailSendResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -13,21 +15,25 @@ import java.util.Map;
 public class EmailUtilImpl implements EmailUtil {
     @Autowired
     private JavaMailSender sender;
-
+    int status = 404;
     @Override
-    public Map<String, Object> sendEmail(String toAddress, String subject, String body) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public EmailSendResultDto sendEmail(String toAddress, String subject, String body) {
+
+
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
+
         try {
             helper.setTo(toAddress);
             helper.setSubject(subject);
             helper.setText(body);
-            result.put("resultCode", 200);
+            status = HttpStatus.OK.value();
         } catch (MessagingException e) {
             e.printStackTrace();
-            result.put("resultCode", 500);
+            status = HttpStatus.NOT_FOUND.value();
+
         }
+        EmailSendResultDto result = new EmailSendResultDto(status);
         sender.send(message);
         return result;
     }
