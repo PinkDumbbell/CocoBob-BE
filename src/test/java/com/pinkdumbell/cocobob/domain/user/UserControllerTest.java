@@ -14,7 +14,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 
 import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
-import io.jsonwebtoken.Claims;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;

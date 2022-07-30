@@ -138,7 +138,7 @@ public class UserController {
     })
     @DeleteMapping("")
     public ResponseEntity<CommonResponseDto> logout(@RequestHeader("Authorization") String accessToken) {
-        
+
         try {
             userService.logout(accessToken);
         } catch (CustomException e) {
