@@ -52,7 +52,7 @@ public class PetController {
 
         return ResponseEntity.ok(new RegisterResponsClass(HttpStatus.OK.value(),
             "SUCCESS REGISTER",
-            "회원가입 정상처리",
+            "반려동물 등록 정상처리",
             petService.register(loginUserInfo, requestDto)));
     }
     @ApiOperation(value = "provide breeds info", notes = "반려동물 견종 정보 제공")
