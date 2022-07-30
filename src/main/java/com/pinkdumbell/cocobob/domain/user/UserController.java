@@ -1,16 +1,17 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
-import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.common.dto.ResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.*;
+import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
+
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +27,18 @@ public class UserController {
 
     @ApiOperation(value = "signup", notes = "서비스 자체 회원가입")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = UserCreateResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR")
     })
     @PostMapping("/new")
-    public ResponseEntity<UserCreateResponseDto> signup(
+    public ResponseEntity<CommonResponseDto> signup(
         @RequestBody @Valid UserCreateRequestDto requestDto) {
-        return ResponseEntity.ok(userService.signup(requestDto));
+        return ResponseEntity.ok(CommonResponseDto.builder().
+            status(200).
+            code("SUCCESS SIGNUP").
+            message("회원가입 정상처리").
+            data(userService.signup(requestDto)).
+            build());
     }
 
 
@@ -42,38 +48,52 @@ public class UserController {
         @ApiResponse(code = 409, message = "해당 이메일을 가진 사용자가 존재합니다")
     })
     @GetMapping("/email")
-    public ResponseEntity<EmailDuplicationCheckResponseDto> checkEmailDuplicated(
+    public ResponseEntity<CommonResponseDto> checkEmailDuplicated(
         @RequestParam("email") String email) {
-        return ResponseEntity.ok(userService.checkEmailDuplicated(email));
+        return ResponseEntity.ok(CommonResponseDto.builder().
+            status(200).
+            code("SUCCESS CHECK EMAIL").
+            message("중복 이메일 확인").
+            data(userService.checkEmailDuplicated(email)).
+            build());
     }
 
     @ApiOperation(value = "Login", notes = "서비스 자체 로그인")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = UserLoginResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
         @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
         @ApiResponse(code = 403, message = "INVALID_PASSWORD")
     })
     @PostMapping("")
-    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
-        return ResponseEntity.ok(userService.login(requestDto));
+    public ResponseEntity<CommonResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
+        return ResponseEntity.ok(CommonResponseDto.builder().
+            status(200).
+            code("SUCCESS LOGIN").
+            message("로그인 정상처리").
+            data(userService.login(requestDto)).
+            build());
     }
 
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = TokenResponseDto.class),
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @GetMapping("/token")
-    public ResponseEntity<TokenResponseDto> reissue(
-        @RequestHeader("accessToken") String accessToken,
-        @RequestHeader("refreshToken") String refreshToken) {
+    public ResponseEntity<CommonResponseDto> reissue(
+        @RequestHeader("authorization") String accessToken,
+        @RequestHeader("refresh-token") String refreshToken) {
         TokenRequestDto tokenRequestDto = TokenRequestDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
 
         try {
-            return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+            return ResponseEntity.ok(CommonResponseDto.builder()
+                .status(201).code("SUCCESS REISSUE")
+                .message("토큰이 재발행 정상처리")
+                .data(userService.reissue(tokenRequestDto))
+                .build());
         } catch (CustomException | JwtException e) {
             throw e;
         }
@@ -81,29 +101,33 @@ public class UserController {
 
     @ApiOperation(value = "Logout", notes = "로그아웃")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = ResponseDto.class),
+        @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = CommonResponseDto.class),
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @DeleteMapping("")
-    public ResponseEntity<ResponseDto> logout(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<CommonResponseDto> logout(@RequestHeader("Authorization") String accessToken) {
 
         try {
             userService.logout(accessToken);
         } catch (CustomException e) {
             throw e;
         }
-       
 
-        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Logout Success").message("로그아웃 처리완료 되었습니다.").build());
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(200).
+            code("Logout Success").
+            message("로그아웃 처리완료 되었습니다.").
+            data(null).
+            build());
     }
 
     @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = ResponseDto.class),
+            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
             @ApiResponse(code = 404, message = "USER NOT FOUND"),
     })
     @PostMapping("/password")
-    public ResponseEntity<ResponseDto> sendNewPassword(@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+    public ResponseEntity<CommonResponseDto> sendNewPassword(@RequestBody UserPasswordRequestDto userPasswordRequestDto){
 
         try {
             userService.sendNewPassword(userPasswordRequestDto);
@@ -112,16 +136,21 @@ public class UserController {
             throw e;
         }
 
-        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Find Password Success").message("사용자 이메일로 새로운 password를 보냈습니다.").build());
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(200).
+            code("Logout Success").
+            message("로그아웃 처리완료 되었습니다.").
+            data(null).
+            build());
     }
 
     @ApiOperation(value = "UpdatePassword", notes = "로그인 후 현재 비밀번호를 새로운 비밀번호로 변경")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = ResponseDto.class),
+            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
             @ApiResponse(code = 404, message = "USER NOT FOUND"),
     })
     @PutMapping("/password")
-    public ResponseEntity<ResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+    public ResponseEntity<CommonResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
         try {
             userService.updatePassword(accessToken,userPasswordRequestDto);
         } catch (CustomException e)
@@ -129,7 +158,13 @@ public class UserController {
             throw e;
         }
 
-        return ResponseEntity.ok(ResponseDto.builder().status(HttpStatus.OK.value()).code("Change Password Success").message("비밀번호를 성공적으로 변경하였습니다.").build());
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(200).
+            code("Logout Success").
+            message("로그아웃 처리완료 되었습니다.").
+            data(null).
+            build());
+
     }
 
 }

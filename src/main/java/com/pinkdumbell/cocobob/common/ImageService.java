@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.common;
+package com.pinkdumbell.cocobob.common;
 
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
