@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
+import com.pinkdumbell.cocobob.domain.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Daily {
+public class Daily extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "daily_id")

@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.Token;
+import com.pinkdumbell.cocobob.domain.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "\"user\"")
 @Entity
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
