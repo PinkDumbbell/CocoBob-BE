@@ -29,7 +29,12 @@ public class JwtAuthenticationFilter extends GenericFilter {
         try {
             String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
             String TOKEN_PREFIX = "Bearer ";
-            if (token != null && jwtTokenProvider.validateTokenExpiration(token.replace(TOKEN_PREFIX, ""))) {
+
+
+            if(((HttpServletRequest) request).getRequestURI().equals("/v1/users/token")){
+                Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX, ""));
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } else if (token != null && jwtTokenProvider.validateTokenExpiration(token.replace(TOKEN_PREFIX, ""))) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token.replace(TOKEN_PREFIX, ""));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
