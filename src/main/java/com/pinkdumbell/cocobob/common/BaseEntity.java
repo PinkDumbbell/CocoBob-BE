@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.common;
+package com.pinkdumbell.cocobob.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

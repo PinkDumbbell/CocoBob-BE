@@ -1,7 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.Token;
-import com.pinkdumbell.cocobob.domain.common.BaseEntity;
+import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import lombok.Builder;
 import lombok.Getter;

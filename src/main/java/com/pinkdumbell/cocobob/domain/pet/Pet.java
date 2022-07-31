@@ -1,6 +1,6 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
-import com.pinkdumbell.cocobob.domain.common.BaseEntity;
+import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
