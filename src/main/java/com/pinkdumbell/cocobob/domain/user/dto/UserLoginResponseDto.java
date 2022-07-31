@@ -12,15 +12,15 @@ public class UserLoginResponseDto {
     private final String email;
     private final String username;
     private final String role;
-    private final String authorization;
+    private final String accessToken;
     private final String refreshToken;
 
-    public UserLoginResponseDto(User entity, String  accessToken,String refreshToken) {
+    public UserLoginResponseDto(User entity, String accessToken, String refreshToken) {
         this.userId = entity.getId();
         this.email = entity.getEmail();
         this.username = entity.getUsername();
         this.role = entity.getRole().toString();
-        this.authorization = accessToken;
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }
