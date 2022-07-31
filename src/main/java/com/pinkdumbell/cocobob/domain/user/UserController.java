@@ -28,7 +28,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto>{
+    private class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
         public SignUpResponseClass(int status, String code, String message,
             UserCreateResponseDto data) {
@@ -36,7 +36,8 @@ public class UserController {
         }
     }
 
-    private class CheckEmailResponseClass extends CommonResponseDto<EmailDuplicationCheckResponseDto>{
+    private class CheckEmailResponseClass extends
+        CommonResponseDto<EmailDuplicationCheckResponseDto> {
 
         public CheckEmailResponseClass(int status, String code, String message,
             EmailDuplicationCheckResponseDto data) {
@@ -44,14 +45,15 @@ public class UserController {
         }
     }
 
-    private class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto>{
+    private class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto> {
+
         public LoginResponseClass(int status, String code, String message,
             UserLoginResponseDto data) {
             super(status, code, message, data);
         }
     }
 
-    private class ReissueResponseClass extends CommonResponseDto<TokenResponseDto>{
+    private class ReissueResponseClass extends CommonResponseDto<TokenResponseDto> {
 
         public ReissueResponseClass(int status, String code, String message,
             TokenResponseDto data) {
@@ -78,7 +80,7 @@ public class UserController {
 
     @ApiOperation(value = "check email duplicated", notes = "이메일 중복 확인")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "해당 이메일은 사용할 수 있습니다.",response = CheckEmailResponseClass.class),
+        @ApiResponse(code = 200, message = "해당 이메일은 사용할 수 있습니다.", response = CheckEmailResponseClass.class),
         @ApiResponse(code = 409, message = "해당 이메일을 가진 사용자가 존재합니다")
     })
     @GetMapping("/email")
@@ -131,13 +133,15 @@ public class UserController {
             throw e;
         }
     }
+
     @ApiOperation(value = "Logout", notes = "로그아웃")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "로그아웃 처리완료 되었습니다.", response = CommonResponseDto.class),
         @ApiResponse(code = 401, message = "UNAUTHORIZED"),
     })
     @DeleteMapping("")
-    public ResponseEntity<CommonResponseDto> logout(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<CommonResponseDto> logout(
+        @RequestHeader("Authorization") String accessToken) {
 
         try {
             userService.logout(accessToken);
@@ -155,16 +159,16 @@ public class UserController {
 
     @ApiOperation(value = "SendNewPassword", notes = "비밀번호 분실시 새로운 비밀번호를 발급")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
-            @ApiResponse(code = 404, message = "USER NOT FOUND"),
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 404, message = "USER NOT FOUND"),
     })
     @PostMapping("/password")
-    public ResponseEntity<CommonResponseDto> sendNewPassword(@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+    public ResponseEntity<CommonResponseDto> sendNewPassword(
+        @RequestBody UserPasswordRequestDto userPasswordRequestDto) {
 
         try {
             userService.sendNewPassword(userPasswordRequestDto);
-        } catch (CustomException e)
-        {
+        } catch (CustomException e) {
             throw e;
         }
 
@@ -178,15 +182,16 @@ public class UserController {
 
     @ApiOperation(value = "UpdatePassword", notes = "로그인 후 현재 비밀번호를 새로운 비밀번호로 변경")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
-            @ApiResponse(code = 404, message = "USER NOT FOUND"),
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 404, message = "USER NOT FOUND"),
     })
     @PutMapping("/password")
-    public ResponseEntity<CommonResponseDto> updatePassword(@RequestHeader("Authorization") String accessToken,@RequestBody UserPasswordRequestDto userPasswordRequestDto){
+    public ResponseEntity<CommonResponseDto> updatePassword(
+        @RequestHeader("Authorization") String accessToken,
+        @RequestBody UserPasswordRequestDto userPasswordRequestDto) {
         try {
-            userService.updatePassword(accessToken,userPasswordRequestDto);
-        } catch (CustomException e)
-        {
+            userService.updatePassword(accessToken, userPasswordRequestDto);
+        } catch (CustomException e) {
             throw e;
         }
 
