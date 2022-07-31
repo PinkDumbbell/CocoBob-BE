@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Pet {
+public class Pet extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pet_id")
