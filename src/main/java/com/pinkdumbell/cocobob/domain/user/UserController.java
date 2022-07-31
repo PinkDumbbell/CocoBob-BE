@@ -164,10 +164,10 @@ public class UserController {
     })
     @PostMapping("/password")
     public ResponseEntity<CommonResponseDto> sendNewPassword(
-        @RequestBody UserPasswordRequestDto userPasswordRequestDto) {
+        @RequestBody UserEmailRequestDto userEmailRequestDto) {
 
         try {
-            userService.sendNewPassword(userPasswordRequestDto);
+            userService.sendNewPassword(userEmailRequestDto);
         } catch (CustomException e) {
             throw e;
         }

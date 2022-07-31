@@ -154,9 +154,9 @@ public class UserService {
     }
 
     @Transactional
-    public String sendNewPassword(UserPasswordRequestDto userPasswordRequestDto){
+    public String sendNewPassword(UserEmailRequestDto userEmailRequestDto){
 
-        User user = userRepository.findByEmail(userPasswordRequestDto.getEmail())
+        User user = userRepository.findByEmail(userEmailRequestDto.getEmail())
                 .orElseThrow(()->{
                     throw new CustomException(ErrorCode.USER_NOT_FOUND);
                 });

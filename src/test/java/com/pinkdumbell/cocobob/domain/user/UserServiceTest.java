@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.config.MailConfig;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -68,8 +69,8 @@ class UserServiceTest {
         given(emailUtil.sendEmail(any(String.class), any(String.class), any(String.class)))
                 .willReturn(EmailSendResultDto.builder().status(HttpStatus.OK.value()).build());
 
-        UserPasswordRequestDto userPasswordRequestDto = UserPasswordRequestDto.builder().email(requestDto.getEmail()).build();
-        String newPassword = userService.sendNewPassword(userPasswordRequestDto);
+        UserEmailRequestDto userEmailRequestDto = UserEmailRequestDto.builder().email(requestDto.getEmail()).build();
+        String newPassword = userService.sendNewPassword(userEmailRequestDto);
 
         User user = userRepository.findByEmail(requestDto.getEmail()).get();
 
