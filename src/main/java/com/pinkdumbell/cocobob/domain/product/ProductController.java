@@ -32,8 +32,6 @@ public class ProductController {
 
     private static class ProvideAllResponseClass extends
         CommonResponseDto<FindAllResponseDto> {
-
-
         public ProvideAllResponseClass(int status, String code, String message,
             FindAllResponseDto data) {
             super(status, code, message, data);
@@ -42,7 +40,6 @@ public class ProductController {
 
     private static class ProductDetailResponseClass extends
         CommonResponseDto<ProductDetailResponseDto> {
-
         public ProductDetailResponseClass(int status, String code, String message,
             ProductDetailResponseDto data) {
             super(status, code, message, data);
