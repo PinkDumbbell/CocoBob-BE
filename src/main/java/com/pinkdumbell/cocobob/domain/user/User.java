@@ -31,7 +31,7 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private AccountType accountType;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "representative_pet_id")
     private Pet representativePet;
     @Enumerated(value = EnumType.STRING)

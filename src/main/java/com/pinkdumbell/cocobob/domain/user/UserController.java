@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -67,6 +68,12 @@ public class UserController {
         }
     }
 
+    private class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
+        public UserGetResponseClass(int status, String code, String message,
+                UserGetResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
 
     @ApiOperation(value = "signup", notes = "서비스 자체 회원가입")
     @ApiResponses(value = {
@@ -207,6 +214,23 @@ public class UserController {
             message("비밀번호가 성공적으로 변경되었습니다.").
             data(null).
             build());
+
+    }
+
+    @ApiOperation(value = "GetUserInfo", notes = "사용자 정보와 함께 등록된 반려동물의 간단한 정보를 가져온다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND")
+    })
+    @GetMapping("")
+    public ResponseEntity<UserGetResponseClass> getUserInfo(@LoginUser LoginUserInfo loginUserInfo) {
+        return ResponseEntity.ok(new UserGetResponseClass(
+                HttpStatus.OK.value(),
+                "GET_USER_INFO_SUCCESS",
+                "사용자 정보가 성공적으로 반환되었습니다.",
+                userService.getUserInfo(loginUserInfo)
+        ));
+
 
     }
 

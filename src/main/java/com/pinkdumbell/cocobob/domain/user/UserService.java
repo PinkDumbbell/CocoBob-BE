@@ -198,4 +198,11 @@ public class UserService {
         User user = findUserByToken(accessToken);
         user.updatePassword(bCryptPasswordEncoder.encode(userPasswordRequestDto.getPassword()));
     }
+
+    @Transactional(readOnly = true)
+    public UserGetResponseDto getUserInfo(LoginUserInfo loginUserInfo) {
+        User user = userRepository.findUserByEmailWithPet(loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return new UserGetResponseDto(user);
+    }
 }

@@ -49,9 +49,6 @@ public class Pet extends BaseEntity {
     @JoinColumn(name = "breed_id")
     private Breed breed;
 
-    @OneToOne(mappedBy = "pet", fetch = FetchType.LAZY)
-    private PetImage petImage;
-
     @Builder
     public Pet(String name,
                PetSex sex,
