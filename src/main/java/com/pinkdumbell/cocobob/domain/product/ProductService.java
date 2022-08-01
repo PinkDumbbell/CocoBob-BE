@@ -24,11 +24,9 @@ public class ProductService {
 
     public List<FindAllResponseDto> findAll() {
 
-        List<FindAllResponseDto> findAllResponseDtoList = productRepository.findAll().stream().map(
+        return productRepository.findAll().stream().map(
             FindAllResponseDto::new
         ).collect(Collectors.toList());
-
-        return findAllResponseDtoList;
     }
 
     public ProductDetailResponseDto findProductDetailById(Long product_id) {
