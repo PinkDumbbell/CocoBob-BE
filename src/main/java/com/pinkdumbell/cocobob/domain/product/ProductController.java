@@ -41,11 +41,9 @@ public class ProductController {
     @GetMapping("")
     public ResponseEntity<ProvideAllResponseClass> provideAll() {
 
-        List<FindAllResponseDto> allProducts = productService.findAll();
-
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 가져오기 성공", allProducts));
+                "상품 가져오기 성공", productService.findAll()));
     }
 
     @GetMapping("/{product_id}")
