@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.user.dto;
+package com.pinkdumbell.cocobob.domain.product.user.dto;
 
 import lombok.*;
 

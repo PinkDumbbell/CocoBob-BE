@@ -1,6 +1,6 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
-import com.pinkdumbell.cocobob.domain.user.User;
+import com.pinkdumbell.cocobob.domain.product.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

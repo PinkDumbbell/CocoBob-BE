@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.user;
+package com.pinkdumbell.cocobob.domain.product.user;
 
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.common.BaseEntity;

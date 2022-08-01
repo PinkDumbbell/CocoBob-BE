@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.JpaAuditingConfig;
+import com.pinkdumbell.cocobob.domain.product.user.User;
+import com.pinkdumbell.cocobob.domain.product.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

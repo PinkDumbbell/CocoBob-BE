@@ -1,6 +1,5 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
-import com.pinkdumbell.cocobob.domain.product.property.PetProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ProductDetailResponseDto {
+
     private Long productId;
 
     private String code;
@@ -88,7 +88,7 @@ public class ProductDetailResponseDto {
 
     private int likes;
 
-    private List<PetProperty> petProperties;
+    private List<PetPropertyResponseDto> petProperties;
 
 
 }

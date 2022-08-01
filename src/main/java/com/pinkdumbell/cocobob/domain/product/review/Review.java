@@ -1,7 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product.review;
 
 import com.pinkdumbell.cocobob.domain.product.Product;
-import com.pinkdumbell.cocobob.domain.user.User;
+import com.pinkdumbell.cocobob.domain.product.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.user;
+package com.pinkdumbell.cocobob.domain.product.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

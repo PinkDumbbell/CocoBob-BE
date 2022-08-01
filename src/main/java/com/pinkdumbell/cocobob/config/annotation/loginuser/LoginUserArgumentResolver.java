@@ -1,6 +1,6 @@
 package com.pinkdumbell.cocobob.config.annotation.loginuser;
 
-import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
+import com.pinkdumbell.cocobob.domain.product.user.dto.LoginUserInfo;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -7,9 +7,9 @@ import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
-import com.pinkdumbell.cocobob.domain.user.User;
-import com.pinkdumbell.cocobob.domain.user.UserRepository;
-import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
+import com.pinkdumbell.cocobob.domain.product.user.User;
+import com.pinkdumbell.cocobob.domain.product.user.UserRepository;
+import com.pinkdumbell.cocobob.domain.product.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PetService {
+
     private final PetRepository petRepository;
     private final PetImageRepository petImageRepository;
     private final BreedRepository breedRepository;
@@ -32,22 +33,23 @@ public class PetService {
     final int RESIZE_TARGET_WIDTH = 300;
 
     @Transactional
-    public PetCreateResponseDto register(LoginUserInfo loginUserInfo, PetCreateRequestDto requestDto) {
+    public PetCreateResponseDto register(LoginUserInfo loginUserInfo,
+        PetCreateRequestDto requestDto) {
         User user = userRepository.findByEmail(loginUserInfo.getEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Pet pet = petRepository.save(Pet.builder()
-                .name(requestDto.getName())
-                .sex(requestDto.getSex())
-                .age(requestDto.getAge())
-                .birthday(requestDto.getBirthday())
-                .isSpayed(requestDto.getIsSpayed())
-                .isPregnant(requestDto.getIsPregnant())
-                .bodyWeight(requestDto.getBodyWeight())
-                .activityLevel(requestDto.getActivityLevel())
-                .user(user)
-                .breed(breedRepository.findById(requestDto.getBreedId())
-                        .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
-                .build());
+            .name(requestDto.getName())
+            .sex(requestDto.getSex())
+            .age(requestDto.getAge())
+            .birthday(requestDto.getBirthday())
+            .isSpayed(requestDto.getIsSpayed())
+            .isPregnant(requestDto.getIsPregnant())
+            .bodyWeight(requestDto.getBodyWeight())
+            .activityLevel(requestDto.getActivityLevel())
+            .user(user)
+            .breed(breedRepository.findById(requestDto.getBreedId())
+                .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
+            .build());
         user.addPets(pet);
         Optional<Pet> representativePet = Optional.ofNullable(user.getRepresentativePet());
         if (representativePet.isEmpty()) {
@@ -55,20 +57,21 @@ public class PetService {
         }
         if (requestDto.getPetImage() != null) {
             petImageRepository.save(new PetImage(
-                    imageService.saveImage(requestDto.getPetImage()), pet));
+                imageService.saveImage(requestDto.getPetImage()), pet));
             pet.setThumbnailPath(imageService.saveImage(
-                    imageService.resizeImage(requestDto.getPetImage(), RESIZE_TARGET_WIDTH)));
+                imageService.resizeImage(requestDto.getPetImage(), RESIZE_TARGET_WIDTH)));
         }
         return new PetCreateResponseDto(pet);
     }
 
     @Transactional
-    public List<BreedsInfoResponseDto> provideBreedsInfo(){
+    public List<BreedsInfoResponseDto> provideBreedsInfo() {
 
         List<BreedsInfoResponseDto> breedsList = breedRepository.findAll().stream()
-                .map(breed ->
-                    new BreedsInfoResponseDto(breed.getId(), breed.getName(), breed.getSize().toString())
-                ).collect(Collectors.toList());
+            .map(breed ->
+                new BreedsInfoResponseDto(breed.getId(), breed.getName(),
+                    breed.getSize().toString())
+            ).collect(Collectors.toList());
 
         return breedsList;
     }

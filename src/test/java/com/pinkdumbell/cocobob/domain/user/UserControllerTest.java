@@ -11,11 +11,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.product.user.UserRepository;
+import com.pinkdumbell.cocobob.domain.product.user.UserService;
+import com.pinkdumbell.cocobob.domain.product.user.dto.UserCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.product.user.dto.UserCreateResponseDto;
 
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
+import com.pinkdumbell.cocobob.domain.product.user.dto.UserLoginRequestDto;
+import com.pinkdumbell.cocobob.domain.product.user.dto.UserLoginResponseDto;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
