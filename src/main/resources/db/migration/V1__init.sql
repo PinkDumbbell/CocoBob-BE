@@ -111,12 +111,43 @@ create table product
 (
     product_id  bigint auto_increment
         primary key,
-    age         varchar(255)  null,
-    code        varchar(255)  null,
-    description text          null,
-    name        varchar(255)  null,
-    price       int           null,
-    thumbnail   varchar(1000) null
+    code varchar(255) null,
+    category varchar(255) null,
+    name varchar(255) null,
+    price int null,
+    thumbnail varchar(1000) null,
+    product_image varchar(1000) null,
+    product_detail_image varchar(1000) null,
+    description text null,
+    protein float null,
+    amount_of_protein_per_mcal double null,
+    fat float null,
+    amount_of_fat_per_mcal double null,
+    fiber float null,
+    amount_of_fiber_per_Mcal double null,
+    mineral float null,
+    amount_of_mineral_per_mcal double null,
+    calcium float null,
+    amount_of_calcium_per_mcal double null,
+    phosphorus float null,
+    amount_of_phosphorus_per_mcal double null,
+    moisture float null,
+    kcal_per_kg double null,
+    is_aafco_satisfied boolean null,
+    beef boolean null,
+    mutton boolean null,
+    chicken boolean null,
+    duck boolean null,
+    turkey boolean null,
+    meat boolean null,
+    salmon boolean null,
+    hydrolytic_beef boolean null,
+    hydrolytic_mutton boolean null,
+    hydrolytic_chicken boolean null,
+    hydrolytic_duck boolean null,
+    hydrolytic_turkey boolean null,
+    hydrolytic_meat boolean null,
+    hydrolytic_salmon boolean null
 );
 
 create table `like`
@@ -130,21 +161,6 @@ create table `like`
         foreign key (product_id) references product (product_id)
 );
 
-create table nutrition
-(
-    nutrition_id bigint auto_increment
-        primary key,
-    calcium      float  null,
-    fat          float  null,
-    fiber        float  null,
-    mineral      float  null,
-    moisture     float  null,
-    phosphorus   float  null,
-    protein      float  null,
-    product_id   bigint null,
-    constraint FK16dy9uaf2qnmw472t9ex6gcqt
-        foreign key (product_id) references product (product_id)
-);
 
 create table pet_allergy
 (
@@ -183,26 +199,6 @@ create table pet_problem
         foreign key (pet_id) references pet (pet_id),
     constraint FKk83kp2n2ir6opjp2qq0rkqyq9
         foreign key (problem_id) references problem (problem_id)
-);
-
-create table product_description_image
-(
-    image_id   bigint auto_increment
-        primary key,
-    path       varchar(1000) null,
-    product_id bigint        null,
-    constraint FKcs6qs8crscj0g9tndvld7mk8q
-        foreign key (product_id) references product (product_id)
-);
-
-create table product_image
-(
-    image_id   bigint auto_increment
-        primary key,
-    path       varchar(1000) null,
-    product_id bigint        null,
-    constraint FK6oo0cvcdtb6qmwsga468uuukk
-        foreign key (product_id) references product (product_id)
 );
 
 create table product_problem
