@@ -3,6 +3,8 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 import java.util.List;
@@ -47,12 +49,20 @@ public class ProductController {
         }
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)")
+    })
     @GetMapping("")
-    public ResponseEntity<ProvideAllResponseClass> productAll(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    public ResponseEntity<ProvideAllResponseClass> productAll(Pageable pageable) {
+
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 가져오기 성공", productService.findProductAll(pageRequest)));
+                "상품 가져오기 성공", productService.findProductAll(pageable)));
     }
 
     @GetMapping("/{productId}")
