@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,4 +29,6 @@ public class ProductService {
 
         return findAllResponseDtoList;
     }
+
+
 }

@@ -1,18 +1,18 @@
-package com.pinkdumbell.cocobob.domain.product;
+package com.pinkdumbell.cocobob.domain.product.dto;
 
+import com.pinkdumbell.cocobob.domain.product.property.PetProperty;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Getter
 @NoArgsConstructor
-@Entity
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
-    private Long id;
+@AllArgsConstructor
+@Builder
+public class ProductDetailResponseDto {
+    private Long productId;
 
     private String code;
 
@@ -22,16 +22,10 @@ public class Product {
 
     private Integer price;
 
-    @Column(length = 1000)
-    private String thumbnail;
-
-    @Column(length = 1000)
     private String productImage;
 
-    @Column(length = 1000)
     private String productDetailImage;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     private Float protein;
@@ -91,5 +85,10 @@ public class Product {
     private Boolean hydrolyticMeat;
 
     private Boolean hydrolyticSalmon;
+
+    private int likes;
+
+    private List<PetProperty> petProperties;
+
 
 }
