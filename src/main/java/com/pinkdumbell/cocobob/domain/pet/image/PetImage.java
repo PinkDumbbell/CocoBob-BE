@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.pet.image;
 
 import com.pinkdumbell.cocobob.domain.pet.Pet;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class PetImage {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    @Builder
     public PetImage(String path,
                     Pet pet) {
         this.path = path;
