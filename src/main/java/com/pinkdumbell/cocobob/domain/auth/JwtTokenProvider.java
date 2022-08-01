@@ -1,7 +1,7 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
-import com.pinkdumbell.cocobob.domain.product.user.User;
-import com.pinkdumbell.cocobob.domain.product.user.UserRepository;
+import com.pinkdumbell.cocobob.domain.user.User;
+import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

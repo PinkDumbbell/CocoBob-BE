@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
 @RestController
-@Transactional(readOnly = true)
 public class ProductController {
 
     private final ProductService productService;

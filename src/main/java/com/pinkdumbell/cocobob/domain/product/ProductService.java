@@ -48,7 +48,7 @@ public class ProductService {
 
         List<PetPropertyResponseDto> allProperty = petPropertyRepository.findAllByProduct(
                 foundProduct).stream()
-            .map(petProperty -> new PetPropertyResponseDto(petProperty.getProperty())).collect(
+            .map(PetPropertyResponseDto::new).collect(
                 Collectors.toList());
 
         return ProductDetailResponseDto.builder()

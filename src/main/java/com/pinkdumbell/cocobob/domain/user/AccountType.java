@@ -1,4 +1,4 @@
-package com.pinkdumbell.cocobob.domain.product.user;
+package com.pinkdumbell.cocobob.domain.user;
 
 public enum AccountType {
     OWN,

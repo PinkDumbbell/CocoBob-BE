@@ -3,7 +3,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
-import com.pinkdumbell.cocobob.domain.product.user.User;
+import com.pinkdumbell.cocobob.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

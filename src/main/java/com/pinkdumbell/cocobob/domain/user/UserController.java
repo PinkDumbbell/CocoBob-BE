@@ -1,15 +1,15 @@
-package com.pinkdumbell.cocobob.domain.product.user;
+package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.EmailDuplicationCheckResponseDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserEmailRequestDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserLoginResponseDto;
-import com.pinkdumbell.cocobob.domain.product.user.dto.UserPasswordRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 
 import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;

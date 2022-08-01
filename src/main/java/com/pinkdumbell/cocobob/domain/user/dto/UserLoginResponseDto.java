@@ -1,6 +1,6 @@
-package com.pinkdumbell.cocobob.domain.product.user.dto;
+package com.pinkdumbell.cocobob.domain.user.dto;
 
-import com.pinkdumbell.cocobob.domain.product.user.User;
+import com.pinkdumbell.cocobob.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
