@@ -27,7 +27,6 @@ public class ProductService {
 
     public List<FindAllResponseDto> findAll(Pageable pageable) {
 
-        return productRepository.findAll().stream().map(
         return productRepository.findAll(pageable).stream().map(
             FindAllResponseDto::new
         ).collect(Collectors.toList());
