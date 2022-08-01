@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
+import com.pinkdumbell.cocobob.domain.product.Product;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -86,9 +87,51 @@ public class ProductDetailResponseDto {
 
     private Boolean hydrolyticSalmon;
 
-    private int likes;
+    private int likeCount;
 
     private List<PetPropertyResponseDto> petProperties;
 
+    public ProductDetailResponseDto(Product product, List<PetPropertyResponseDto> petProperties) {
 
+        this.productId = product.getId();
+        this.code = product.getCode();
+        this.category = product.getCategory();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.productImage = product.getProductImage();
+        this.productDetailImage = product.getProductDetailImage();
+        this.description = product.getDescription();
+        this.protein = product.getProtein();
+        this.amountOfProteinPerMcal = product.getAmountOfProteinPerMcal();
+        this.fat = product.getFat();
+        this.amountOfFatPerMcal = product.getAmountOfFatPerMcal();
+        this.fiber = product.getFiber();
+        this.amountOfFiberPerMcal = product.getAmountOfFiberPerMcal();
+        this.mineral = product.getMineral();
+        this.amountOfMineralPerMcal = product.getAmountOfMineralPerMcal();
+        this.calcium = product.getCalcium();
+        this.amountOfCalciumPerMcal = product.getAmountOfCalciumPerMcal();
+        this.phosphorus = product.getPhosphorus();
+        this.amountOfPhosphorusPerMcal = product.getAmountOfPhosphorusPerMcal();
+        this.moisture = product.getMoisture();
+        this.kcalPerKg = product.getKcalPerKg();
+        this.isAAFCOSatisfied = product.getIsAAFCOSatisfied();
+        this.beef = product.getBeef();
+        this.mutton = product.getMutton();
+        this.chicken = product.getChicken();
+        this.duck = product.getDuck();
+        this.turkey = product.getTurkey();
+        this.meat = product.getMeat();
+        this.salmon = product.getSalmon();
+        this.hydrolyticBeef = product.getHydrolyticBeef();
+        this.hydrolyticMutton = product.getHydrolyticMutton();
+        this.hydrolyticChicken = product.getHydrolyticChicken();
+        this.hydrolyticDuck = product.getHydrolyticDuck();
+        this.hydrolyticTurkey = product.getHydrolyticTurkey();
+        this.hydrolyticMeat = product.getHydrolyticMeat();
+        this.hydrolyticSalmon = product.getHydrolyticSalmon();
+        //추후 추가 예정
+        //this.likeCount;
+        this.petProperties = petProperties;
+    }
 }

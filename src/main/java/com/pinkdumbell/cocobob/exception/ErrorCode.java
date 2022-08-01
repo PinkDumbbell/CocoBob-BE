@@ -19,7 +19,7 @@ public enum ErrorCode {
     FAIL_TO_UPLOAD_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "s3 버킷에 이미지 업로드를 실패했습니다."),
     INVALID_LOGOUT_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 로그아웃 요청입니다."),
     INVALID_ACCESS_AFTER_LOGOUT(HttpStatus.BAD_REQUEST, "로그아웃된 유저 입니다."),
-    NOT_FOUND_PRODUCT(HttpStatus.BAD_REQUEST, "없는 상품 입니다.");
+    PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "없는 상품 입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
