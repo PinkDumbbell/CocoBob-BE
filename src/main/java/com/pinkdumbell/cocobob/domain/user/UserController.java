@@ -211,6 +211,11 @@ public class UserController {
 
     }
 
+    @ApiOperation(value = "GetUserInfo", notes = "사용자 정보와 함께 등록된 반려동물의 간단한 정보를 가져온다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND")
+    })
     @GetMapping("")
     public ResponseEntity<UserGetResponseClass> getUserInfo(@LoginUser LoginUserInfo loginUserInfo) {
         return ResponseEntity.ok(new UserGetResponseClass(
