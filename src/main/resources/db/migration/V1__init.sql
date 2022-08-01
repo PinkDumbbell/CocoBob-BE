@@ -137,7 +137,7 @@ create table product
     beef boolean null,
     mutton boolean null,
     chicken boolean null,
-    duck boolen null,
+    duck boolean null,
     turkey boolean null,
     meat boolean null,
     salmon boolean null,
@@ -161,21 +161,6 @@ create table `like`
         foreign key (product_id) references product (product_id)
 );
 
-create table nutrition
-(
-    nutrition_id bigint auto_increment
-        primary key,
-    calcium      float  null,
-    fat          float  null,
-    fiber        float  null,
-    mineral      float  null,
-    moisture     float  null,
-    phosphorus   float  null,
-    protein      float  null,
-    product_id   bigint null,
-    constraint FK16dy9uaf2qnmw472t9ex6gcqt
-        foreign key (product_id) references product (product_id)
-);
 
 create table pet_allergy
 (
@@ -214,26 +199,6 @@ create table pet_problem
         foreign key (pet_id) references pet (pet_id),
     constraint FKk83kp2n2ir6opjp2qq0rkqyq9
         foreign key (problem_id) references problem (problem_id)
-);
-
-create table product_description_image
-(
-    image_id   bigint auto_increment
-        primary key,
-    path       varchar(1000) null,
-    product_id bigint        null,
-    constraint FKcs6qs8crscj0g9tndvld7mk8q
-        foreign key (product_id) references product (product_id)
-);
-
-create table product_image
-(
-    image_id   bigint auto_increment
-        primary key,
-    path       varchar(1000) null,
-    product_id bigint        null,
-    constraint FK6oo0cvcdtb6qmwsga468uuukk
-        foreign key (product_id) references product (product_id)
 );
 
 create table product_problem
