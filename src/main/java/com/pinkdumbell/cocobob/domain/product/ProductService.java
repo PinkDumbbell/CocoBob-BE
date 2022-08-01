@@ -29,11 +29,11 @@ public class ProductService {
         ).collect(Collectors.toList());
     }
 
-    public ProductDetailResponseDto findProductDetailById(Long product_id) {
+    public ProductDetailResponseDto findProductDetailById(Long productId) {
 
-        Product foundProduct = productRepository.findById(product_id).orElseThrow(
+        Product foundProduct = productRepository.findById(productId).orElseThrow(
             () -> {
-                throw new CustomException(ErrorCode.NOT_FOUND_PRODUCT);
+                throw new CustomException(ErrorCode.PRODUCT_NOT_FOUND);
             });
 
         List<PetPropertyResponseDto> allProperty = petPropertyRepository.findAllByProduct(
