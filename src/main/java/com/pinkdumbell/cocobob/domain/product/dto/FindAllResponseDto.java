@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
+import com.pinkdumbell.cocobob.domain.product.Product;
 import javax.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,5 +26,15 @@ public class FindAllResponseDto {
     private String thumbnail;
 
     private String description;
+
+    public FindAllResponseDto(Product product) {
+        this.productId = product.getId();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.code = product.getCode();
+        this.category = product.getCategory();
+        this.thumbnail = product.getThumbnail();
+        this.description = product.getDescription();
+    }
 
 }

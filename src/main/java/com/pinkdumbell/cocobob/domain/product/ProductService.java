@@ -25,15 +25,7 @@ public class ProductService {
     public List<FindAllResponseDto> findAll() {
 
         List<FindAllResponseDto> findAllResponseDtoList = productRepository.findAll().stream().map(
-            product -> FindAllResponseDto.builder().
-                productId(product.getId()).
-                name(product.getName()).
-                price(product.getPrice()).
-                code(product.getCode()).
-                category(product.getCategory()).
-                thumbnail(product.getThumbnail()).
-                description(product.getDescription()).
-                build()
+            FindAllResponseDto::new
         ).collect(Collectors.toList());
 
         return findAllResponseDtoList;
