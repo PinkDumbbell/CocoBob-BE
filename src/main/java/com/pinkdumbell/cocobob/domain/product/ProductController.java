@@ -27,10 +27,11 @@ public class ProductController {
     private final ProductService productService;
 
     private static class ProvideAllResponseClass extends
-        CommonResponseDto<List<FindAllResponseDto>> {
+        CommonResponseDto<FindAllResponseDto> {
+
 
         public ProvideAllResponseClass(int status, String code, String message,
-            List<FindAllResponseDto> data) {
+            FindAllResponseDto data) {
             super(status, code, message, data);
         }
     }
@@ -45,11 +46,11 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ProvideAllResponseClass> productAll(final Pageable pageable) {
+    public ResponseEntity<ProvideAllResponseClass> productAll(Pageable pageable) {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 가져오기 성공", productService.findAll(pageable)));
+                "상품 가져오기 성공", productService.findProductAll(pageable)));
     }
 
     @GetMapping("/{productId}")

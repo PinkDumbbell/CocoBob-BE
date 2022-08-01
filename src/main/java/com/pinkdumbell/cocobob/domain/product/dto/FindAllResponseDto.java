@@ -1,40 +1,40 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import com.pinkdumbell.cocobob.domain.product.Product;
-import javax.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.List;
+
+import java.util.stream.Collectors;
+
+import lombok.Getter;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 @Getter
 public class FindAllResponseDto {
 
-    private Long productId;
+    List<ListProductDto> productList;
+    int totalPages;
+    Long totalElements;
+    int pageSize;
+    int pageNumber;
+    boolean isFirst;
+    boolean isLast;
+    boolean isEmpty;
+    Pageable pageable;
 
-    private String code;
-
-    private String name;
-
-    private String category;
-
-    private Integer price;
-
-    private String thumbnail;
-
-    private String description;
-
-    public FindAllResponseDto(Product product) {
-        this.productId = product.getId();
-        this.name = product.getName();
-        this.price = product.getPrice();
-        this.code = product.getCode();
-        this.category = product.getCategory();
-        this.thumbnail = product.getThumbnail();
-        this.description = product.getDescription();
+    public FindAllResponseDto(Page<Product> pages) {
+        this.productList = pages.getContent().stream().map(ListProductDto::new).collect(
+            Collectors.toList());
+        this.totalPages = pages.getTotalPages();
+        this.totalElements = pages.getTotalElements();
+        this.pageSize = pages.getSize();
+        this.pageNumber = getPageNumber();
+        this.pageable = pages.getPageable();
+        this.isFirst = pages.isFirst();
+        this.isLast = pages.isLast();
+        this.isEmpty = pages.isEmpty();
     }
-
 }
