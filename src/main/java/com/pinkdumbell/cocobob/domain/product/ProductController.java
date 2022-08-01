@@ -49,11 +49,9 @@ public class ProductController {
     @GetMapping("/{product_id}")
     public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long product_id) {
 
-        ProductDetailResponseDto productDetail = productService.findProductDetailById(product_id);
-
         return ResponseEntity.ok(
             new ProductDetailResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCT",
-                "상품 가져오기 성공", productDetail));
+                "상품 가져오기 성공", productService.findProductDetailById(product_id)));
     }
 
 }
