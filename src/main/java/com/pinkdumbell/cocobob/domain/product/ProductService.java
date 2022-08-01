@@ -7,9 +7,13 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.property.PetPropertyRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +26,11 @@ public class ProductService {
 
     private final PetPropertyRepository petPropertyRepository;
 
-    public List<FindAllResponseDto> findAll() {
+    public List<FindAllResponseDto> findAll(Pageable pageable) {
 
-        List<FindAllResponseDto> findAllResponseDtoList = productRepository.findAll().stream().map(
+        return productRepository.findAll(pageable).stream().map(
             FindAllResponseDto::new
         ).collect(Collectors.toList());
-
-        return findAllResponseDtoList;
     }
 
     public ProductDetailResponseDto findProductDetailById(Long product_id) {

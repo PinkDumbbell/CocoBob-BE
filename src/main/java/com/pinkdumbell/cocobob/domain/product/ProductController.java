@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,11 +45,11 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ProvideAllResponseClass> productAll() {
+    public ResponseEntity<ProvideAllResponseClass> productAll(final Pageable pageable) {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 가져오기 성공", productService.findAll()));
+                "상품 가져오기 성공", productService.findAll(pageable)));
     }
 
     @GetMapping("/{product_id}")
