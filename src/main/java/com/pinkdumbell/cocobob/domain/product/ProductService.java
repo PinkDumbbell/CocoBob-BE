@@ -45,7 +45,7 @@ public class ProductService {
             });
 
         List<PetPropertyResponseDto> allProperty = petPropertyRepository.findAllByProduct(
-                product_id).stream()
+                foundProduct).stream()
             .map(petProperty -> new PetPropertyResponseDto(petProperty.getProperty())).collect(
                 Collectors.toList());
 
