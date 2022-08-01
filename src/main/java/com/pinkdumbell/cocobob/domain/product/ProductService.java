@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
-import com.pinkdumbell.cocobob.domain.product.dto.ListProductDto;
 import com.pinkdumbell.cocobob.domain.product.dto.PetPropertyResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 
@@ -13,8 +12,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +25,9 @@ public class ProductService {
 
     private final PetPropertyRepository petPropertyRepository;
 
-    public FindAllResponseDto findProductAll(Pageable pageable) {
+    public FindAllResponseDto findProductAll(PageRequest pageRequest) {
 
-        return new FindAllResponseDto(productRepository.findAll(pageable)) ;
+        return new FindAllResponseDto(productRepository.findAll(pageRequest));
     }
 
     public ProductDetailResponseDto findProductDetailById(Long productId) {
