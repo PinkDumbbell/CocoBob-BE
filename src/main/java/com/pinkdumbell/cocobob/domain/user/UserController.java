@@ -34,7 +34,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
+    private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
         public SignUpResponseClass(int status, String code, String message,
             UserCreateResponseDto data) {
@@ -42,7 +42,7 @@ public class UserController {
         }
     }
 
-    private class CheckEmailResponseClass extends
+    private static class CheckEmailResponseClass extends
         CommonResponseDto<EmailDuplicationCheckResponseDto> {
 
         public CheckEmailResponseClass(int status, String code, String message,
@@ -51,7 +51,7 @@ public class UserController {
         }
     }
 
-    private class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto> {
+    private static class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto> {
 
         public LoginResponseClass(int status, String code, String message,
             UserLoginResponseDto data) {
@@ -59,7 +59,7 @@ public class UserController {
         }
     }
 
-    private class ReissueResponseClass extends CommonResponseDto<TokenResponseDto> {
+    private static class ReissueResponseClass extends CommonResponseDto<TokenResponseDto> {
 
         public ReissueResponseClass(int status, String code, String message,
             TokenResponseDto data) {

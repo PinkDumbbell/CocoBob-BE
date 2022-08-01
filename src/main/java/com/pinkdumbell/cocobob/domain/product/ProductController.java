@@ -4,7 +4,9 @@ import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import io.swagger.annotations.ApiOperation;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,8 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private class ProvideAllResponseClass extends CommonResponseDto<List<FindAllResponseDto>> {
+    private static class ProvideAllResponseClass extends
+        CommonResponseDto<List<FindAllResponseDto>> {
 
         public ProvideAllResponseClass(int status, String code, String message,
             List<FindAllResponseDto> data) {
@@ -29,7 +32,8 @@ public class ProductController {
         }
     }
 
-    private class ProductDetailResponseClass extends CommonResponseDto<ProductDetailResponseDto> {
+    private static class ProductDetailResponseClass extends
+        CommonResponseDto<ProductDetailResponseDto> {
 
         public ProductDetailResponseClass(int status, String code, String message,
             ProductDetailResponseDto data) {

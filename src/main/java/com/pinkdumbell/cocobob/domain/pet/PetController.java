@@ -26,7 +26,7 @@ public class PetController {
 
     private final PetService petService;
 
-    private class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto> {
+    private static class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto> {
 
         public RegisterResponsClass(int status, String code, String message,
             PetCreateResponseDto data) {
@@ -34,7 +34,8 @@ public class PetController {
         }
     }
 
-    private class ProvideBreedsResponsClass extends CommonResponseDto<List<BreedsInfoResponseDto>> {
+    private static class ProvideBreedsResponsClass extends
+        CommonResponseDto<List<BreedsInfoResponseDto>> {
 
         public ProvideBreedsResponsClass(int status, String code, String message,
             List<BreedsInfoResponseDto> data) {
