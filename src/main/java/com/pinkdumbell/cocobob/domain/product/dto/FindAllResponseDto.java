@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 @Getter
 public class FindAllResponseDto {
 
-    List<ListProductDto> productList;
     int totalPages;
     Long totalElements;
     int pageSize;
@@ -23,7 +22,7 @@ public class FindAllResponseDto {
     boolean isFirst;
     boolean isLast;
     boolean isEmpty;
-    Pageable pageable;
+    List<ListProductDto> productList;
 
     public FindAllResponseDto(Page<Product> pages) {
         this.productList = pages.getContent().stream().map(ListProductDto::new).collect(
@@ -31,8 +30,7 @@ public class FindAllResponseDto {
         this.totalPages = pages.getTotalPages();
         this.totalElements = pages.getTotalElements();
         this.pageSize = pages.getSize();
-        this.pageNumber = getPageNumber();
-        this.pageable = pages.getPageable();
+        this.pageNumber = pages.getNumber();
         this.isFirst = pages.isFirst();
         this.isLast = pages.isLast();
         this.isEmpty = pages.isEmpty();
