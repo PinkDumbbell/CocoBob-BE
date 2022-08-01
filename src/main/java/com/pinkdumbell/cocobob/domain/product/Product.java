@@ -62,6 +62,7 @@ public class Product {
 
     private Double kcalPerKg;
 
+    @Column(name = "is_aafco_satisfied")
     private Boolean isAAFCOSatisfied;
 
     private Boolean beef;
