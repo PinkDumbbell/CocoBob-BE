@@ -23,7 +23,6 @@ public class Pet extends BaseEntity {
     private String name;
 
     private String thumbnailPath;
-
     @Enumerated(EnumType.STRING)
     private PetSex sex;
 

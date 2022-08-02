@@ -7,7 +7,6 @@ import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

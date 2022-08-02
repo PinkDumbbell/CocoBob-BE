@@ -26,7 +26,7 @@ public class PetController {
 
     private final PetService petService;
 
-    private class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto>{
+    private static class RegisterResponsClass extends CommonResponseDto<PetCreateResponseDto> {
 
         public RegisterResponsClass(int status, String code, String message,
             PetCreateResponseDto data) {
@@ -34,40 +34,45 @@ public class PetController {
         }
     }
 
-    private class ProvideBreedsResponsClass extends CommonResponseDto<List<BreedsInfoResponseDto>>{
+    private static class ProvideBreedsResponsClass extends
+        CommonResponseDto<List<BreedsInfoResponseDto>> {
 
-        public ProvideBreedsResponsClass(int status, String code, String message, List<BreedsInfoResponseDto> data) {
+        public ProvideBreedsResponsClass(int status, String code, String message,
+            List<BreedsInfoResponseDto> data) {
             super(status, code, message, data);
         }
     }
+
     @ApiOperation(value = "register pet", notes = "반려동물 등록")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = RegisterResponsClass.class),
-            @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+        @ApiResponse(code = 200, message = "", response = RegisterResponsClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
 
     })
     @PostMapping("")
-    public ResponseEntity<RegisterResponsClass> register(@LoginUser LoginUserInfo loginUserInfo, @ModelAttribute @Valid PetCreateRequestDto requestDto) {
+    public ResponseEntity<RegisterResponsClass> register(@LoginUser LoginUserInfo loginUserInfo,
+        @ModelAttribute @Valid PetCreateRequestDto requestDto) {
 
         return ResponseEntity.ok(new RegisterResponsClass(HttpStatus.OK.value(),
             "SUCCESS REGISTER",
             "반려동물 등록 정상처리",
             petService.register(loginUserInfo, requestDto)));
     }
+
     @ApiOperation(value = "provide breeds info", notes = "반려동물 견종 정보 제공")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = BreedsInfoResponseDto.class),
-            @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+        @ApiResponse(code = 200, message = "", response = BreedsInfoResponseDto.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
 
     })
     @GetMapping("/breeds")
     public ResponseEntity<ProvideBreedsResponsClass> provideBreedsInfo() {
 
         return ResponseEntity.ok(new ProvideBreedsResponsClass(HttpStatus.OK.value(),
-                "SUCCESS PROVIDE BREEDS",
-                "반려 견종 가져오기 처리 성공",
-                petService.provideBreedsInfo()));
+            "SUCCESS PROVIDE BREEDS",
+            "반려 견종 가져오기 처리 성공",
+            petService.provideBreedsInfo()));
     }
 }

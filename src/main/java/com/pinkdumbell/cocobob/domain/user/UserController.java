@@ -4,7 +4,13 @@ import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.*;
+import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
+import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 
 import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
@@ -29,7 +35,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
+    private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
         public SignUpResponseClass(int status, String code, String message,
             UserCreateResponseDto data) {
@@ -37,7 +43,7 @@ public class UserController {
         }
     }
 
-    private class CheckEmailResponseClass extends
+    private static class CheckEmailResponseClass extends
         CommonResponseDto<EmailDuplicationCheckResponseDto> {
 
         public CheckEmailResponseClass(int status, String code, String message,
@@ -46,7 +52,7 @@ public class UserController {
         }
     }
 
-    private class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto> {
+    private static class LoginResponseClass extends CommonResponseDto<UserLoginResponseDto> {
 
         public LoginResponseClass(int status, String code, String message,
             UserLoginResponseDto data) {
@@ -54,7 +60,7 @@ public class UserController {
         }
     }
 
-    private class ReissueResponseClass extends CommonResponseDto<TokenResponseDto> {
+    private static class ReissueResponseClass extends CommonResponseDto<TokenResponseDto> {
 
         public ReissueResponseClass(int status, String code, String message,
             TokenResponseDto data) {

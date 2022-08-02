@@ -2,8 +2,6 @@ package com.pinkdumbell.cocobob.domain.auth;
 
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
-import com.pinkdumbell.cocobob.exception.CustomException;
-import com.pinkdumbell.cocobob.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -26,21 +27,22 @@ public class SwaggerConfig {
 
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder().title("Cocobob API Docs")
-                .description("API Docs for CocoBob").build();
+            .description("API Docs for CocoBob").build();
     }
 
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.OAS_30)
-                .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
-                .consumes(getConsumeContentTypes())
-                .produces(getProduceContentTypes())
-                .apiInfo(swaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.pinkdumbell.cocobob"))
-                .paths(PathSelectors.any())
-                .build()
-                .useDefaultResponseMessages(false);
+            .ignoredParameterTypes(Pageable.class)
+            .useDefaultResponseMessages(false)
+            .securityContexts(Arrays.asList(securityContext()))
+            .securitySchemes(Arrays.asList(apiKey()))
+            .consumes(getConsumeContentTypes())
+            .produces(getProduceContentTypes())
+            .apiInfo(swaggerInfo()).select()
+            .apis(RequestHandlerSelectors.basePackage("com.pinkdumbell.cocobob"))
+            .paths(PathSelectors.any())
+            .build();
     }
 
     private Set<String> getConsumeContentTypes() {
@@ -58,12 +60,13 @@ public class SwaggerConfig {
 
     private SecurityContext securityContext() {
         return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .build();
+            .securityReferences(defaultAuth())
+            .build();
     }
 
     private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope authorizationScope = new AuthorizationScope("global",
+            "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
