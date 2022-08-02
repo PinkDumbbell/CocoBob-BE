@@ -46,14 +46,6 @@ public class ProductService {
         return new ProductDetailResponseDto(foundProduct, allProperty);
     }
 
-    public FindAllResponseDto searchProducts(String title, String content, Pageable pageable) {
-
-        return new FindAllResponseDto(
-            productRepository.findByNameContainingOrDescriptionContaining(title, content,
-                pageable));
-
-    }
-
     public FindAllResponseDto elasticSearchProducts(ProductSpecificSearchDto requestParameter,
         Pageable pageable) {
 
