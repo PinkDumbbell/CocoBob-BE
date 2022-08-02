@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Override
-    Optional<Product> findById(Long poductId);
+    Optional<Product> findById(Long productId);
 }
