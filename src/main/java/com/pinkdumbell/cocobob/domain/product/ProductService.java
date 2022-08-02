@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,11 @@ public class ProductService {
         return new ProductDetailResponseDto(foundProduct, allProperty);
     }
 
+    public FindAllResponseDto searchProducts(String title, String content, Pageable pageable) {
 
+        return new FindAllResponseDto(
+            productRepository.findByNameContainingOrDescriptionContaining(title, content,
+                pageable));
+
+    }
 }
