@@ -83,5 +83,9 @@ public class ProductSearchSpecification {
             hydrolyticSalmon);
     }
 
+    public static Specification<Product> equalAffco(boolean aafco) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("aafco"), aafco);
+    }
+
 
 }
