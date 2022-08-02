@@ -11,12 +11,12 @@ public class ProductSearchSpecification {
 
     public static Specification<Product> likeName(String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"),
-            name);
+            "%"+name+"%");
     }
 
     public static Specification<Product> likeDescription(String description) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("description"),
-            description);
+            "%"+description+"%");
     }
 
     public static Specification<Product> equalBeef(boolean beef) {
