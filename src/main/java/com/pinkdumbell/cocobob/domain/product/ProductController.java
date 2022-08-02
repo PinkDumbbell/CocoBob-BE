@@ -97,24 +97,7 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search")
-    public ResponseEntity<ProvideAllResponseClass> searchProducts(String title, String content,
-        Pageable pageable) {
-
-        return ResponseEntity.ok(
-            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCTS",
-                "상품 검색 성공", productService.searchProducts(title, content, pageable)));
-    }
-
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "페이지 번호(0...N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "페이지 크기"),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-            value = "정렬(사용법: 컬럼명,ASC|DESC)")
-    })
-    @GetMapping("/search/elastic")
-    public ResponseEntity<ProvideAllResponseClass> elasticSearchProducts(
+    public ResponseEntity<ProvideAllResponseClass> SearchProducts(
         ProductSpecificSearchDto productSpecificSearchDto, Pageable pageable) {
 
         return ResponseEntity.ok(
