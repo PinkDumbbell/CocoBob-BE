@@ -3,23 +3,22 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
+import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.List;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import lombok.RequiredArgsConstructor;
 
-
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
@@ -49,6 +48,13 @@ public class ProductController {
         }
     }
 
+    @ApiOperation(value = "productAll", notes = "전체 상품 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
@@ -65,6 +71,13 @@ public class ProductController {
                 "상품 가져오기 성공", productService.findProductAll(pageable)));
     }
 
+    @ApiOperation(value = "productDetail", notes = "상품 정보 상세 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProductDetailResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId) {
 
