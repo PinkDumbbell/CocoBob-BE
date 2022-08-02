@@ -12,6 +12,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     @Override
     Optional<Product> findById(Long productId);
 
-    Page<Product> findByNameContainingOrDescriptionContaining(String title, String content,
-        Pageable pageable);
 }
