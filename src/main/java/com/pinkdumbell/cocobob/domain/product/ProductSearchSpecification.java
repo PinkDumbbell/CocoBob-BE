@@ -33,7 +33,7 @@ public class ProductSearchSpecification {
     }
 
     public static Specification<Product> equalDuck(boolean duck) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("duck)"), duck);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("duck"), duck);
     }
 
     public static Specification<Product> equalTurkey(boolean turkey) {
