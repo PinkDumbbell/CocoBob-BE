@@ -64,7 +64,7 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("")
-    public ResponseEntity<ProvideAllResponseClass> productAll(Pageable pageable) {
+    public ResponseEntity<ProvideAllResponseClass> provideAllProducts(Pageable pageable) {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
