@@ -4,7 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSearchSpecification {
 
-    public static Specification<Product> equaCode(String code) {
+    public static Specification<Product> equalCode(String code) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("code"),
             code);
     }
@@ -68,7 +68,7 @@ public class ProductSearchSpecification {
             hydrolyticDuck);
     }
 
-    public static Specification<Product> equalHydrolyticturkey(boolean hydrolyticTurkey) {
+    public static Specification<Product> equalHydrolyticTurkey(boolean hydrolyticTurkey) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("hydrolyticTurkey"),
             hydrolyticTurkey);
     }
@@ -83,8 +83,8 @@ public class ProductSearchSpecification {
             hydrolyticSalmon);
     }
 
-    public static Specification<Product> equalAffco(boolean aafco) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("aafco"), aafco);
+    public static Specification<Product> equalAFFCO(boolean aafco) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isAAFCOSatisfied"), aafco);
     }
 
 

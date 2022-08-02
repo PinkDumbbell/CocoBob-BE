@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
@@ -32,6 +34,7 @@ public class ProductController {
 
     private static class ProvideAllResponseClass extends
         CommonResponseDto<FindAllResponseDto> {
+
         public ProvideAllResponseClass(int status, String code, String message,
             FindAllResponseDto data) {
             super(status, code, message, data);
@@ -40,6 +43,7 @@ public class ProductController {
 
     private static class ProductDetailResponseClass extends
         CommonResponseDto<ProductDetailResponseDto> {
+
         public ProductDetailResponseClass(int status, String code, String message,
             ProductDetailResponseDto data) {
             super(status, code, message, data);
@@ -97,7 +101,7 @@ public class ProductController {
         Pageable pageable) {
 
         return ResponseEntity.ok(
-            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
+            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCTS",
                 "상품 검색 성공", productService.searchProducts(title, content, pageable)));
     }
 
@@ -110,11 +114,12 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search/elastic")
-    public ResponseEntity<ProvideAllResponseClass> elasticSearchProducts(String title, String content,
-        Pageable pageable) {
+    public ResponseEntity<ProvideAllResponseClass> elasticSearchProducts(
+        ProductSpecificSearchDto productSpecificSearchDto, Pageable pageable) {
 
         return ResponseEntity.ok(
-            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 검색 성공", productService.searchProducts(title, content, pageable)));
+            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
+                "상품 검색 성공",
+                productService.elasticSearchProducts(productSpecificSearchDto, pageable)));
     }
 }
