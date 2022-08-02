@@ -21,9 +21,9 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void init() {
-        for (int dummy_id = 1; dummy_id < 30; dummy_id++) {
-            Product dummy_product = new Product();
-            productRepository.save(dummy_product);
+        for (int dummyIndex = 1; dummyIndex < 30; dummyIndex++) {
+            Product dummyProduct = new Product();
+            productRepository.save(dummyProduct);
         }
     }
 
