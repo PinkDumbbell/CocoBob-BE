@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -86,4 +87,20 @@ public class ProductController {
                 "상품 가져오기 성공", productService.findProductDetailById(productId)));
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)")
+    })
+    @GetMapping("/search")
+    public ResponseEntity<ProvideAllResponseClass> searchProducts(String title, String content,
+        Pageable pageable) {
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
+                "상품 검색 성공", productService.searchProducts(title, content, pageable)));
+    }
 }
