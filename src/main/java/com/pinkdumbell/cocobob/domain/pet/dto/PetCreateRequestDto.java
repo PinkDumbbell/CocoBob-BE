@@ -1,17 +1,18 @@
 package com.pinkdumbell.cocobob.domain.pet.dto;
 
+import com.pinkdumbell.cocobob.config.annotation.properbirthinfo.ProperBirthInfo;
 import com.pinkdumbell.cocobob.domain.pet.PetSex;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
 @Getter
+@Setter
 public class PetCreateRequestDto {
     @ApiModelProperty(notes = "반려동물 이름", example = "코코", required = true)
     @NotBlank(message = "반려동물의 이름이 필요합니다.")
@@ -19,14 +20,10 @@ public class PetCreateRequestDto {
     @ApiModelProperty(notes = "반려동물 성별", example = "FEMALE", required = true, allowableValues = "MALE, FEMALE")
     @NotNull(message = "반려동물의 성별이 필요합니다.")
     private PetSex sex;
-    @ApiModelProperty(notes = "반려동물 나이(개월 수)", example = "25", required = true)
-    @NotNull(message = "반려동물의 나이(개월 수)가 필요합니다.")
-    @Positive(message = "나이(개월 수)는 0보다 커야합니다.")
-    private Integer age;
-    @ApiModelProperty(notes = "반려동물 생일", example = "1999-12-31", required = false)
-    @PastOrPresent(message = "생일은 과거 또는 현재의 날짜여야 합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birthday;
+    @ApiModelProperty(notes = "나이(개월 수)와 생일을 담는 DTO", required = true)
+    @ProperBirthInfo
+    @Valid
+    private PetCreateRequestAgeDto age;
     @ApiModelProperty(notes = "중성화 여부", example = "true", required = true)
     @NotNull(message = "반려동물의 중성화 여부가 필요합니다.")
     private Boolean isSpayed;
