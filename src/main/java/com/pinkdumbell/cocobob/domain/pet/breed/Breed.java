@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob.domain.pet.breed;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,8 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Entity
 public class Breed {
     @Id
