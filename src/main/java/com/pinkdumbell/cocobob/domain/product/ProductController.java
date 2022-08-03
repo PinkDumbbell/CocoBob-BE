@@ -75,7 +75,7 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search")
-    public ResponseEntity<ProvideAllResponseClass> ç(
+    public ResponseEntity<ProvideAllResponseClass> searchAllProducts(
         ProductSpecificSearchDto productSpecificSearchDto, Pageable pageable) {
 
         return ResponseEntity.ok(
