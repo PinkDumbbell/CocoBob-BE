@@ -64,7 +64,7 @@ public class PetService {
         return new PetCreateResponseDto(pet);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BreedsInfoResponseDto> provideBreedsInfo() {
 
         List<BreedsInfoResponseDto> breedsList = breedRepository.findAll().stream()
