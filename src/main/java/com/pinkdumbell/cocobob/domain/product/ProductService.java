@@ -26,11 +26,6 @@ public class ProductService {
 
     private final PetPropertyRepository petPropertyRepository;
 
-    public FindAllResponseDto findProductAll(Pageable pageable) {
-
-        return new FindAllResponseDto(productRepository.findAll(pageable));
-    }
-
     public ProductDetailResponseDto findProductDetailById(Long productId) {
 
         Product foundProduct = productRepository.findById(productId).orElseThrow(
