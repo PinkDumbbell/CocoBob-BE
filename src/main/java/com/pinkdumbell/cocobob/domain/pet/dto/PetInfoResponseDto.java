@@ -25,6 +25,7 @@ public class PetInfoResponseDto {
     @ApiModelProperty(notes = "나이(개월 수)", example = "30")
     private final Integer age;
     @ApiModelProperty(notes = "생일", example = "2022-06-01")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate birthday;
     @ApiModelProperty(notes = "몸무게", example = "3.4")
     private final Float bodyWeight;
