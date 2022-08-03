@@ -67,6 +67,11 @@ public class PetController {
             petService.register(loginUserInfo, requestDto)));
     }
 
+    @ApiOperation(value = "get all pets related to user", notes = "사용자가 등록한 모든 반려동물 불러오기")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = PetInfoResponseClass.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND", response = ErrorResponse.class)
+    })
     @GetMapping("")
     public ResponseEntity<PetInfoResponseClass> getPets(@LoginUser LoginUserInfo loginUserInfo) {
         return ResponseEntity.ok(new PetInfoResponseClass(HttpStatus.OK.value(),
