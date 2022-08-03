@@ -2,7 +2,6 @@ package com.pinkdumbell.cocobob.domain.pet;
 
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestAgeDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -186,5 +185,15 @@ class PetControllerTest {
         mvc.perform(get("/v1/pets/breeds")).
                 andExpect(status().is2xxSuccessful())
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("사용자의 모든 반려동물을 가져오는 메서드 테스트")
+    void testGetPets() throws Exception {
+        mvc.perform(get("/v1/pets"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.code").value("SUCCESS TO GET PETS"))
+                .andExpect(jsonPath("$.message").value("모든 반려동물 불러오기 성공"));
     }
 }
