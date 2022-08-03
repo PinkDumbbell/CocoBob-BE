@@ -50,29 +50,6 @@ public class ProductController {
         }
     }
 
-    @ApiOperation(value = "productAll", notes = "전체 상품 조회")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
-        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
-        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
-
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-            value = "페이지 번호(0...N)"),
-        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "페이지 크기"),
-        @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-            value = "정렬(사용법: 컬럼명,ASC|DESC)")
-    })
-    @GetMapping("")
-    public ResponseEntity<ProvideAllResponseClass> provideAllProducts(Pageable pageable) {
-
-        return ResponseEntity.ok(
-            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCTS",
-                "상품 가져오기 성공", productService.findProductAll(pageable)));
-    }
-
     @ApiOperation(value = "productDetail", notes = "상품 정보 상세 조회")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ProductDetailResponseClass.class),
@@ -88,6 +65,7 @@ public class ProductController {
                 "상품 가져오기 성공", productService.findProductDetailById(productId)));
     }
 
+    @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
@@ -97,7 +75,7 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search")
-    public ResponseEntity<ProvideAllResponseClass> SearchProducts(
+    public ResponseEntity<ProvideAllResponseClass> ç(
         ProductSpecificSearchDto productSpecificSearchDto, Pageable pageable) {
 
         return ResponseEntity.ok(
