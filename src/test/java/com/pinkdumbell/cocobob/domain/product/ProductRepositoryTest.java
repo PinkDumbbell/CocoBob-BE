@@ -28,18 +28,6 @@ class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자가 설정한 페이지 사이즈, 페이지 넘버, 정렬 기준으로 전체 상품을 페이지로 가져올 수 있다.")
-    void findProductAll() {
-
-        PageRequest pageRequest = PageRequest.of(5, 10, Sort.by("id").descending());
-
-        Page<Product> result = productRepository.findAll(pageRequest);
-
-        Assertions.assertThat(result.getNumber()).isEqualTo(pageRequest.getPageNumber());
-        Assertions.assertThat(result.getSize()).isEqualTo(pageRequest.getPageSize());
-    }
-
-    @Test
     @DisplayName("사용자가 요청한 상품 코드로 상품의 상세 정보 조회가 가능해야 한다.")
     void findProductDetailById() {
 
