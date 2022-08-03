@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +44,12 @@ public class PetController {
         }
     }
 
+    private static class PetInfoResponseClass extends CommonResponseDto<List<PetInfoResponseDto>> {
+        public PetInfoResponseClass(int status, String code, String message, List<PetInfoResponseDto> data) {
+            super(status, code, message, data);
+        }
+    }
+
     @ApiOperation(value = "register pet", notes = "반려동물 등록")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = RegisterResponsClass.class),
@@ -58,6 +65,14 @@ public class PetController {
             "SUCCESS REGISTER",
             "반려동물 등록 정상처리",
             petService.register(loginUserInfo, requestDto)));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<PetInfoResponseClass> getPets(@LoginUser LoginUserInfo loginUserInfo) {
+        return ResponseEntity.ok(new PetInfoResponseClass(HttpStatus.OK.value(),
+        "SUCCESS TO GET PETS",
+        "모든 반려동물 불러오기 성공",
+        petService.getPets(loginUserInfo)));
     }
 
     @ApiOperation(value = "provide breeds info", notes = "반려동물 견종 정보 제공")
