@@ -91,12 +91,6 @@ class PetControllerTest {
                         .param("bodyWeight", String.valueOf(bodyWeight))
                         .param("activityLevel", String.valueOf(activityLevel))
                         .param("breedId", String.valueOf(breedId))
-                        .flashAttr("PetCreateRequestDto", PetCreateRequestDto.builder()
-                                .age(new PetCreateRequestAgeDto(months, birthday))
-                                .bodyWeight(bodyWeight)
-                                .activityLevel(activityLevel)
-                                .breedId(breedId)
-                                .build())
                 )
                 .andReturn();
 
@@ -116,8 +110,6 @@ class PetControllerTest {
     void testProperBirthInfoWithNoAge() throws Exception {
         MvcResult result = mvc.perform(post("/v1/pets")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .flashAttr("PetCreateRequestDto", PetCreateRequestDto.builder()
-                                .build())
                 ).andReturn();
 
         Assertions.assertThat(result.getResponse().getContentAsString())
@@ -133,8 +125,6 @@ class PetControllerTest {
         MvcResult result = mvc.perform(post("/v1/pets")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .param("age.birthday", String.valueOf(birthday))
-                .flashAttr("PetCreateRequestDto", PetCreateRequestDto.builder()
-                        .build())
         ).andReturn();
 
         Assertions.assertThat(result.getResponse().getContentAsString())
@@ -150,8 +140,6 @@ class PetControllerTest {
         MvcResult result = mvc.perform(post("/v1/pets")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .param("age.months", String.valueOf(months))
-                .flashAttr("PetCreateRequestDto", PetCreateRequestDto.builder()
-                        .build())
         ).andReturn();
 
         Assertions.assertThat(result.getResponse().getContentAsString())
