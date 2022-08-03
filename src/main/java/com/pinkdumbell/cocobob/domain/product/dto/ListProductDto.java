@@ -26,6 +26,8 @@ public class ListProductDto {
 
     private String description;
 
+    private boolean isAAFCO;
+
     public ListProductDto(Product product) {
         this.productId = product.getId();
         this.name = product.getName();
@@ -34,6 +36,7 @@ public class ListProductDto {
         this.category = product.getCategory();
         this.thumbnail = product.getThumbnail();
         this.description = product.getDescription();
+        this.isAAFCO = product.getIsAAFCOSatisfied();
     }
 
 }
