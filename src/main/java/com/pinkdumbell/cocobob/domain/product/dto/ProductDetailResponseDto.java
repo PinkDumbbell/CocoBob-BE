@@ -87,11 +87,20 @@ public class ProductDetailResponseDto {
 
     private Boolean hydrolyticSalmon;
 
+    private Boolean aged;
+
+    private Boolean growing;
+
+    private Boolean pregnant;
+
+    private Boolean obesity;
+
+
     private int likeCount;
 
     private List<PetPropertyResponseDto> petProperties;
 
-    public ProductDetailResponseDto(Product product, List<PetPropertyResponseDto> petProperties) {
+    public ProductDetailResponseDto(Product product) {
 
         this.productId = product.getId();
         this.code = product.getCode();
@@ -132,6 +141,9 @@ public class ProductDetailResponseDto {
         this.hydrolyticSalmon = product.getHydrolyticSalmon();
         //추후 추가 예정
         //this.likeCount;
-        this.petProperties = petProperties;
+        this.aged = product.getAged();
+        this.growing = product.getGrowing();
+        this.pregnant = product.getPregnant();
+        this.obesity = product.getObesity();
     }
 }

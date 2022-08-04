@@ -33,12 +33,7 @@ public class ProductService {
                 throw new CustomException(ErrorCode.PRODUCT_NOT_FOUND);
             });
 
-        List<PetPropertyResponseDto> allProperty = petPropertyRepository.findAllByProduct(
-                foundProduct).stream()
-            .map(PetPropertyResponseDto::new).collect(
-                Collectors.toList());
-
-        return new ProductDetailResponseDto(foundProduct, allProperty);
+        return new ProductDetailResponseDto(foundProduct);
     }
 
     public FindAllResponseDto elasticSearchProducts(ProductSpecificSearchDto requestParameter,

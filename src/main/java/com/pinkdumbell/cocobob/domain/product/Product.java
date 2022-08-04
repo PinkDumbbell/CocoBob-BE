@@ -97,4 +97,11 @@ public class Product {
 
     private Boolean hydrolyticSalmon;
 
+    private Boolean aged;
+
+    private Boolean growing;
+
+    private Boolean pregnant;
+
+    private Boolean obesity;
 }

@@ -24,6 +24,7 @@ public class FindAllResponseDto {
     boolean isEmpty;
     List<ListProductDto> productList;
 
+
     public FindAllResponseDto(Page<Product> pages) {
         this.productList = pages.getContent().stream().map(ListProductDto::new).collect(
             Collectors.toList());

@@ -13,20 +13,17 @@ import lombok.NoArgsConstructor;
 public class ListProductDto {
 
     private Long productId;
-
     private String code;
-
     private String name;
-
     private String category;
-
     private Integer price;
-
     private String thumbnail;
-
     private String description;
-
     private boolean isAAFCO;
+    private boolean aged;
+    private boolean growing;
+    private boolean pregnant;
+    private boolean obesity;
 
     public ListProductDto(Product product) {
         this.productId = product.getId();
@@ -37,6 +34,10 @@ public class ListProductDto {
         this.thumbnail = product.getThumbnail();
         this.description = product.getDescription();
         this.isAAFCO = product.getIsAAFCOSatisfied();
+        this.aged = product.getAged();
+        this.growing = product.getGrowing();
+        this.pregnant = product.getPregnant();
+        this.obesity = product.getObesity();
     }
 
 }
