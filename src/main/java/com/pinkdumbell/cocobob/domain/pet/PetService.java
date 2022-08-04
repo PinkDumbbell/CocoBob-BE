@@ -67,7 +67,7 @@ public class PetService {
 
     @Transactional(readOnly = true)
     public List<PetInfoResponseDto> getPets(LoginUserInfo loginUserInfo) {
-        User user = userRepository.findByEmailWithPets(loginUserInfo.getEmail())
+        User user = userRepository.findUserByEmailWithPetDetail(loginUserInfo.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return user.getPets().stream().map(PetInfoResponseDto::new)
