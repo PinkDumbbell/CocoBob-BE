@@ -29,7 +29,7 @@ public class FindAllResponseDto {
     boolean isLast;
     @ApiModelProperty(notes = "마지막 페이지", example = "false")
     boolean isEmpty;
-    @ApiModelProperty(notes = "검색 상품 목록", example = "{},{}...")
+    @ApiModelProperty(notes = "검색 상품 목록", example = "[{},{}...]")
     List<ListProductDto> productList;
 
 
