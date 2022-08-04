@@ -1,11 +1,8 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
-import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +37,12 @@ public class PetController {
 
         public ProvideBreedsResponsClass(int status, String code, String message,
             List<BreedsInfoResponseDto> data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private static class PetDetailResponseClass extends CommonResponseDto<PetDetailResponseDto> {
+        public PetDetailResponseClass(int status, String code, String message, PetDetailResponseDto data) {
             super(status, code, message, data);
         }
     }
@@ -94,5 +97,17 @@ public class PetController {
             "SUCCESS PROVIDE BREEDS",
             "반려 견종 가져오기 처리 성공",
             petService.provideBreedsInfo()));
+    }
+
+    @GetMapping("/{petId}")
+    public ResponseEntity<PetDetailResponseClass> getPetDetail(
+            @PathVariable("petId") Long petId,
+            @LoginUser LoginUserInfo loginUserInfo) {
+        return ResponseEntity.ok(new PetDetailResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS TO GET PET DETAIL",
+                "반려동물 상세정보 가져오기 성공",
+                petService.getPetDetail(petId, loginUserInfo)
+        ));
     }
 }
