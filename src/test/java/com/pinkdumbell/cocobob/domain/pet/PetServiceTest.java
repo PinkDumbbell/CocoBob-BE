@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,12 +26,10 @@ public class PetServiceTest {
     @InjectMocks
     PetService petService;
     @Mock
-    PetRepository petRepository;
-    @Mock
     UserRepository userRepository;
 
     @Test
-    @DisplayName("사용자의 반려트물 가져오는 메서드 테스")
+    @DisplayName("사용자의 반려동물을 불러오는 메서드 테스트")
     void testGetPets() {
         String email = "test@test.com";
         User user = User.builder()
@@ -39,19 +38,13 @@ public class PetServiceTest {
         Breed breed = Breed.builder()
                 .name("진돗개")
                 .build();
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(petRepository.findAllByUserIdWithBreed(any())).thenReturn(
-                List.of(
-                        Pet.builder()
-                                .user(user)
-                                .breed(breed)
-                                .build(),
-                        Pet.builder()
-                                .user(user)
-                                .breed(breed)
-                                .build()
-                )
-        );
+        user.addPets(Pet.builder()
+                .breed(breed)
+                .build());
+        user.addPets(Pet.builder()
+                .breed(breed)
+                .build());
+        given(userRepository.findUserByEmailWithPetDetail(user.getEmail())).willReturn(Optional.ofNullable(user));
         List<PetInfoResponseDto> result = petService.getPets(new LoginUserInfo(email));
         Assertions.assertThat(result.size()).isEqualTo(2);
         Assertions.assertThat(result.stream().map(PetInfoResponseDto::getBreedName).collect(Collectors.toList()))
