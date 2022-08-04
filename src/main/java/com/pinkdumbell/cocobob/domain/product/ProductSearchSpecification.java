@@ -6,8 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class ProductSearchSpecification {
 
     public static Specification<Product> equalCode(String code) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("code"),
-            code);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("code"), code);
     }
 
     public static Specification<Product> likeName(String name) {
@@ -84,10 +83,29 @@ public class ProductSearchSpecification {
             hydrolyticSalmon);
     }
 
-    public static Specification<Product> equalAFFCO(boolean aafco) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isAAFCOSatisfied"),
-            aafco);
+    public static Specification<Product> equalAFFCO(boolean affco) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isAAFCOSatisfied"), affco);
     }
+
+    public static Specification<Product> equalAged(boolean aged) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("aged"), aged);
+    }
+
+    public static Specification<Product> equalGrowing(boolean growing) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("growing"),
+            growing);
+    }
+
+    public static Specification<Product> equalPregnant(boolean pregnant) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("pregnant"),
+            pregnant);
+    }
+
+    public static Specification<Product> equalObesity(boolean obesity) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("obesity"),
+            obesity);
+    }
+
 
     public static Specification<Product> makeProductSpecification(
         ProductSpecificSearchDto requestParameter) {
@@ -145,8 +163,8 @@ public class ProductSearchSpecification {
         }
 
         if (requestParameter.getHydrolyticChicken() != null) {
-            spec = spec.and(equalHydrolyticChicken(
-                requestParameter.getHydrolyticChicken())); // 가수분해 닭고기 포함 유무
+            spec = spec.and(
+                equalHydrolyticChicken(requestParameter.getHydrolyticChicken())); // 가수분해 닭고기 포함 유무
         }
 
         if (requestParameter.getHydrolyticDuck() != null) {
@@ -169,8 +187,24 @@ public class ProductSearchSpecification {
                 equalHydrolyticSalmon(requestParameter.getHydrolyticSalmon())); // 가수분해 연어 포함 유무
         }
 
-        if (requestParameter.getAAFCO() != null) {
-            spec = spec.and(equalAFFCO(requestParameter.getAAFCO()));
+        if (requestParameter.getAafco() != null) {
+            spec = spec.and(equalAFFCO(requestParameter.getAafco()));
+        }
+
+        if (requestParameter.getAged() != null) {
+            spec = spec.and(equalAged(requestParameter.getAged()));
+        }
+
+        if (requestParameter.getPregnant() != null) {
+            spec = spec.and(equalPregnant(requestParameter.getPregnant()));
+        }
+
+        if (requestParameter.getGrowing() != null) {
+            spec = spec.and(equalGrowing(requestParameter.getGrowing()));
+        }
+
+        if (requestParameter.getObesity() != null) {
+            spec = spec.and(equalObesity(requestParameter.getObesity()));
         }
 
         return spec;

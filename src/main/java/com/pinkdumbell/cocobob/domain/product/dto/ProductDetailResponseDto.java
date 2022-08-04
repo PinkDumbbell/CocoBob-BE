@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import com.pinkdumbell.cocobob.domain.product.Product;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,85 +14,91 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductDetailResponseDto {
 
+    @ApiModelProperty(notes = "상품 Id", example = "1")
     private Long productId;
-
+    @ApiModelProperty(notes = "상품 코드", example = "101202")
     private String code;
-
+    @ApiModelProperty(notes = "상품 카테고리", example = "101202")
     private String category;
-
+    @ApiModelProperty(notes = "상품 이름", example = "하림펫푸드 더리얼 밀 그레인프리 닭고기 60g")
     private String name;
-
+    @ApiModelProperty(notes = "상품 가격", example = "13260")
     private Integer price;
-
+    @ApiModelProperty(notes = "상품 이미지", example = "상품 이미지 URL")
     private String productImage;
-
+    @ApiModelProperty(notes = "상품 상세 이미지", example = "상품 상세 이미지 URL")
     private String productDetailImage;
-
+    @ApiModelProperty(notes = "상품 설명", example = "펫탈로그의 사료는...")
     private String description;
-
+    @ApiModelProperty(notes = "조단백 함량", example = "24")
     private Float protein;
-
+    @ApiModelProperty(notes = "1000Kcal당 조단백 양", example = "71.55")
     private Double amountOfProteinPerMcal;
-
+    @ApiModelProperty(notes = "조지방 함량", example = "10")
     private Float fat;
-
+    @ApiModelProperty(notes = "1000Kcal당 조지방 양", example = "29.81")
     private Double amountOfFatPerMcal;
-
+    @ApiModelProperty(notes = "조섬유 함량", example = "8")
     private Float fiber;
-
+    @ApiModelProperty(notes = "1000Kcal당 조섬유 양", example = "23.85")
     private Double amountOfFiberPerMcal;
-
+    @ApiModelProperty(notes = "조회분 함량", example = "10")
     private Float mineral;
-
+    @ApiModelProperty(notes = "1000Kcal당 조회분 양", example = "29.81")
     private Double amountOfMineralPerMcal;
-
+    @ApiModelProperty(notes = "칼슘 함량", example = "0.8")
     private Float calcium;
-
+    @ApiModelProperty(notes = "1000Kcal당 칼슘 양", example = "2.38")
     private Double amountOfCalciumPerMcal;
-
+    @ApiModelProperty(notes = "인 함량", example = "0.6")
     private Float phosphorus;
-
+    @ApiModelProperty(notes = "1000Kcal당 인 양", example = "1.78")
     private Double amountOfPhosphorusPerMcal;
-
+    @ApiModelProperty(notes = "수분", example = "11")
     private Float moisture;
-
+    @ApiModelProperty(notes = "Kg딩 총 칼로리", example = "3353.93")
     private Double kcalPerKg;
-
+    @ApiModelProperty(notes = "AAFCO 기준 충족", example = "true")
     private Boolean isAAFCOSatisfied;
-
+    @ApiModelProperty(notes = "소고기 햠유", example = "ture")
     private Boolean beef;
-
+    @ApiModelProperty(notes = "양고기 햠유", example = "false")
     private Boolean mutton;
-
+    @ApiModelProperty(notes = "닭고기 햠유", example = "ture")
     private Boolean chicken;
-
+    @ApiModelProperty(notes = "오리고기 햠유", example = "false")
     private Boolean duck;
-
+    @ApiModelProperty(notes = "칠면조 햠유", example = "false")
     private Boolean turkey;
-
+    @ApiModelProperty(notes = "돼지고기 햠유", example = "ture")
     private Boolean meat;
-
+    @ApiModelProperty(notes = "연어 햠유", example = "false")
     private Boolean salmon;
-
+    @ApiModelProperty(notes = "가수분해 소고기 햠유", example = "false")
     private Boolean hydrolyticBeef;
-
+    @ApiModelProperty(notes = "가수분해 양고기 햠유", example = "false")
     private Boolean hydrolyticMutton;
-
+    @ApiModelProperty(notes = "가수분해 닭고기 햠유", example = "false")
     private Boolean hydrolyticChicken;
-
+    @ApiModelProperty(notes = "가수분해 오리고기 햠유", example = "false")
     private Boolean hydrolyticDuck;
-
+    @ApiModelProperty(notes = "가수분해 칠면조 햠유", example = "false")
     private Boolean hydrolyticTurkey;
-
+    @ApiModelProperty(notes = "가수분해 돼지고기 햠유", example = "false")
     private Boolean hydrolyticMeat;
-
+    @ApiModelProperty(notes = "가수분해 연어고기 햠유", example = "false")
     private Boolean hydrolyticSalmon;
-
-    private int likeCount;
-
-    private List<PetPropertyResponseDto> petProperties;
-
-    public ProductDetailResponseDto(Product product, List<PetPropertyResponseDto> petProperties) {
+    @ApiModelProperty(notes = "노령견 기준 충족", example = "false")
+    private Boolean aged;
+    @ApiModelProperty(notes = "성장기 기준 충족", example = "true")
+    private Boolean growing;
+    @ApiModelProperty(notes = "임신/수유 기준 충족", example = "false")
+    private Boolean pregnant;
+    @ApiModelProperty(notes = "비만견 기준 충족", example = "false")
+    private Boolean obesity;
+    // 추후 추가예정
+    // private int likeCount;
+    public ProductDetailResponseDto(Product product) {
 
         this.productId = product.getId();
         this.code = product.getCode();
@@ -132,6 +139,9 @@ public class ProductDetailResponseDto {
         this.hydrolyticSalmon = product.getHydrolyticSalmon();
         //추후 추가 예정
         //this.likeCount;
-        this.petProperties = petProperties;
+        this.aged = product.getAged();
+        this.growing = product.getGrowing();
+        this.pregnant = product.getPregnant();
+        this.obesity = product.getObesity();
     }
 }
