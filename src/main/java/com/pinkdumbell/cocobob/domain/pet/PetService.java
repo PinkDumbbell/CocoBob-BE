@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
@@ -62,6 +63,15 @@ public class PetService {
                 imageService.resizeImage(requestDto.getPetImage(), RESIZE_TARGET_WIDTH)));
         }
         return new PetCreateResponseDto(pet);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PetInfoResponseDto> getPets(LoginUserInfo loginUserInfo) {
+        User user = userRepository.findUserByEmailWithPetDetail(loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return user.getPets().stream().map(PetInfoResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
