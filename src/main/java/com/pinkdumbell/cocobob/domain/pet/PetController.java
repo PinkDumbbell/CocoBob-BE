@@ -99,6 +99,11 @@ public class PetController {
             petService.provideBreedsInfo()));
     }
 
+    @ApiOperation(value = "get pet detail", notes = "반려동물 상세정보 불러오기")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = PetDetailResponseDto.class),
+            @ApiResponse(code = 404, message = "PET_NOT_FOUND", response = ErrorResponse.class)
+    })
     @GetMapping("/{petId}")
     public ResponseEntity<PetDetailResponseClass> getPetDetail(
             @PathVariable("petId") Long petId,
