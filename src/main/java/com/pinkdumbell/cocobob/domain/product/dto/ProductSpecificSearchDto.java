@@ -17,7 +17,7 @@ public class ProductSpecificSearchDto {
     @ApiModelProperty(notes = "상품 내용", example = "눈물 자국")
     private String description;
     @ApiModelProperty(notes = "AFFCO 기준 충족", example = "true")
-    private Boolean AAFCO;
+    private Boolean aafco;
     @ApiModelProperty(notes = "소고기 햠유", example = "ture")
     private Boolean beef;
     @ApiModelProperty(notes = "양고기 햠유", example = "false")

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 
 @Getter
@@ -30,11 +29,11 @@ public class FindAllResponseDto {
     @ApiModelProperty(notes = "마지막 페이지", example = "false")
     boolean isEmpty;
     @ApiModelProperty(notes = "검색 상품 목록", example = "[{},{}...]")
-    List<ListProductDto> productList;
+    List<ProductSimpleResponseDto> productList;
 
 
     public FindAllResponseDto(Page<Product> pages) {
-        this.productList = pages.getContent().stream().map(ListProductDto::new).collect(
+        this.productList = pages.getContent().stream().map(ProductSimpleResponseDto::new).collect(
             Collectors.toList());
         this.totalPages = pages.getTotalPages();
         this.totalElements = pages.getTotalElements();

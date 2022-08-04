@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ListProductDto {
+public class ProductSimpleResponseDto {
 
     @ApiModelProperty(notes = "상품 Id", example = "1")
     private Long productId;
@@ -27,18 +27,18 @@ public class ListProductDto {
     private String thumbnail;
     @ApiModelProperty(notes = "상품 설명", example = "펫탈로그의 사료는...")
     private String description;
-    @ApiModelProperty(notes = "AAFCO 기준 만족", example = "True")
-    private boolean isAAFCO;
-    @ApiModelProperty(notes = "노령견 기준 만족", example = "True")
+    @ApiModelProperty(notes = "AAFCO 기준 만족", example = "true")
+    private Boolean isAAFCOSatisfied;
+    @ApiModelProperty(notes = "노령견 기준 만족", example = "true")
     private boolean aged;
-    @ApiModelProperty(notes = "성장기 기준 만족", example = "True")
+    @ApiModelProperty(notes = "성장기 기준 만족", example = "true")
     private boolean growing;
-    @ApiModelProperty(notes = "임신/수유 기준 만족", example = "True")
+    @ApiModelProperty(notes = "임신/수유 기준 만족", example = "true")
     private boolean pregnant;
-    @ApiModelProperty(notes = "비만견 기준 만족", example = "True")
+    @ApiModelProperty(notes = "비만견 기준 만족", example = "true")
     private boolean obesity;
 
-    public ListProductDto(Product product) {
+    public ProductSimpleResponseDto(Product product) {
         this.productId = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();
@@ -46,7 +46,7 @@ public class ListProductDto {
         this.category = product.getCategory();
         this.thumbnail = product.getThumbnail();
         this.description = product.getDescription();
-        this.isAAFCO = product.getIsAAFCOSatisfied();
+        this.isAAFCOSatisfied = product.getIsAAFCOSatisfied();
         this.aged = product.getAged();
         this.growing = product.getGrowing();
         this.pregnant = product.getPregnant();

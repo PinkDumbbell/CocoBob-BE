@@ -187,8 +187,8 @@ public class ProductSearchSpecification {
                 equalHydrolyticSalmon(requestParameter.getHydrolyticSalmon())); // 가수분해 연어 포함 유무
         }
 
-        if (requestParameter.getAAFCO() != null) {
-            spec = spec.and(equalAFFCO(requestParameter.getAAFCO()));
+        if (requestParameter.getAafco() != null) {
+            spec = spec.and(equalAFFCO(requestParameter.getAafco()));
         }
 
         if (requestParameter.getAged() != null) {
