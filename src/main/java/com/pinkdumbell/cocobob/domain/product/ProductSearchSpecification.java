@@ -84,7 +84,7 @@ public class ProductSearchSpecification {
     }
 
     public static Specification<Product> equalAFFCO(boolean affco) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("affco"), affco);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("isAAFCOSatisfied"), affco);
     }
 
     public static Specification<Product> equalAged(boolean aged) {
@@ -185,6 +185,10 @@ public class ProductSearchSpecification {
         if (requestParameter.getHydrolyticSalmon() != null) {
             spec = spec.and(
                 equalHydrolyticSalmon(requestParameter.getHydrolyticSalmon())); // 가수분해 연어 포함 유무
+        }
+
+        if (requestParameter.getAAFCO() != null) {
+            spec = spec.and(equalAFFCO(requestParameter.getAAFCO()));
         }
 
         if (requestParameter.getAged() != null) {
