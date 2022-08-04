@@ -196,4 +196,14 @@ class PetControllerTest {
                 .andExpect(jsonPath("$.code").value("SUCCESS TO GET PETS"))
                 .andExpect(jsonPath("$.message").value("모든 반려동물 불러오기 성공"));
     }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("반려동물 상세정보를 가져오는 메서드 테스트")
+    void testGetPetDetail() throws Exception {
+        mvc.perform(get("/v1/pets/1"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.code").value("SUCCESS TO GET PET DETAIL"))
+                .andExpect(jsonPath("$.message").value("반려동물 상세정보 가져오기 성공"));
+    }
 }

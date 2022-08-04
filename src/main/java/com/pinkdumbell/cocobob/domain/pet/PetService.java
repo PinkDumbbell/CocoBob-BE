@@ -2,10 +2,7 @@ package com.pinkdumbell.cocobob.domain.pet;
 
 import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
-import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
@@ -84,5 +81,11 @@ public class PetService {
             ).collect(Collectors.toList());
 
         return breedsList;
+    }
+
+    @Transactional(readOnly = true)
+    public PetDetailResponseDto getPetDetail(Long petId, LoginUserInfo loginUserInfo) {
+        return new PetDetailResponseDto(petRepository.findByIdAndUserEmail(petId, loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)));
     }
 }

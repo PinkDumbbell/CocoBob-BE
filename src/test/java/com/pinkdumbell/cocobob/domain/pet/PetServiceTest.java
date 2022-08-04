@@ -1,6 +1,11 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
+import com.pinkdumbell.cocobob.domain.pet.breed.BreedSize;
+import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
@@ -27,6 +32,8 @@ public class PetServiceTest {
     PetService petService;
     @Mock
     UserRepository userRepository;
+    @Mock
+    PetRepository petRepository;
 
     @Test
     @DisplayName("사용자의 반려동물을 불러오는 메서드 테스트")
@@ -49,5 +56,27 @@ public class PetServiceTest {
         Assertions.assertThat(result.size()).isEqualTo(2);
         Assertions.assertThat(result.stream().map(PetInfoResponseDto::getBreedName).collect(Collectors.toList()))
                 .isEqualTo(Arrays.asList("진돗개", "진돗개"));
+    }
+
+    @Test
+    @DisplayName("반려동물 아이디와 사용자 이메일을 통해 반려동물 상세정보를 조회할 수 있다.")
+    void testGetPetDetail() throws JsonProcessingException {
+        Breed breed = Breed.builder()
+                .id(1L)
+                .name("진돗개")
+                .size(BreedSize.대형)
+                .build();
+        Pet pet = Pet.builder()
+                .name("코코")
+                .breed(breed)
+                .build();
+        given(petRepository.findByIdAndUserEmail(anyLong(), anyString()))
+                .willReturn(Optional.ofNullable(pet));
+
+        PetDetailResponseDto result = petService.getPetDetail(1L, new LoginUserInfo("test@test.com"));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Assertions.assertThat(result.getName()).isEqualTo("코코");
+        Assertions.assertThat(objectMapper.writeValueAsString(result.getBreedInfo())).isEqualTo(objectMapper.writeValueAsString(new BreedsInfoResponseDto(breed)));
     }
 }
