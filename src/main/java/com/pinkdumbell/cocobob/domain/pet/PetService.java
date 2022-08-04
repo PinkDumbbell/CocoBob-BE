@@ -67,11 +67,10 @@ public class PetService {
 
     @Transactional(readOnly = true)
     public List<PetInfoResponseDto> getPets(LoginUserInfo loginUserInfo) {
-        User user = userRepository.findByEmail(loginUserInfo.getEmail())
+        User user = userRepository.findByEmailWithPets(loginUserInfo.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        List<Pet> pets = petRepository.findAllByUserIdWithBreed(user.getId());
 
-        return pets.stream().map(PetInfoResponseDto::new)
+        return user.getPets().stream().map(PetInfoResponseDto::new)
                 .collect(Collectors.toList());
     }
 
