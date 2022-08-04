@@ -94,12 +94,8 @@ public class ProductDetailResponseDto {
     private Boolean pregnant;
 
     private Boolean obesity;
-
-
-    private int likeCount;
-
-    private List<PetPropertyResponseDto> petProperties;
-
+    // 추후 추가예정
+    // private int likeCount;
     public ProductDetailResponseDto(Product product) {
 
         this.productId = product.getId();
