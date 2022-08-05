@@ -4,6 +4,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     public ProductDetailResponseDto findProductDetailById(Long productId) {
 
@@ -34,6 +36,13 @@ public class ProductService {
 
         return new FindAllResponseDto(productRepository.findAll(
             ProductSearchSpecification.makeProductSpecification(requestParameter), pageable));
+
+    }
+
+    public FindAllResponseDto queryDslSearchProducts(ProductSpecificSearchDto requestParameter,String email,
+        Pageable pageable) {
+        Long userId = userRepository.findByEmail(email).get().getId();
+        return new FindAllResponseDto(productRepository.findAllWithLikes(requestParameter,userId,pageable));
 
     }
 }
