@@ -115,4 +115,18 @@ public class PetController {
                 petService.getPetDetail(petId, loginUserInfo)
         ));
     }
+
+    @PutMapping("/{petId}")
+    public ResponseEntity<RegisterResponsClass> updatePet(
+            @PathVariable("petId") Long petId,
+            @LoginUser LoginUserInfo loginUserInfo,
+            @ModelAttribute @Valid PetUpdateRequestDto requestDto) {
+
+        return ResponseEntity.ok(new RegisterResponsClass(
+                HttpStatus.OK.value(),
+                "SUCCESS TO UPDATE PET INFO",
+                "반려동물 정보 수정 성공",
+                petService.updatePet(petId, loginUserInfo, requestDto)
+        ));
+    }
 }
