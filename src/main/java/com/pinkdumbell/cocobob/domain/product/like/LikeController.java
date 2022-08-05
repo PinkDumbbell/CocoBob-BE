@@ -25,10 +25,12 @@ public class LikeController {
     @PostMapping("")
     public ResponseEntity<CommonResponseDto> like(@RequestBody LikeRequestDto likeRequestDto) {
 
+        likeService.like(likeRequestDto);
+
         return ResponseEntity.ok(CommonResponseDto.builder()
             .status(HttpStatus.OK.value()).
-            code("Update Password Success").
-            message("비밀번호가 성공적으로 변경되었습니다.").
+            code("Like Product Success").
+            message("좋아요 성공").
             data(null).
             build());
     }
@@ -36,10 +38,12 @@ public class LikeController {
     @DeleteMapping("")
     public ResponseEntity<CommonResponseDto> unLike(@RequestBody LikeRequestDto likeRequestDto) {
 
+        likeService.unLike(likeRequestDto);
+
         return ResponseEntity.ok(CommonResponseDto.builder()
             .status(HttpStatus.OK.value()).
-            code("Update Password Success").
-            message("비밀번호가 성공적으로 변경되었습니다.").
+            code("Unlike Product Success").
+            message("좋아요 해제 성공").
             data(null).
             build());
     }
