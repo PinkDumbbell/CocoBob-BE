@@ -12,7 +12,9 @@ import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -29,36 +31,20 @@ public class PetService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     final int RESIZE_TARGET_WIDTH = 300;
+    private final String PET_IMAGE_DIR = "petImage";
+    private final String PET_THUMBNAIL_DIR = "petImage/thumbnail";
 
     @Transactional
     public PetCreateResponseDto register(LoginUserInfo loginUserInfo,
         PetCreateRequestDto requestDto) {
         User user = userRepository.findByEmail(loginUserInfo.getEmail())
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Pet pet = petRepository.save(Pet.builder()
-            .name(requestDto.getName())
-            .sex(requestDto.getSex())
-            .age(requestDto.getAge().getMonths())
-            .birthday(requestDto.getAge().getBirthday())
-            .isSpayed(requestDto.getIsSpayed())
-            .isPregnant(requestDto.getIsPregnant())
-            .bodyWeight(requestDto.getBodyWeight())
-            .activityLevel(requestDto.getActivityLevel())
-            .user(user)
-            .breed(breedRepository.findById(requestDto.getBreedId())
-                .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
-            .build());
-        user.addPets(pet);
+        Pet pet = savePet(requestDto, user);
         Optional<Pet> representativePet = Optional.ofNullable(user.getRepresentativePet());
         if (representativePet.isEmpty()) {
             user.updateRepresentativePet(pet);
         }
-        if (requestDto.getPetImage() != null) {
-            petImageRepository.save(new PetImage(
-                imageService.saveImage(requestDto.getPetImage()), pet));
-            pet.setThumbnailPath(imageService.saveImage(
-                imageService.resizeImage(requestDto.getPetImage(), RESIZE_TARGET_WIDTH)));
-        }
+        saveImage(requestDto.getPetImage(), pet);
         return new PetCreateResponseDto(pet);
     }
 
@@ -87,5 +73,106 @@ public class PetService {
     public PetDetailResponseDto getPetDetail(Long petId, LoginUserInfo loginUserInfo) {
         return new PetDetailResponseDto(petRepository.findByIdAndUserEmail(petId, loginUserInfo.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)));
+    }
+
+    @Transactional
+    public PetCreateResponseDto updatePet(Long petId, LoginUserInfo loginUserInfo, PetUpdateRequestDto requestDto) {
+        Pet pet = petRepository.findByIdAndUserEmail(petId, loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+
+        updatePetInfo(pet, requestDto);
+
+        Optional<PetImage> petImage = petImageRepository.findPetImageByPet(pet);
+        if (requestDto.getPetImage() != null) {
+            updateImage(requestDto.getPetImage(), petImage, pet);
+        } else {
+            if (requestDto.getIsImageJustDeleted()) {
+                deleteImage(petImage, pet);
+            }
+        }
+
+        return new PetCreateResponseDto(pet);
+    }
+
+    private String createImageName(String prefix, Long petId) {
+        return prefix + "/" + petId;
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Pet savePet(PetCreateRequestDto requestDto, User user) {
+        Pet pet = petRepository.save(Pet.builder()
+                .name(requestDto.getName())
+                .sex(requestDto.getSex())
+                .age(requestDto.getAge().getMonths())
+                .birthday(requestDto.getAge().getBirthday())
+                .isSpayed(requestDto.getIsSpayed())
+                .isPregnant(requestDto.getIsPregnant())
+                .bodyWeight(requestDto.getBodyWeight())
+                .activityLevel(requestDto.getActivityLevel())
+                .user(user)
+                .breed(breedRepository.findById(requestDto.getBreedId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
+                .build());
+        user.addPets(pet);
+        return pet;
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void saveImage(MultipartFile image, Pet pet) {
+        if (image != null) {
+            petImageRepository.save(new PetImage(
+                    imageService.saveImage(
+                            image,
+                            createImageName(PET_IMAGE_DIR, pet.getId())),
+                    pet
+            ));
+            pet.setThumbnailPath(imageService.saveImage(
+                    imageService.resizeImage(
+                            image, RESIZE_TARGET_WIDTH),
+                    createImageName(PET_THUMBNAIL_DIR, pet.getId())));
+        }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void updatePetInfo(Pet pet, PetUpdateRequestDto requestDto) {
+        if (pet.getBreed().getId() == requestDto.getBreedId()) {
+            pet.update(requestDto, pet.getBreed());
+        } else {
+            pet.update(
+                    requestDto,
+                    breedRepository.findById(requestDto.getBreedId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND))
+            );
+        }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void updateImage(MultipartFile newImage,Optional<PetImage> petImage, Pet pet) {
+        Long petId = pet.getId();
+        if (petImage.isPresent()) {
+            String postfix = "/" + petId;
+            imageService.deleteImage(PET_IMAGE_DIR + postfix);
+            imageService.deleteImage(PET_THUMBNAIL_DIR + postfix);
+            imageService.saveImage(newImage, PET_IMAGE_DIR + postfix);
+            imageService.saveImage(
+                    imageService.resizeImage(newImage, RESIZE_TARGET_WIDTH),
+                    createImageName(PET_THUMBNAIL_DIR, petId));
+        } else {
+            String imageName = createImageName(PET_IMAGE_DIR, petId);
+            petImageRepository.save(new PetImage(
+                    imageService.saveImage(newImage, imageName),
+                    pet
+            ));
+            pet.setThumbnailPath(createImageName(PET_THUMBNAIL_DIR, petId));
+        }
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void deleteImage(Optional<PetImage> petImage, Pet pet) {
+        Long petId = pet.getId();
+        imageService.deleteImage(PET_IMAGE_DIR + "/" + petId);
+        imageService.deleteImage(PET_THUMBNAIL_DIR + "/" + petId);
+        petImageRepository.delete(petImage.get());
+        pet.setThumbnailPath(null);
     }
 }
