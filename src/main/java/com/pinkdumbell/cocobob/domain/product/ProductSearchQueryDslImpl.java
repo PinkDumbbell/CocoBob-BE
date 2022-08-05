@@ -31,14 +31,17 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
 
         List<ProductSimpleResponseDto> result = jpaQueryFactory.select(
                 Projections.constructor(ProductSimpleResponseDto.class,
-                    qProduct.id, qProduct.code, qProduct.name, qProduct.category, qProduct.price,
-                    qProduct.thumbnail, qProduct.description, qProduct.isAAFCOSatisfied, qProduct.aged,
-                    qProduct.pregnant,
-                    ExpressionUtils.as(JPAExpressions.select(qLike.likeId.count())
+                    qProduct.id.as("productId"), qProduct.code.as("code"), qProduct.name.as("name"),
+                    qProduct.category.as("category"), qProduct.price.as("price"),
+                    qProduct.thumbnail.as("thumbnail"), qProduct.description.as("description"),
+                    qProduct.isAAFCOSatisfied.as("isAAFCOSatisfied"), qProduct.aged.as("aged"),
+                    qProduct.growing.as("growing"), qProduct.pregnant.as("pregnant"),
+                    qProduct.obesity.as("obesity"),
+                    ExpressionUtils.as(JPAExpressions.select(qLike.count())
                         .from(qLike)
                         .where(qLike.product.eq(qProduct)), "likes"),
                     ExpressionUtils.as(
-                        JPAExpressions.select(qLike.likeId.isNotNull())
+                        JPAExpressions.select(qLike.isNotNull())
                             .from(qLike)
                             .where(qLike.user.id.eq(userId)), "isUserLike")))
             .from(qProduct)
@@ -48,6 +51,6 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .limit(pageable.getPageSize())
             .fetch();
 
-        return new PageImpl <>(result,pageable,result.size());
+        return new PageImpl<>(result, pageable, result.size());
     }
 }

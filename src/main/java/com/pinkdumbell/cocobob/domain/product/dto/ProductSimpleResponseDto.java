@@ -38,9 +38,9 @@ public class ProductSimpleResponseDto {
     @ApiModelProperty(notes = "비만견 기준 만족", example = "true")
     private boolean obesity;
     @ApiModelProperty(notes = "좋아요 수", example = "12312")
-    private int likes;
+    private Long likes;
     @ApiModelProperty(notes = "사용자가 좋아요 누른 게시물", example = "false")
-    private int isUserLike;
+    private boolean isUserLike;
 
     public ProductSimpleResponseDto(Product product) {
         this.productId = product.getId();
@@ -56,5 +56,6 @@ public class ProductSimpleResponseDto {
         this.pregnant = product.getPregnant();
         this.obesity = product.getObesity();
     }
+
 
 }
