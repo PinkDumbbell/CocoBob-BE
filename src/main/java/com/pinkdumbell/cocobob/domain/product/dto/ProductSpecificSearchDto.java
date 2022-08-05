@@ -54,4 +54,7 @@ public class ProductSpecificSearchDto {
     private Boolean pregnant;
     @ApiModelProperty(notes = "비만견 기준 충족", example = "false")
     private Boolean obesity;
+    @ApiModelProperty(notes = "정렬 기준", example = "PRICE,ASC | LIKE,DESC ")
+    private String sortCriteria;
+
 }

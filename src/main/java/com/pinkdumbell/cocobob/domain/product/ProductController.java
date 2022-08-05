@@ -90,7 +90,9 @@ public class ProductController {
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-            value = "페이지 크기")
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search/likes")
     public ResponseEntity<ProvideAllResponseClass> searchAllProductsWithLikes(
