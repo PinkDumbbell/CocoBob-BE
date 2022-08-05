@@ -60,11 +60,12 @@ public class ProductController {
 
     })
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId) {
+    public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId,
+        @LoginUser LoginUserInfo loginUserInfo) {
 
         return ResponseEntity.ok(
             new ProductDetailResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCT",
-                "상품 가져오기 성공", productService.findProductDetailById(productId)));
+                "상품 가져오기 성공", productService.findProductDetailById(productId,loginUserInfo.getEmail())));
     }
 
     @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
@@ -85,6 +86,7 @@ public class ProductController {
                 "상품 검색 성공",
                 productService.elasticSearchProducts(productSpecificSearchDto, pageable)));
     }
+
     @ApiOperation(value = "searchAllProductsWithLikes", notes = "상품 정보 조회(좋아요 갯수와 사용자가 좋아하는 것도 표시)")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
