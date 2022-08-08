@@ -1,9 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily.dto;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
