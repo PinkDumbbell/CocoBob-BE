@@ -4,7 +4,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 
 import com.querydsl.core.BooleanBuilder;
 
-public class ProductPedicate {
+public class ProductPredicate {
 
     public static BooleanBuilder makeProductBooleanBuilder(
         ProductSpecificSearchDto requestParameter) {

@@ -51,7 +51,7 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         "isUserLike")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(ProductPedicate.makeProductBooleanBuilder(productSpecificSearchDto));
+            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchDto));
 
         if (productSpecificSearchDto.getSortCriteria() != null) {
             String sortCriteria = productSpecificSearchDto.getSortCriteria();
