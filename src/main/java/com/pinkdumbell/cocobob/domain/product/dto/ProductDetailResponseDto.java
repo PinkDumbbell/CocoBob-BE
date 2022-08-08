@@ -101,7 +101,7 @@ public class ProductDetailResponseDto {
     @ApiModelProperty(notes = "상품 좋아요 수", example = "100")
     private Long likes;
     @ApiModelProperty(notes = "유저가 좋아한 상품인지", example = "false")
-    private boolean isUserLike;
+    private Boolean isUserLike;
 
     public ProductDetailResponseDto(Product product, Long likes, boolean isUserLike) {
 
@@ -142,7 +142,7 @@ public class ProductDetailResponseDto {
         this.hydrolyticTurkey = product.getHydrolyticTurkey();
         this.hydrolyticMeat = product.getHydrolyticMeat();
         this.hydrolyticSalmon = product.getHydrolyticSalmon();
-        this.likes =likes;
+        this.likes = likes;
         this.isUserLike = isUserLike;
         this.aged = product.getAged();
         this.growing = product.getGrowing();
