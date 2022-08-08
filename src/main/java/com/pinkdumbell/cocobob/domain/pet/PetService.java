@@ -100,19 +100,10 @@ public class PetService {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Pet savePet(PetCreateRequestDto requestDto, User user) {
-        Pet pet = petRepository.save(Pet.builder()
-                .name(requestDto.getName())
-                .sex(requestDto.getSex())
-                .age(requestDto.getAge().getMonths())
-                .birthday(requestDto.getAge().getBirthday())
-                .isSpayed(requestDto.getIsSpayed())
-                .isPregnant(requestDto.getIsPregnant())
-                .bodyWeight(requestDto.getBodyWeight())
-                .activityLevel(requestDto.getActivityLevel())
-                .user(user)
-                .breed(breedRepository.findById(requestDto.getBreedId())
-                        .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND)))
-                .build());
+        Pet pet = petRepository.save(Pet.builder().build().save(requestDto, user,
+                breedRepository.findById(requestDto.getBreedId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.BREED_NOT_FOUND))
+        ));
         user.addPets(pet);
         return pet;
     }
