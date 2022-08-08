@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import io.swagger.annotations.ApiOperation;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +35,11 @@ public class DailyController {
 
     @PostMapping("/{petId}/note")
     public ResponseEntity<RecordDailyNoteResponseClass> recordDailyNote(@ModelAttribute
-    DailyNoteRequestDto dailyNoteRequestDto, @PathVariable("petId") Long petId) {
+    @Valid DailyNoteRequestDto dailyNoteRequestDto, @PathVariable("petId") Long petId) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteResponseClass(HttpStatus.OK.value(),
-                "SUCCESS RECORD DAILY NOT",
+                "SUCCESS RECORD DAILY",
                 "데일리 기록을 저장하는데 성공하였습니다.",
                 dailyService.recordNote(dailyNoteRequestDto, petId)));
     }
