@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.daily.dto;
 import com.pinkdumbell.cocobob.domain.daily.Daily;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +30,7 @@ public class DailyNoteGetResponseDto {
 
     private Long petId;
 
-    private List<String> images;
+    private List<String> images = new ArrayList<>();
 
     public DailyNoteGetResponseDto(Daily daily,List<DailyImage> dailyImages){
 
