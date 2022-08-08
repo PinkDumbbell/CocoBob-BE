@@ -34,14 +34,13 @@ public class DailyController {
 
     @PostMapping("/{petId}/note")
     public ResponseEntity<RecordDailyNoteResponseClass> recordDailyNote(@ModelAttribute
-    DailyNoteRequestDto dailyNoteRequestDto, @PathVariable("petId") Long petId, @LoginUser
-    LoginUserInfo loginUserInfo) {
+    DailyNoteRequestDto dailyNoteRequestDto, @PathVariable("petId") Long petId) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteResponseClass(HttpStatus.OK.value(),
                 "SUCCESS RECORD DAILY NOT",
                 "데일리 기록을 저장하는데 성공하였습니다.",
-                dailyService.recordNote(dailyNoteRequestDto, petId, loginUserInfo.getEmail())));
+                dailyService.recordNote(dailyNoteRequestDto, petId)));
     }
 
 }
