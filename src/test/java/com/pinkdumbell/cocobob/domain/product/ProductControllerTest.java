@@ -63,7 +63,7 @@ class ProductControllerTest {
         mvc.perform(get("/v1/products/search")
                 .param("size", "10")
                 .param("page", "1")
-            .param("AAFCO", "true"))
+            .param("aaffo", "true"))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.data.pageSize").value(10))
             .andExpect(jsonPath("$.data.pageNumber").value(1));
@@ -77,7 +77,7 @@ class ProductControllerTest {
         mvc.perform(get("/v1/products/search")
                 .param("size", "3")
                 .param("page", "2")
-                .param("AAFCO", "true"))
+                .param("aaffo", "true"))
             .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$.data.pageSize").value(3))
             .andExpect(jsonPath("$.data.pageNumber").value(2));
