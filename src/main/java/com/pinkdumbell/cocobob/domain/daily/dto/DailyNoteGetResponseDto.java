@@ -16,7 +16,7 @@ public class DailyNoteGetResponseDto {
 
     private Long id;
 
-    private LocalDate date;
+    private String date;
 
     private Integer feedAmount;
 
@@ -32,7 +32,7 @@ public class DailyNoteGetResponseDto {
 
     public DailyNoteGetResponseDto(Daily daily,List<DailyImage> dailyImages){
         this.id = daily.getId();
-        this.date = daily.getDate();
+        this.date = daily.getDate().toString();
         this.feedAmount = daily.getFeedAmount();
         this.walkTotalTime = daily.getWalkTotalTime();
         this.walkDistance = daily.getWalkDistance();
