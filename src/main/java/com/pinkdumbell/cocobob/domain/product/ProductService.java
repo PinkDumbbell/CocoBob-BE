@@ -41,7 +41,7 @@ public class ProductService {
 
         return new ProductDetailResponseDto(foundProduct,
             likeRepository.countByProduct(foundProduct),
-            likeRepository.findByProduct(foundProduct).isPresent());
+            likeRepository.findByProductAndUser(foundProduct, foundUser).isPresent());
     }
 
     public FindAllResponseDto elasticSearchProducts(ProductSpecificSearchDto requestParameter,
@@ -55,9 +55,13 @@ public class ProductService {
     public FindAllResponseDto queryDslSearchProducts(ProductSpecificSearchDto requestParameter,
         String email,
         Pageable pageable) {
-        Long userId = userRepository.findByEmail(email).get().getId();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        });
+
         return new FindAllResponseDto(
-            productRepository.findAllWithLikes(requestParameter, userId, pageable));
+            productRepository.findAllWithLikes(requestParameter, user.getId(), pageable));
 
     }
 }
