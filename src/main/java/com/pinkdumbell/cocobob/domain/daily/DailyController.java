@@ -5,6 +5,8 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.validation.Valid;
@@ -38,9 +40,17 @@ public class DailyController {
     private static class RecordDailyNoteGetResponseClass extends
         CommonResponseDto<List<DailyNoteGetResponseDto>> {
 
-
         public RecordDailyNoteGetResponseClass(int status, String code, String message,
             List<DailyNoteGetResponseDto> data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private static class SimpleDailyResponseClass extends
+        CommonResponseDto<List<DailySimpleResponseDto>> {
+
+        public SimpleDailyResponseClass(int status, String code, String message,
+            List<DailySimpleResponseDto> data) {
             super(status, code, message, data);
         }
     }
@@ -65,7 +75,18 @@ public class DailyController {
             new RecordDailyNoteGetResponseClass(HttpStatus.OK.value(),
                 "SUCCESS GET DAILY",
                 "데일리 기록을 불러오는데 성공하였습니다.",
-                dailyService.getNotes(petId,dailyNoteGetRequestDto)));
+                dailyService.getNotes(petId, dailyNoteGetRequestDto)));
+    }
+
+    @GetMapping("/simple/{petId}")
+    public ResponseEntity<SimpleDailyResponseClass> getSimpleDaily(
+        @PathVariable("petId") Long petId, DailySimpleRequestDto dailySimpleRequestDto) {
+
+        return ResponseEntity.ok(
+            new SimpleDailyResponseClass(HttpStatus.OK.value(),
+                "SUCCESS GET SIMPLE DAILY",
+                "데일리 기록을 불러오는데 성공하였습니다.",
+                dailyService.getSimpleDaily(petId, dailySimpleRequestDto.getYearMonth())));
     }
 
 }

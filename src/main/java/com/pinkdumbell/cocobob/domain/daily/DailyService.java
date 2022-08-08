@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
@@ -12,10 +13,13 @@ import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +85,23 @@ public class DailyService {
             .collect(Collectors.toList());
 
     }
+
+    @Transactional(readOnly = true)
+    public List<DailySimpleResponseDto> getSimpleDaily(Long petId, YearMonth yearMonth) {
+
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.PET_NOT_FOUND);
+        });
+
+        LocalDate startDate = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1);
+        LocalDate lastDate = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 31);
+
+        return dailyRepository.findAllByPetAndDateBetween(pet, startDate, lastDate).stream()
+            .map(DailySimpleResponseDto::new)
+            .collect(Collectors.toList());
+
+    }
+
 
     //PetId, 기록시간, 저장 시각, 사진 숫자로 저장
     private String createDailyImageName(Long petId, LocalDate date, int index) {
