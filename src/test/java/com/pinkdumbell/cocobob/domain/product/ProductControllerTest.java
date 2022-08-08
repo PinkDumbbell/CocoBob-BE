@@ -60,7 +60,6 @@ class ProductControllerTest {
     @WithMockUser("USER")
     void AAFCO_와_PAGE_SIZE_10_PAGE_NUMBER_1() throws Exception {
         //EXECUTE & EXPECT
-        // 로그인 실행
         mvc.perform(get("/v1/products/search")
                 .param("size", "10")
                 .param("page", "1")
@@ -75,7 +74,6 @@ class ProductControllerTest {
     @WithMockUser("USER")
     void AAFCO_와_PAGE_SIZE_3_PAGE_NUMBER_2() throws Exception {
         //EXECUTE & EXPECT
-        // 로그인 실행
         mvc.perform(get("/v1/products/search")
                 .param("size", "3")
                 .param("page", "2")
@@ -84,4 +82,5 @@ class ProductControllerTest {
             .andExpect(jsonPath("$.data.pageSize").value(3))
             .andExpect(jsonPath("$.data.pageNumber").value(2));
     }
+
 }
