@@ -28,11 +28,18 @@ public class DailyNoteGetResponseDto {
 
     private String note;
 
-    private Long petId;
-
     private List<String> images = new ArrayList<>();
 
     public DailyNoteGetResponseDto(Daily daily,List<DailyImage> dailyImages){
+        this.id = daily.getId();
+        this.date = daily.getDate();
+        this.feedAmount = daily.getFeedAmount();
+        this.walkTotalTime = daily.getWalkTotalTime();
+        this.walkDistance = daily.getWalkDistance();
+        this.walkGps = daily.getWalkGps();
+        this.note = daily.getNote();
+
+        dailyImages.forEach((dailyImage)-> this.images.add(dailyImage.getPath()));
 
     }
 

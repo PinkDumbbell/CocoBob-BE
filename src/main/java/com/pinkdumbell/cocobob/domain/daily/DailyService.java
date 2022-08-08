@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.ImageService;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.service.NullServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,13 +66,15 @@ public class DailyService {
     }
 
     @Transactional(readOnly = true)
-    public List<DailyNoteGetResponseDto> getNotes(Long petId) {
+    public List<DailyNoteGetResponseDto> getNotes(Long petId,
+        DailyNoteGetRequestDto dailyNoteGetRequestDto) {
 
         Pet pet = petRepository.findById(petId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
 
-        List<Daily> petDailys = dailyRepository.findAllByPet(pet);
+        List<Daily> petDailys = dailyRepository.findAllByPetAndDateBetween(pet,
+            dailyNoteGetRequestDto.getStartDate(), dailyNoteGetRequestDto.getLastDate());
 
         return petDailys.stream().map(
                 daily -> new DailyNoteGetResponseDto(daily, dailyImageRepository.findAllByDaily(daily)))

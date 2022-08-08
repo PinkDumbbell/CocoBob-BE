@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
@@ -58,13 +59,13 @@ public class DailyController {
 
     @GetMapping("/{petId}")
     public ResponseEntity<RecordDailyNoteGetResponseClass> getDailyNote(
-        @PathVariable("petId") Long petId) {
+        @PathVariable("petId") Long petId, DailyNoteGetRequestDto dailyNoteGetRequestDto) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteGetResponseClass(HttpStatus.OK.value(),
                 "SUCCESS GET DAILY",
                 "데일리 기록을 불러오는데 성공하였습니다.",
-                dailyService.getNotes(petId)));
+                dailyService.getNotes(petId,dailyNoteGetRequestDto)));
     }
 
 }
