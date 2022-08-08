@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyNoteRequestDto {
+public class DailyNoteRegisterRequestDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
