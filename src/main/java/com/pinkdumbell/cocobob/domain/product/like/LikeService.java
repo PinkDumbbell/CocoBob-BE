@@ -18,21 +18,23 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+
     @Transactional
     public void like(LikeRequestDto likeRequestDto) {
 
-        Like like = makeLike(likeRequestDto);
+        LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
+
+        if (likeRepository.findByLikeId(target).isPresent()) {
+            throw new CustomException(ErrorCode.ALREADY_LIKED);
+        }
+
+        Like like = makeLikeByLikeId(target);
+
         likeRepository.save(like);
     }
+
     @Transactional
     public void unLike(LikeRequestDto likeRequestDto) {
-
-        Like like = makeLike(likeRequestDto);
-        likeRepository.delete(like);
-    }
-
-    @Transactional
-    public Like makeLike(LikeRequestDto likeRequestDto){
 
         LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
 
@@ -40,16 +42,23 @@ public class LikeService {
             throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
         }
 
-        User user = userRepository.findById(target.getUserId())
+        Like like = makeLikeByLikeId(target);
+        likeRepository.delete(like);
+    }
+
+    @Transactional
+    public Like makeLikeByLikeId(LikeId likeId) {
+
+        User user = userRepository.findById(likeId.getUserId())
             .orElseThrow(() -> {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
 
-        Product product = productRepository.findById(target.getProductId()).orElseThrow(() -> {
+        Product product = productRepository.findById(likeId.getProductId()).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PRODUCT_NOT_FOUND);
         });
 
-        return Like.builder().user(user).product(product).likeId(target).build();
+        return Like.builder().user(user).product(product).likeId(likeId).build();
     }
 
 }
