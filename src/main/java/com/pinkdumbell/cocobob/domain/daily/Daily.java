@@ -2,6 +2,8 @@ package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Daily extends BaseEntity {
     @Id
@@ -34,4 +38,5 @@ public class Daily extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
 }
