@@ -2,6 +2,8 @@ package com.pinkdumbell.cocobob.domain.product.like;
 
 import com.pinkdumbell.cocobob.domain.product.Product;
 import com.pinkdumbell.cocobob.domain.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import javax.persistence.*;
 @Table(name = "\"like\"")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Like {
     @EmbeddedId

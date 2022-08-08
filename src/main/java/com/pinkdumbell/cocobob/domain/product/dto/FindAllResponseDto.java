@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 
 @Getter
@@ -42,5 +43,17 @@ public class FindAllResponseDto {
         this.isFirst = pages.isFirst();
         this.isLast = pages.isLast();
         this.isEmpty = pages.isEmpty();
+    }
+
+    public FindAllResponseDto(PageImpl<ProductSimpleResponseDto> pages) {
+        this.productList = pages.getContent();
+        this.totalPages = pages.getTotalPages();
+        this.totalElements = pages.getTotalElements();
+        this.pageSize = pages.getSize();
+        this.pageNumber = pages.getNumber();
+        this.isFirst = pages.isFirst();
+        this.isLast = pages.isLast();
+        this.isEmpty = pages.isEmpty();
+
     }
 }

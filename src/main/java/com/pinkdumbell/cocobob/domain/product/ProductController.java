@@ -1,9 +1,11 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
+import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -58,14 +60,21 @@ public class ProductController {
 
     })
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId) {
+    public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId,
+        @LoginUser LoginUserInfo loginUserInfo) {
 
         return ResponseEntity.ok(
             new ProductDetailResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCT",
-                "상품 가져오기 성공", productService.findProductDetailById(productId)));
+                "상품 가져오기 성공", productService.findProductDetailById(productId,loginUserInfo.getEmail())));
     }
 
     @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
@@ -83,4 +92,32 @@ public class ProductController {
                 "상품 검색 성공",
                 productService.elasticSearchProducts(productSpecificSearchDto, pageable)));
     }
+
+    @ApiOperation(value = "searchAllProductsWithLikes", notes = "상품 정보 조회(좋아요 갯수와 사용자가 좋아하는 것도 표시)")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)")
+    })
+    @GetMapping("/search/likes")
+    public ResponseEntity<ProvideAllResponseClass> searchAllProductsWithLikes(
+        ProductSpecificSearchDto productSpecificSearchDto, @LoginUser LoginUserInfo loginUserInfo,
+        Pageable pageable) {
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
+                "상품 검색 성공",
+                productService.queryDslSearchProducts(productSpecificSearchDto,
+                    loginUserInfo.getEmail(), pageable)));
+    }
+
 }
