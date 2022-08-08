@@ -9,6 +9,7 @@ import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -17,7 +18,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
+    @Transactional
     public void like(LikeRequestDto likeRequestDto) {
 
         LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
@@ -40,7 +41,7 @@ public class LikeService {
         likeRepository.save(like);
 
     }
-
+    @Transactional
     public void unLike(LikeRequestDto likeRequestDto) {
 
         LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
