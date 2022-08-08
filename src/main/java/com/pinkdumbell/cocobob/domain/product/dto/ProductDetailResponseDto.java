@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import com.pinkdumbell.cocobob.domain.product.Product;
+import com.pinkdumbell.cocobob.domain.product.like.Like;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -97,8 +98,12 @@ public class ProductDetailResponseDto {
     @ApiModelProperty(notes = "비만견 기준 충족", example = "false")
     private Boolean obesity;
     // 추후 추가예정
-    // private int likeCount;
-    public ProductDetailResponseDto(Product product) {
+    @ApiModelProperty(notes = "상품 좋아요 수", example = "100")
+    private Long likes;
+    @ApiModelProperty(notes = "유저가 좋아한 상품인지", example = "false")
+    private Boolean isUserLike;
+
+    public ProductDetailResponseDto(Product product, Long likes, boolean isUserLike) {
 
         this.productId = product.getId();
         this.code = product.getCode();
@@ -137,8 +142,8 @@ public class ProductDetailResponseDto {
         this.hydrolyticTurkey = product.getHydrolyticTurkey();
         this.hydrolyticMeat = product.getHydrolyticMeat();
         this.hydrolyticSalmon = product.getHydrolyticSalmon();
-        //추후 추가 예정
-        //this.likeCount;
+        this.likes = likes;
+        this.isUserLike = isUserLike;
         this.aged = product.getAged();
         this.growing = product.getGrowing();
         this.pregnant = product.getPregnant();

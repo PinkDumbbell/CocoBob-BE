@@ -7,10 +7,12 @@ import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
+import com.pinkdumbell.cocobob.domain.product.ProductSearchQueryDslImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.assertj.core.api.Assertions;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
 public class UserRepositoryTest {
+
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -35,6 +38,8 @@ public class UserRepositoryTest {
     BreedRepository breedRepository;
     @PersistenceContext
     EntityManager em;
+    @MockBean
+    ProductSearchQueryDslImpl productSearchQueryDsl;
 
     @Test
     @DisplayName("사용자 생성 시 생성시간 등록 여부를 테스트한다.")
@@ -54,25 +59,25 @@ public class UserRepositoryTest {
         String name = "코코";
 
         User user = userRepository.save(User.builder()
-                .email(email)
-                .build());
+            .email(email)
+            .build());
 
         Pet pet1 = Pet.builder()
-                .user(user)
-                .name(name)
-                .build();
+            .user(user)
+            .name(name)
+            .build();
         pet1.setThumbnailPath(thumbnailPath);
 
         Pet pet2 = Pet.builder()
-                .user(user)
-                .name("키키")
-                .build();
+            .user(user)
+            .name("키키")
+            .build();
         pet2.setThumbnailPath(thumbnailPath);
 
         PetImage petImage = PetImage.builder()
-                .pet(pet1)
-                .path("imagePath")
-                .build();
+            .pet(pet1)
+            .path("imagePath")
+            .build();
 
         petRepository.save(pet1);
         petRepository.save(pet2);
@@ -93,18 +98,18 @@ public class UserRepositoryTest {
         String email = "test@test.com";
         User user = userRepository.save(User.builder().email(email).build());
         Breed breed = breedRepository.save(Breed.builder()
-                .name("진돗개")
-                .build());
+            .name("진돗개")
+            .build());
         petRepository.save(Pet.builder()
-                .user(user)
-                .breed(breed)
-                .name("코코")
-                .build());
+            .user(user)
+            .breed(breed)
+            .name("코코")
+            .build());
         petRepository.save(Pet.builder()
-                .user(user)
-                .breed(breed)
-                .name("키키")
-                .build());
+            .user(user)
+            .breed(breed)
+            .name("키키")
+            .build());
 
         em.flush();
         em.clear();
@@ -113,8 +118,9 @@ public class UserRepositoryTest {
         List<Pet> pets = result.get().getPets();
         Assertions.assertThat(pets.size()).isEqualTo(2);
         Assertions.assertThat(pets.stream().map(Pet::getName).collect(Collectors.toList()))
-                .isEqualTo(Arrays.asList("코코", "키키"));
-        Assertions.assertThat(pets.stream().map(Pet::getBreed).map(Breed::getName).collect(Collectors.toList()))
-                .isEqualTo(Arrays.asList("진돗개", "진돗개"));
+            .isEqualTo(Arrays.asList("코코", "키키"));
+        Assertions.assertThat(
+                pets.stream().map(Pet::getBreed).map(Breed::getName).collect(Collectors.toList()))
+            .isEqualTo(Arrays.asList("진돗개", "진돗개"));
     }
 }
