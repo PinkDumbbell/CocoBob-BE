@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.pet.dto;
 
 import com.pinkdumbell.cocobob.domain.pet.PetSex;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.*;
 
 @Getter
 public class PetUpdateRequestDto extends PetCreateRequestDto {
+    @ApiModelProperty(notes = "사진 단순 삭제여부", example = "true", required = true)
     @NotNull(message = "사진 단순 삭제여부가 필요합니다.")
     private Boolean isImageJustDeleted;
 

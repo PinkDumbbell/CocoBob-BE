@@ -116,6 +116,13 @@ public class PetController {
         ));
     }
 
+    @ApiOperation(value = "update pet info", notes = "반려동물 정보 수정")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = PetCreateResponseDto.class),
+            @ApiResponse(code = 400, message = "PET NOT FOUND", response = ErrorResponse.class),
+            @ApiResponse(code = 400, message = "FAIL TO UPLOAD IMAGE", response = ErrorResponse.class),
+            @ApiResponse(code = 400, message = "FAIL TO DELETE IMAGE", response = ErrorResponse.class)
+    })
     @PutMapping("/{petId}")
     public ResponseEntity<RegisterResponsClass> updatePet(
             @PathVariable("petId") Long petId,
