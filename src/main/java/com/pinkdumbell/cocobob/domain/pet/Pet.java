@@ -2,6 +2,8 @@ package com.pinkdumbell.cocobob.domain.pet;
 
 import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.PetUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
 import lombok.Builder;
@@ -74,5 +76,30 @@ public class Pet extends BaseEntity {
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+    public void update(PetUpdateRequestDto requestDto, Breed breed) {
+        this.name = requestDto.getName();
+        this.sex = requestDto.getSex();
+        this.isSpayed = requestDto.getIsSpayed();
+        this.isPregnant = requestDto.getIsPregnant();
+        this.age = requestDto.getAge().getMonths();
+        this.birthday = requestDto.getAge().getBirthday();
+        this.bodyWeight = requestDto.getBodyWeight();
+        this.activityLevel = requestDto.getActivityLevel();
+        this.breed = breed;
+    }
+    public Pet save(PetCreateRequestDto requestDto, User user, Breed breed) {
+        this.name = requestDto.getName();
+        this.sex = requestDto.getSex();
+        this.age = requestDto.getAge().getMonths();
+        this.birthday = requestDto.getAge().getBirthday();
+        this.isSpayed = requestDto.getIsSpayed();
+        this.isPregnant = requestDto.getIsPregnant();
+        this.bodyWeight = requestDto.getBodyWeight();
+        this.activityLevel = requestDto.getActivityLevel();
+        this.user = user;
+        this.breed = breed;
+
+        return this;
     }
 }

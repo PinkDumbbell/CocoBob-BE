@@ -1,9 +1,7 @@
 package com.pinkdumbell.cocobob.common;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +21,33 @@ public class AwsS3Service {
 
     private final AmazonS3 amazonS3;
 
-    public String saveImage(MultipartFile image) {
-        String imageName = createImageName(image.getOriginalFilename());
+    public String saveImage(MultipartFile image, String saveName) {
         ObjectMetadata objectMetadata = setObjectMetadata(image);
 
         try (InputStream inputStream = image.getInputStream()) {
             amazonS3.putObject(
-                    new PutObjectRequest(bucket, imageName, inputStream, objectMetadata)
+                    new PutObjectRequest(bucket, saveName, inputStream, objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (IOException e) {
             throw new CustomException(ErrorCode.FAIL_TO_UPLOAD_IMAGE);
         }
 
-        return getImageUrl(imageName);
+        return getImageUrl(saveName);
     }
 
     private String getImageUrl(String imageName) {
         return amazonS3.getUrl(bucket, imageName).toString();
     }
 
-    public String createImageName(String originalImageName) {
-        return UUID.randomUUID().toString().concat(originalImageName);
+    public void deleteImage(String imageName) {
+        try {
+            amazonS3.deleteObject(
+                    new DeleteObjectRequest(bucket, imageName)
+            );
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.FAIL_TO_DELETE_IMAGE);
+        }
     }
 
     public ObjectMetadata setObjectMetadata(MultipartFile image) {

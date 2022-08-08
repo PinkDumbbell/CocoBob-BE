@@ -3,10 +3,9 @@ package com.pinkdumbell.cocobob.domain.pet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
+import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.breed.BreedSize;
-import com.pinkdumbell.cocobob.domain.pet.dto.BreedsInfoResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetDetailResponseDto;
-import com.pinkdumbell.cocobob.domain.pet.dto.PetInfoResponseDto;
+import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +34,8 @@ public class PetServiceTest {
     UserRepository userRepository;
     @Mock
     PetRepository petRepository;
+    @Mock
+    BreedRepository breedRepository;
 
     @Test
     @DisplayName("사용자의 반려동물을 불러오는 메서드 테스트")
@@ -78,5 +80,45 @@ public class PetServiceTest {
 
         Assertions.assertThat(result.getName()).isEqualTo("코코");
         Assertions.assertThat(objectMapper.writeValueAsString(result.getBreedInfo())).isEqualTo(objectMapper.writeValueAsString(new BreedsInfoResponseDto(breed)));
+    }
+
+    @Test
+    @DisplayName("반려동물 정보 수정을 테스트한다.")
+    void testUpdatePetInfo() {
+        Breed breed = Breed.builder()
+                .id(2L)
+                .name("진돗개")
+                .build();
+
+        Pet pet = Pet.builder()
+                .name("코코")
+                .age(30)
+                .birthday(LocalDate.parse("2020-01-01"))
+                .bodyWeight(3.5F)
+                .breed(breed)
+                .build();
+
+        PetUpdateRequestDto requestDto = new PetUpdateRequestDto(
+                "쿠쿠",
+                PetSex.FEMALE,
+                new PetCreateRequestAgeDto(32, LocalDate.parse("2020-01-02")),
+                true,
+                false,
+                3.7F,
+                3,
+                1L,
+                null,
+                false
+        );
+
+        given(breedRepository.findById(anyLong()))
+                .willReturn(Optional.ofNullable(Breed.builder().id(1L).name("포메라니안").build()));
+
+        petService.updatePetInfo(pet, requestDto);
+
+        Assertions.assertThat(pet.getBreed().getName()).isEqualTo("포메라니안");
+        Assertions.assertThat(pet.getName()).isEqualTo("쿠쿠");
+        Assertions.assertThat(pet.getAge()).isEqualTo(32);
+        Assertions.assertThat(pet.getBirthday()).isEqualTo(LocalDate.parse("2020-01-02"));
     }
 }

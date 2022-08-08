@@ -20,9 +20,13 @@ public class ImageService {
 
     private final AwsS3Service awsS3Service;
 
-    public String saveImage(MultipartFile image) {
+    public String saveImage(MultipartFile image, String saveName) {
         isImage(image);
-        return awsS3Service.saveImage(image);
+        return awsS3Service.saveImage(image, saveName);
+    }
+
+    public void deleteImage(String imageName) {
+        awsS3Service.deleteImage(imageName);
     }
 
     private void isImage(MultipartFile image) {
