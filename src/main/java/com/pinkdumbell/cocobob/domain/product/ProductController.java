@@ -69,6 +69,12 @@ public class ProductController {
     }
 
     @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
@@ -88,6 +94,12 @@ public class ProductController {
     }
 
     @ApiOperation(value = "searchAllProductsWithLikes", notes = "상품 정보 조회(좋아요 갯수와 사용자가 좋아하는 것도 표시)")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
             value = "페이지 번호(0...N)"),
