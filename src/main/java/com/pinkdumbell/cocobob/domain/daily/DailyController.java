@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,7 +79,7 @@ public class DailyController {
         }
     }
 
-    @PostMapping("/{petId}")
+    @PostMapping("/pets/{petId}")
     public ResponseEntity<DailyRecordRegisterResponseClass> createDailyRecord(
         @Valid @ModelAttribute
         DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,
@@ -91,7 +92,7 @@ public class DailyController {
                 dailyService.createDailyRecord(dailyRecordRegisterRequestDto, petId)));
     }
 
-    @GetMapping("/{petId}")
+    @GetMapping("/pets/{petId}")
     public ResponseEntity<RecordDailyNoteGetResponseClass> getAllDailyRecord(
         @PathVariable("petId") Long petId,
         @Valid DailyRecordGetRequestDto dailyRecordGetRequestDto) {
@@ -103,7 +104,7 @@ public class DailyController {
                 dailyService.getDaily(petId, dailyRecordGetRequestDto)));
     }
 
-    @GetMapping("/simple/{petId}")
+    @GetMapping("/pets/simple/{petId}")
     public ResponseEntity<SimpleDailyResponseClass> getSimpleDaily(
         @PathVariable("petId") Long petId, @Valid DailySimpleRequestDto dailySimpleRequestDto) {
 
@@ -114,7 +115,7 @@ public class DailyController {
                 dailyService.getSimpleDaily(petId, dailySimpleRequestDto.getYearMonth())));
     }
 
-    @PatchMapping("/edit/{dailyId}")
+    @PutMapping ("/{dailyId}")
     public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(
         @PathVariable("dailyId") Long dailyId, @ModelAttribute
     DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto) {
@@ -126,7 +127,7 @@ public class DailyController {
                 dailyService.updateDailyRecord(dailyId, dailyRecordUpdateRequestDto)));
     }
 
-    @DeleteMapping("/edit/{dailyId}")
+    @DeleteMapping("/{dailyId}")
     public ResponseEntity<CommonResponseDto> deleteDailyRecord(
         @PathVariable("dailyId") Long dailyId) {
 
@@ -140,7 +141,7 @@ public class DailyController {
             .build());
     }
 
-    @GetMapping("/detail/{dailyId}")
+    @GetMapping("/{dailyId}")
     public ResponseEntity<DailyRecordDetailResponseClass> getDailyDetailRecord(
         @PathVariable("dailyId") Long dailyId) {
 
