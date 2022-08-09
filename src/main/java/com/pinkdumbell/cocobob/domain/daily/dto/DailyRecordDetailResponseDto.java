@@ -28,7 +28,7 @@ public class DailyRecordDetailResponseDto {
 
     private final String note;
 
-    private List<DailyImageInfo> images = new ArrayList<>();
+    private final List<DailyImageInfo> images = new ArrayList<>();
 
     @Data
     private static class DailyImageInfo {
