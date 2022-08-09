@@ -92,7 +92,7 @@ public class DailyController {
     }
 
     @GetMapping("/{petId}")
-    public ResponseEntity<RecordDailyNoteGetResponseClass> getDailyNote(
+    public ResponseEntity<RecordDailyNoteGetResponseClass> getAllDailyRecord(
         @PathVariable("petId") Long petId,
         @Valid DailyRecordGetRequestDto dailyRecordGetRequestDto) {
 
