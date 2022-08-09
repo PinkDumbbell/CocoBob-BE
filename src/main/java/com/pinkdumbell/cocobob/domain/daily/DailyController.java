@@ -5,6 +5,8 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +31,10 @@ public class DailyController {
 
     private final DailyService dailyService;
 
-    private static class RecordDailyNoteRegisterResponseClass extends
+    private static class DailyRecordRegisterResponseClass extends
         CommonResponseDto<DailyRecordRegisterResponseDto> {
 
-        public RecordDailyNoteRegisterResponseClass(int status, String code, String message,
+        public DailyRecordRegisterResponseClass(int status, String code, String message,
             DailyRecordRegisterResponseDto data) {
             super(status, code, message, data);
         }
@@ -55,14 +58,23 @@ public class DailyController {
         }
     }
 
+    private static class DailyRecordUpdateResponseClass extends
+        CommonResponseDto<DailyRecordUpdateResponseDto> {
+
+        public DailyRecordUpdateResponseClass(int status, String code, String message,
+            DailyRecordUpdateResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
     @PostMapping("/{petId}")
-    public ResponseEntity<RecordDailyNoteRegisterResponseClass> createDailyRecord(
+    public ResponseEntity<DailyRecordRegisterResponseClass> createDailyRecord(
         @Valid @ModelAttribute
         DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,
         @PathVariable("petId") Long petId) {
 
         return ResponseEntity.ok(
-            new RecordDailyNoteRegisterResponseClass(HttpStatus.OK.value(),
+            new DailyRecordRegisterResponseClass(HttpStatus.OK.value(),
                 "SUCCESS CREATE DAILY",
                 "데일리 기록을 생성 하는데 성공하였습니다.",
                 dailyService.createDailyRecord(dailyRecordRegisterRequestDto, petId)));
@@ -90,5 +102,17 @@ public class DailyController {
                 "데일리 기록을 불러오는데 성공하였습니다.",
                 dailyService.getSimpleDaily(petId, dailySimpleRequestDto.getYearMonth())));
     }
+
+    @PatchMapping("/{dailyId}")
+    public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(@ModelAttribute
+        DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto,@PathVariable("dailyId") Long dailyId) {
+
+        return ResponseEntity.ok(
+            new DailyRecordUpdateResponseClass(HttpStatus.OK.value(),
+                "SUCCESS UPDATE DAILY",
+                "데일리 기록을 변경하는데 성공하였습니다.",null));
+
+    }
+
 
 }
