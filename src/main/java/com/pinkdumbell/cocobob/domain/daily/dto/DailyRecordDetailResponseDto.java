@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 
@@ -31,11 +30,11 @@ public class DailyRecordDetailResponseDto {
 
     private final List<DailyImageInfo> images = new ArrayList<>();
 
-    @Data
+    @Getter
     private static class DailyImageInfo {
 
-        private String imagePath;
-        private Long dailyImageId;
+        private final String imagePath;
+        private final Long dailyImageId;
 
         public DailyImageInfo(DailyImage dailyImage) {
 
