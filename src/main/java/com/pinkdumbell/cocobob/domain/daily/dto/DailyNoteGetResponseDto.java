@@ -2,7 +2,6 @@ package com.pinkdumbell.cocobob.domain.daily.dto;
 
 import com.pinkdumbell.cocobob.domain.daily.Daily;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -28,9 +27,22 @@ public class DailyNoteGetResponseDto {
 
     private String note;
 
-    private List<String> images = new ArrayList<>();
+    private List<DailyImageInfo> images = new ArrayList<>();
 
-    public DailyNoteGetResponseDto(Daily daily,List<DailyImage> dailyImages){
+    @Data
+    private static class DailyImageInfo {
+
+        private String imagePath;
+        private Long dailyImageId;
+
+        public DailyImageInfo(DailyImage dailyImage){
+
+            this.imagePath = dailyImage.getPath();
+            this.dailyImageId = dailyImage.getId();
+        }
+    }
+
+    public DailyNoteGetResponseDto(Daily daily, List<DailyImage> dailyImages) {
         this.id = daily.getId();
         this.date = daily.getDate().toString();
         this.feedAmount = daily.getFeedAmount();
@@ -39,7 +51,7 @@ public class DailyNoteGetResponseDto {
         this.walkGps = daily.getWalkGps();
         this.note = daily.getNote();
 
-        dailyImages.forEach((dailyImage)-> this.images.add(dailyImage.getPath()));
+        dailyImages.forEach((dailyImage) -> this.images.add(new DailyImageInfo(dailyImage)));
 
     }
 
