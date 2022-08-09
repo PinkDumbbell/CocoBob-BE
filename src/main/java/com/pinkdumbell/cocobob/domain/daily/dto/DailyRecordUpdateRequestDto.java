@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyRecordUpdateRequestDto {
-    private List<MultipartFile> noteImages;
+    private List<MultipartFile> images;
     private String note;
     private Integer feedAmount;
     private Integer walkTotalTime;

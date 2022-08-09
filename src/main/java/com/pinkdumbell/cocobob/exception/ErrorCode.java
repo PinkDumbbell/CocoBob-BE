@@ -23,7 +23,8 @@ public enum ErrorCode {
     INVALID_ACCESS_AFTER_LOGOUT(HttpStatus.BAD_REQUEST, "로그아웃된 유저 입니다."),
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "없는 상품 입니다."),
     ALREADY_LIKED(HttpStatus.BAD_REQUEST, "이미 좋아요한 상품 입니다."),
-    LIKE_NOT_FOUND(HttpStatus.BAD_REQUEST, "좋아요 한적 없는 상품입니다.");
+    LIKE_NOT_FOUND(HttpStatus.BAD_REQUEST, "좋아요 한적 없는 상품입니다."),
+    DAILY_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재 하지 않는 데일리 기록입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

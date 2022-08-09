@@ -17,7 +17,7 @@ public class DailyRecordRegisterRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "필수 입력 항목(날짜)가 없습니다.")
     private LocalDate date;
-    private List<MultipartFile> noteImages;
+    private List<MultipartFile> images;
     private String note;
     private Integer feedAmount;
     private Integer walkTotalTime;
