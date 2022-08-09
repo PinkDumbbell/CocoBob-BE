@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 public class DailySimpleResponseDto {
 
     private String date;
+    private Long dailyId;
 
     public DailySimpleResponseDto(Daily daily) {
+
         this.date = daily.getDate().toString();
+        this.dailyId = daily.getId();
     }
 }
