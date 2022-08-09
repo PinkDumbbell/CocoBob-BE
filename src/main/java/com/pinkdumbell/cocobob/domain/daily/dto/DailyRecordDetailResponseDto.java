@@ -1,7 +1,9 @@
 package com.pinkdumbell.cocobob.domain.daily.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pinkdumbell.cocobob.domain.daily.Daily;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,8 @@ public class DailyRecordDetailResponseDto {
 
     private final Long id;
 
-    private final String date;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private final LocalDate date;
 
     private final Integer feedAmount;
 
@@ -45,7 +48,7 @@ public class DailyRecordDetailResponseDto {
 
     public DailyRecordDetailResponseDto(Daily daily, List<DailyImage> dailyImages) {
         this.id = daily.getId();
-        this.date = daily.getDate().toString();
+        this.date = daily.getDate();
         this.feedAmount = daily.getFeedAmount();
         this.walkTotalTime = daily.getWalkTotalTime();
         this.walkDistance = daily.getWalkDistance();
