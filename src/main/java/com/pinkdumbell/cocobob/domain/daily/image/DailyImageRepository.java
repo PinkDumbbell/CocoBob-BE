@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DailyImageRepository extends JpaRepository<DailyImage,Long> {
     List<DailyImage> findAllByDaily(Daily daily);
     Long countAllByDaily(Daily daily);
+    void deleteAllByDaily(Daily daily);
 }
