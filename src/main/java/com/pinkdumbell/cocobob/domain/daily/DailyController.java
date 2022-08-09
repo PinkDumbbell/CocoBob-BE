@@ -103,14 +103,16 @@ public class DailyController {
                 dailyService.getSimpleDaily(petId, dailySimpleRequestDto.getYearMonth())));
     }
 
-    @PatchMapping("/{dailyId}")
-    public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(@ModelAttribute
-        DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto,@PathVariable("dailyId") Long dailyId) {
+    @PatchMapping("/edit/{dailyId}")
+    public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(
+        @PathVariable("dailyId") Long dailyId, @ModelAttribute
+    DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto) {
 
         return ResponseEntity.ok(
             new DailyRecordUpdateResponseClass(HttpStatus.OK.value(),
                 "SUCCESS UPDATE DAILY",
-                "데일리 기록을 변경하는데 성공하였습니다.",null));
+                "데일리 기록을 변경하는데 성공하였습니다.",
+                dailyService.updateDailyRecord(dailyId, dailyRecordUpdateRequestDto)));
 
     }
 

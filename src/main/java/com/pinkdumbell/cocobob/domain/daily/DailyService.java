@@ -5,6 +5,8 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
@@ -40,12 +42,12 @@ public class DailyService {
 
         Daily savedDaily = dailyRepository.save(new Daily(dailyRecordRegisterRequestDto, pet));
 
-        if (dailyRecordRegisterRequestDto.getNoteImages() != null) {
+        if (dailyRecordRegisterRequestDto.getImages() != null) {
             try {
-                IntStream.range(0, dailyRecordRegisterRequestDto.getNoteImages().size())
+                IntStream.range(0, dailyRecordRegisterRequestDto.getImages().size())
                     .forEach(index -> {
                         String saveImagePath = imageService.saveImage(
-                            dailyRecordRegisterRequestDto.getNoteImages().get(index),
+                            dailyRecordRegisterRequestDto.getImages().get(index),
                             createDailyImageName(petId, dailyRecordRegisterRequestDto.getDate(),
                                 index));
 
@@ -96,6 +98,44 @@ public class DailyService {
             .map(DailySimpleResponseDto::new)
             .collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public DailyRecordUpdateResponseDto updateDailyRecord(Long dailyId,
+        DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto) {
+
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.DAILY_NOT_FOUND);
+        });
+
+        daily.updateDaily(dailyRecordUpdateRequestDto); // 요청 정보를 바탕으로 정보 변경
+
+        //새로 추가된 이미지 저장
+        if (dailyRecordUpdateRequestDto.getImages() != null) {
+            try {
+                int existingImageCount = dailyImageRepository.countAllByDaily(daily).intValue();
+                IntStream.range(existingImageCount,
+                        existingImageCount + dailyRecordUpdateRequestDto.getImages().size())
+                    .forEach(index -> {
+
+                        String saveImagePath = imageService.saveImage(
+                            dailyRecordUpdateRequestDto.getImages().get(index),
+                            createDailyImageName(daily.getPet().getId(), daily.getDate(),
+                                index));
+
+                        DailyImage newDailyImage = DailyImage.builder()
+                            .daily(daily)
+                            .path(saveImagePath)
+                            .build();
+
+                        dailyImageRepository.save(newDailyImage);
+                    });
+            } catch (NullPointerException e) {
+                throw new CustomException(ErrorCode.NOT_IMAGE);
+            }
+        }
+
+        return new DailyRecordUpdateResponseDto(dailyId);
     }
 
 
