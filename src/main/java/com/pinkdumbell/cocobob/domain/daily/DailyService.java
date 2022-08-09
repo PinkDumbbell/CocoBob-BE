@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.ImageService;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
@@ -48,7 +49,8 @@ public class DailyService {
                     .forEach(index -> {
                         String saveImagePath = imageService.saveImage(
                             dailyRecordRegisterRequestDto.getImages().get(index),
-                            createDailyImageName(savedDaily.getId(), dailyRecordRegisterRequestDto.getDate(),
+                            createDailyImageName(savedDaily.getId(),
+                                dailyRecordRegisterRequestDto.getDate(),
                                 index));
 
                         DailyImage newDailyImage = DailyImage.builder()
@@ -156,6 +158,17 @@ public class DailyService {
 
         //daily 삭제
         dailyRepository.delete(daily);
+
+    }
+
+    @Transactional(readOnly = true)
+    public DailyRecordDetailResponseDto getDailyDetailRecord(Long dailyId) {
+
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.DAILY_NOT_FOUND);
+        });
+
+        return new DailyRecordDetailResponseDto(daily, dailyImageRepository.findAllByDaily(daily));
 
     }
 

@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
@@ -68,6 +69,15 @@ public class DailyController {
         }
     }
 
+    private static class DailyRecordDetailResponseClass extends
+        CommonResponseDto<DailyRecordDetailResponseDto> {
+
+        public DailyRecordDetailResponseClass(int status, String code, String message,
+            DailyRecordDetailResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
     @PostMapping("/{petId}")
     public ResponseEntity<DailyRecordRegisterResponseClass> createDailyRecord(
         @Valid @ModelAttribute
@@ -128,6 +138,17 @@ public class DailyController {
             .message("데일리 기록을 정상적으로 삭제하였습니다.")
             .data(null)
             .build());
+    }
+
+    @GetMapping("/detail/{dailyId}")
+    public ResponseEntity<DailyRecordDetailResponseClass> getDailyDetailRecord(
+        @PathVariable("dailyId") Long dailyId) {
+
+        return ResponseEntity.ok(new DailyRecordDetailResponseClass(
+            HttpStatus.OK.value(),
+            "SUCCESS GET DAILY",
+            "데일리 기록을 가져오는데 성공하였습니다.",
+            dailyService.getDailyDetailRecord(dailyId)));
     }
 
 
