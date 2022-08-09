@@ -4,6 +4,7 @@ import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
+import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.common.EmailUtil;
@@ -19,13 +20,19 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Optional;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -66,8 +73,10 @@ public class UserService {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
 
-        if (!bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        if (user.getAccountType() != null && !user.getAccountType().equals(AccountType.GOOGLE)) {
+            if (!bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+                throw new CustomException(ErrorCode.INVALID_PASSWORD);
+            }
         }
 
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
@@ -85,6 +94,54 @@ public class UserService {
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
             newRefreshToken);
+    }
+
+    @Transactional
+    public UserLoginResponseDto googleLogin (
+            String code,
+            String googleAuthUrl,
+            String googleClientId,
+            String googleClientSecret,
+            String googleRedirectUrl
+    ) {
+        JSONObject userInfoFromGoogle = getUserInfoFromGoogle(code, googleAuthUrl, googleClientId, googleClientSecret, googleRedirectUrl);
+        String username = (String) userInfoFromGoogle.get("name");
+        String email = (String) userInfoFromGoogle.get("email");
+
+        Optional<User> foundUser = userRepository.findByEmail(email);
+
+        if (foundUser.isEmpty()) {
+            userRepository.save(User.builder()
+                    .username(username)
+                    .email(email)
+                    .accountType(AccountType.GOOGLE)
+                    .build());
+        }
+
+        return login(new UserLoginRequestDto(email, null));
+    }
+
+    private JSONObject getUserInfoFromGoogle(
+            String code,
+            String googleAuthUrl,
+            String googleClientId,
+            String googleClientSecret,
+            String googleRedirectUrl
+    ) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest.builder()
+                .clientId(googleClientId)
+                .clientSecret(googleClientSecret)
+                .code(code)
+                .redirectUri(googleRedirectUrl)
+                .grantType("authorization_code")
+                .build();
+
+        ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(googleAuthUrl + "/token", googleOAuthRequest, JSONObject.class);
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo")
+                .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
+        return restTemplate.getForObject(requestUrl, JSONObject.class);
     }
 
     @Transactional(readOnly = true)

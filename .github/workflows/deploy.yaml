@@ -38,6 +38,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           PETALOG_NAVER_PASSWORD: ${{secrets.PETALOG_NAVER_PASSWORD}}
           AWS_REGION: ${{ env.AWS_REGION }}
+          GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
+          GOOGLE_LOGIN_URL: ${{ secrets.GOOGLE_LOGIN_URL }}
+          GOOGLE_REDIRECT_URL: ${{ secrets.GOOGLE_REDIRECT_URL }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
@@ -67,6 +72,16 @@ jobs:
           echo "      auto: false" >> ./src/main/resources/application-secret.yml
           echo "    stack:" >> ./src/main/resources/application-secret.yml
           echo "      auto: false" >> ./src/main/resources/application-secret.yml
+          echo "google:" >> ./src/main/resources/application-secret.yml 
+          echo "  auth:" >> ./src/main/resources/application-secret.yml
+          echo "    url: $GOOGLE_AUTH_URL" >> ./src/main/resources/application-secret.yml
+          echo "  login:" >> ./src/main/resources/application-secret.yml
+          echo "    url: $GOOGLE_LOGIN_URL" >> ./src/main/resources/application-secret.yml
+          echo "  redirect:" >> ./src/main/resources/application-secret.yml
+          echo "    url: $GOOGLE_REDIRECT_URL" >> ./src/main/resources/application-secret.yml
+          echo "  client:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $GOOGLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
+          echo "    secret: $GOOGLE_CLIENT_SECRET" >> ./src/main/resources/application-secret.yml
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle

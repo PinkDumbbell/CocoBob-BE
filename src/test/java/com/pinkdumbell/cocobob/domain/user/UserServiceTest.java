@@ -41,6 +41,7 @@ class UserServiceTest {
     @MockBean
     MailConfig mailConfig;
 
+
     @Test
     @DisplayName("주어진 사용자 정보를 통해 회원가입을 할 수 있다.")
     void testSignup() {

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,6 +46,17 @@ class ProductControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Value("${google.auth.url}")
+    private String googleAuthUrl;
+    @Value("${google.login.url}")
+    private String googleLoginUrl;
+    @Value("${google.client.id}")
+    private String googleClientId;
+    @Value("${google.client.secret}")
+    private String googleClientSecret;
+    @Value("${google.redirect.url}")
+    private String googleRedirectUrl;
     MockMvc mvc;
 
     @BeforeEach
