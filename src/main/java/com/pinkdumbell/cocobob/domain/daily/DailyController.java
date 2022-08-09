@@ -56,8 +56,9 @@ public class DailyController {
     }
 
     @PostMapping("/{petId}")
-    public ResponseEntity<RecordDailyNoteRegisterResponseClass> createDailyRecord(@ModelAttribute
-    @Valid DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,
+    public ResponseEntity<RecordDailyNoteRegisterResponseClass> createDailyRecord(
+        @Valid @ModelAttribute
+        DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,
         @PathVariable("petId") Long petId) {
 
         return ResponseEntity.ok(
@@ -69,7 +70,8 @@ public class DailyController {
 
     @GetMapping("/{petId}")
     public ResponseEntity<RecordDailyNoteGetResponseClass> getDailyNote(
-        @PathVariable("petId") Long petId, DailyRecordGetRequestDto dailyRecordGetRequestDto) {
+        @PathVariable("petId") Long petId,
+        @Valid DailyRecordGetRequestDto dailyRecordGetRequestDto) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteGetResponseClass(HttpStatus.OK.value(),
@@ -80,7 +82,7 @@ public class DailyController {
 
     @GetMapping("/simple/{petId}")
     public ResponseEntity<SimpleDailyResponseClass> getSimpleDaily(
-        @PathVariable("petId") Long petId, DailySimpleRequestDto dailySimpleRequestDto) {
+        @PathVariable("petId") Long petId, @Valid DailySimpleRequestDto dailySimpleRequestDto) {
 
         return ResponseEntity.ok(
             new SimpleDailyResponseClass(HttpStatus.OK.value(),
