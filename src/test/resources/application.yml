@@ -42,3 +42,13 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+google:
+  auth:
+    url: test
+  login:
+    url: test
+  redirect:
+    url: test
+  client:
+    id: test
+    secret: test
