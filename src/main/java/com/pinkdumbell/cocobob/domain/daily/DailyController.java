@@ -147,8 +147,22 @@ public class DailyController {
         return ResponseEntity.ok(new DailyRecordDetailResponseClass(
             HttpStatus.OK.value(),
             "SUCCESS GET DAILY",
-            "데일리 기록을 가져오는데 성공하였습니다.",
+            "데일리 기록을 불러오는데 성공하였습니다.",
             dailyService.getDailyDetailRecord(dailyId)));
+    }
+
+    @DeleteMapping("/{dailyId}/images/{dailyimageId}")
+    public ResponseEntity<CommonResponseDto> deleteDailyImage(
+        @PathVariable("dailyId") Long dailyId, @PathVariable("dailyimageId") Long dailyImageId) {
+
+        dailyService.deleteDailyImage(dailyId,dailyImageId);
+
+        return ResponseEntity.ok(CommonResponseDto.builder().
+            status(HttpStatus.OK.value())
+            .code("SUCCESS DELETE DAILY IMAGE")
+            .message("데일리 이미지를 삭제하는데 성공하였습니다.")
+            .data(null)
+            .build());
     }
 
 

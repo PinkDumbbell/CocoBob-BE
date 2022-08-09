@@ -172,6 +172,24 @@ public class DailyService {
 
     }
 
+    @Transactional
+    public void deleteDailyImage(Long dailyId, Long dailyImageId) {
+
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(()->{
+            throw new CustomException(ErrorCode.DAILY_NOT_FOUND);
+        });
+
+        DailyImage dailyImage = dailyImageRepository.findByIdAndDaily(dailyImageId,daily)
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.DAILY_IMAGE_NOT_FOUND);
+            });
+
+        String targetImage = dailyImage.getPath();
+        imageService.deleteImage(targetImage.substring(targetImage.lastIndexOf("daily/")));
+
+        dailyImageRepository.delete(dailyImage);
+    }
+
     //PetId, 기록시간, 저장 시각, 사진 숫자로 저장
     private String createDailyImageName(Long dailyId, LocalDate date, int index) {
         return "daily/" + dailyId + "_" + date + "_" + index;
