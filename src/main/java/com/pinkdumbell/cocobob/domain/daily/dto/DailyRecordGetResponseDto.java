@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DailyNoteGetResponseDto {
+public class DailyRecordGetResponseDto {
 
     private Long id;
 
@@ -35,14 +35,14 @@ public class DailyNoteGetResponseDto {
         private String imagePath;
         private Long dailyImageId;
 
-        public DailyImageInfo(DailyImage dailyImage){
+        public DailyImageInfo(DailyImage dailyImage) {
 
             this.imagePath = dailyImage.getPath();
             this.dailyImageId = dailyImage.getId();
         }
     }
 
-    public DailyNoteGetResponseDto(Daily daily, List<DailyImage> dailyImages) {
+    public DailyRecordGetResponseDto(Daily daily, List<DailyImage> dailyImages) {
         this.id = daily.getId();
         this.date = daily.getDate().toString();
         this.feedAmount = daily.getFeedAmount();

@@ -1,22 +1,24 @@
 package com.pinkdumbell.cocobob.domain.daily.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyNoteRegisterRequestDto {
+@Builder
+public class DailyRecordGetRequestDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    private List<MultipartFile> noteImages;
-    @NotBlank(message = "필수 입력 항목(note)가 없습니다.")
-    private String note;
+    @NotBlank(message = "필수 입력 항목(시작 날짜)가 없습니다.")
+    private LocalDate startDate;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotBlank(message = "필수 입력 항목(종료 날짜)가 없습니다.")
+    private LocalDate lastDate;
 }

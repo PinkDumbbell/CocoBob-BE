@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DailyNoteRegisterResponseDto {
+public class DailyRecordRegisterResponseDto {
 
     private Long dailyId;
 
