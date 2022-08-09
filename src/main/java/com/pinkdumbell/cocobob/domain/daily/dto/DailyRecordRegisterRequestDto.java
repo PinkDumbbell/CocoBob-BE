@@ -2,7 +2,6 @@ package com.pinkdumbell.cocobob.domain.daily.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +16,10 @@ public class DailyRecordRegisterRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private List<MultipartFile> noteImages;
-    @NotBlank(message = "필수 입력 항목(note)가 없습니다.")
     private String note;
+    private Integer feedAmount;
+    private Integer walkTotalTime;
+    private Float walkDistance;
+    private String walkGps;
+
 }

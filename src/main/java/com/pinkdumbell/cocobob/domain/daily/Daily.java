@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.BaseEntity;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,4 +40,13 @@ public class Daily extends BaseEntity {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    public Daily(DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,Pet pet) {
+        this.date = dailyRecordRegisterRequestDto.getDate();
+        this.feedAmount = dailyRecordRegisterRequestDto.getFeedAmount();
+        this.walkTotalTime = dailyRecordRegisterRequestDto.getWalkTotalTime();
+        this.walkDistance = dailyRecordRegisterRequestDto.getWalkDistance();
+        this.walkGps = dailyRecordRegisterRequestDto.getWalkGps();
+        this.note = dailyRecordRegisterRequestDto.getNote();
+        this.pet = pet;
+    }
 }

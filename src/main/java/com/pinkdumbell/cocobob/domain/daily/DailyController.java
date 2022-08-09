@@ -1,10 +1,10 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -29,19 +29,19 @@ public class DailyController {
     private final DailyService dailyService;
 
     private static class RecordDailyNoteRegisterResponseClass extends
-        CommonResponseDto<DailyNoteRegisterResponseDto> {
+        CommonResponseDto<DailyRecordRegisterResponseDto> {
 
         public RecordDailyNoteRegisterResponseClass(int status, String code, String message,
-            DailyNoteRegisterResponseDto data) {
+            DailyRecordRegisterResponseDto data) {
             super(status, code, message, data);
         }
     }
 
     private static class RecordDailyNoteGetResponseClass extends
-        CommonResponseDto<List<DailyNoteGetResponseDto>> {
+        CommonResponseDto<List<DailyRecordGetResponseDto>> {
 
         public RecordDailyNoteGetResponseClass(int status, String code, String message,
-            List<DailyNoteGetResponseDto> data) {
+            List<DailyRecordGetResponseDto> data) {
             super(status, code, message, data);
         }
     }
@@ -56,26 +56,26 @@ public class DailyController {
     }
 
     @PostMapping("/{petId}")
-    public ResponseEntity<RecordDailyNoteRegisterResponseClass> recordDailyNote(@ModelAttribute
-    @Valid DailyNoteRegisterRequestDto dailyNoteRegisterRequestDto,
+    public ResponseEntity<RecordDailyNoteRegisterResponseClass> createDailyRecord(@ModelAttribute
+    @Valid DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto,
         @PathVariable("petId") Long petId) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteRegisterResponseClass(HttpStatus.OK.value(),
-                "SUCCESS RECORD DAILY",
-                "데일리 기록을 저장하는데 성공하였습니다.",
-                dailyService.recordNote(dailyNoteRegisterRequestDto, petId)));
+                "SUCCESS CREATE DAILY",
+                "데일리 기록을 생성 하는데 성공하였습니다.",
+                dailyService.createDailyRecord(dailyRecordRegisterRequestDto, petId)));
     }
 
     @GetMapping("/{petId}")
     public ResponseEntity<RecordDailyNoteGetResponseClass> getDailyNote(
-        @PathVariable("petId") Long petId, DailyNoteGetRequestDto dailyNoteGetRequestDto) {
+        @PathVariable("petId") Long petId, DailyRecordGetRequestDto dailyRecordGetRequestDto) {
 
         return ResponseEntity.ok(
             new RecordDailyNoteGetResponseClass(HttpStatus.OK.value(),
                 "SUCCESS GET DAILY",
                 "데일리 기록을 불러오는데 성공하였습니다.",
-                dailyService.getNotes(petId, dailyNoteGetRequestDto)));
+                dailyService.getDaily(petId, dailyRecordGetRequestDto)));
     }
 
     @GetMapping("/simple/{petId}")

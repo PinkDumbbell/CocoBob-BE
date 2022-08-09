@@ -1,10 +1,10 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.ImageService;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteGetResponseDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyNoteRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
@@ -31,25 +31,22 @@ public class DailyService {
     private final ImageService imageService;
 
     @Transactional
-    public DailyNoteRegisterResponseDto recordNote(
-        DailyNoteRegisterRequestDto dailyNoteRegisterRequestDto, Long petId) {
+    public DailyRecordRegisterResponseDto createDailyRecord(
+        DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto, Long petId) {
 
         Pet pet = petRepository.findById(petId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
 
-        Daily newDaily = Daily.builder().date(dailyNoteRegisterRequestDto.getDate()).pet(pet)
-            .note(dailyNoteRegisterRequestDto.getNote()).build();
+        Daily savedDaily = dailyRepository.save(new Daily(dailyRecordRegisterRequestDto, pet));
 
-        Daily savedDaily = dailyRepository.save(newDaily);
-
-        if (dailyNoteRegisterRequestDto.getNoteImages() != null) {
+        if (dailyRecordRegisterRequestDto.getNoteImages() != null) {
             try {
-                IntStream.range(0, dailyNoteRegisterRequestDto.getNoteImages().size())
+                IntStream.range(0, dailyRecordRegisterRequestDto.getNoteImages().size())
                     .forEach(index -> {
                         String saveImagePath = imageService.saveImage(
-                            dailyNoteRegisterRequestDto.getNoteImages().get(index),
-                            createDailyImageName(petId, dailyNoteRegisterRequestDto.getDate(),
+                            dailyRecordRegisterRequestDto.getNoteImages().get(index),
+                            createDailyImageName(petId, dailyRecordRegisterRequestDto.getDate(),
                                 index));
 
                         DailyImage newDailyImage = DailyImage.builder()
@@ -64,22 +61,23 @@ public class DailyService {
             }
         }
 
-        return new DailyNoteRegisterResponseDto(savedDaily.getId());
+        return new DailyRecordRegisterResponseDto(savedDaily.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<DailyNoteGetResponseDto> getNotes(Long petId,
-        DailyNoteGetRequestDto dailyNoteGetRequestDto) {
+    public List<DailyRecordGetResponseDto> getDaily(Long petId,
+        DailyRecordGetRequestDto dailyRecordGetRequestDto) {
 
         Pet pet = petRepository.findById(petId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
 
         List<Daily> petDailys = dailyRepository.findAllByPetAndDateBetween(pet,
-            dailyNoteGetRequestDto.getStartDate(), dailyNoteGetRequestDto.getLastDate());
+            dailyRecordGetRequestDto.getStartDate(), dailyRecordGetRequestDto.getLastDate());
 
         return petDailys.stream().map(
-                daily -> new DailyNoteGetResponseDto(daily, dailyImageRepository.findAllByDaily(daily)))
+                daily -> new DailyRecordGetResponseDto(daily,
+                    dailyImageRepository.findAllByDaily(daily)))
             .collect(Collectors.toList());
 
     }
