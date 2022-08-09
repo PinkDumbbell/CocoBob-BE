@@ -12,6 +12,4 @@ public interface DailyImageRepository extends JpaRepository<DailyImage,Long> {
     void deleteAllByDaily(Daily daily);
 
     Optional<DailyImage> findByIdAndDaily(Long dailyImageId,Daily daily);
-
-    Optional<Object> deleteByIdAndDaily(Long dailyImageId, Daily daily);
 }
