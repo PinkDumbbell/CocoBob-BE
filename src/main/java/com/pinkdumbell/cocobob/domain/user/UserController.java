@@ -23,11 +23,14 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @ApiOperation("User API")
 @RequestMapping("/v1/users")
@@ -36,6 +39,16 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    @Value("${google.auth.url}")
+    private String googleAuthUrl;
+    @Value("${google.login.url}")
+    private String googleLoginUrl;
+    @Value("${google.client.id}")
+    private String googleClientId;
+    @Value("${google.client.secret}")
+    private String googleClientSecret;
+    @Value("${google.redirect.url}")
+    private String googleRedirectUrl;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
@@ -70,7 +83,7 @@ public class UserController {
         }
     }
 
-    private class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
+    private static class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
         public UserGetResponseClass(int status, String code, String message,
                 UserGetResponseDto data) {
             super(status, code, message, data);
@@ -122,6 +135,33 @@ public class UserController {
             "SUCCESS LOGIN",
             "로그인 정상처리",
             userService.login(requestDto)));
+    }
+
+    @GetMapping("/google")
+    public void redirectGoogleAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                    googleLoginUrl +
+                            "/o/oauth2/v2/auth?client_id=" +
+                            googleClientId +
+                            "&redirect_uri=" +
+                            googleRedirectUrl +
+                            "&response_type=code&scope=email%20profile%20openid&access_type=offline"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("");
+        }
+
+    }
+
+    @GetMapping("/login/oauth/google")
+    public ResponseEntity<LoginResponseClass> googleLogin(@RequestParam(value = "code") String code) {
+        return ResponseEntity.ok(new LoginResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS GOOGLE LOGIN",
+                "구글 로그인 성공",
+                userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret, googleRedirectUrl)
+        ));
     }
 
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
