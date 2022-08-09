@@ -11,23 +11,22 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class DailyRecordDetailResponseDto {
 
-    private Long id;
+    private final Long id;
 
-    private String date;
+    private final String date;
 
-    private Integer feedAmount;
+    private final Integer feedAmount;
 
-    private Integer walkTotalTime;
+    private final Integer walkTotalTime;
 
-    private Float walkDistance;
+    private final Float walkDistance;
 
-    private String walkGps;
+    private final String walkGps;
 
-    private String note;
+    private final String note;
 
     private List<DailyImageInfo> images = new ArrayList<>();
 

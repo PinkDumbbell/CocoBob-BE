@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class DailySimpleResponseDto {
 
-    private String date;
-    private Long dailyId;
+    private final String date;
+    private final Long dailyId;
 
     public DailySimpleResponseDto(Daily daily) {
 

@@ -2,15 +2,13 @@ package com.pinkdumbell.cocobob.domain.daily.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 @Builder
 public class DailyRecordRegisterResponseDto {
 
-    private Long dailyId;
+    private final Long dailyId;
 
 }
