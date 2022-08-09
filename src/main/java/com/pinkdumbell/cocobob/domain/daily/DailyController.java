@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -113,7 +114,20 @@ public class DailyController {
                 "SUCCESS UPDATE DAILY",
                 "데일리 기록을 변경하는데 성공하였습니다.",
                 dailyService.updateDailyRecord(dailyId, dailyRecordUpdateRequestDto)));
+    }
 
+    @DeleteMapping("/edit/{dailyId}")
+    public ResponseEntity<CommonResponseDto> deleteDailyRecord(
+        @PathVariable("dailyId") Long dailyId) {
+
+        dailyService.deleteDaily(dailyId);
+
+        return ResponseEntity.ok(CommonResponseDto.builder()
+            .status(HttpStatus.OK.value())
+            .code("SUCCESS DELETE DAILY")
+            .message("데일리 기록을 정상적으로 삭제하였습니다.")
+            .data(null)
+            .build());
     }
 
 

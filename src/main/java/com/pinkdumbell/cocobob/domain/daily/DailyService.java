@@ -48,7 +48,7 @@ public class DailyService {
                     .forEach(index -> {
                         String saveImagePath = imageService.saveImage(
                             dailyRecordRegisterRequestDto.getImages().get(index),
-                            createDailyImageName(petId, dailyRecordRegisterRequestDto.getDate(),
+                            createDailyImageName(savedDaily.getId(), dailyRecordRegisterRequestDto.getDate(),
                                 index));
 
                         DailyImage newDailyImage = DailyImage.builder()
@@ -120,7 +120,7 @@ public class DailyService {
 
                         String saveImagePath = imageService.saveImage(
                             dailyRecordUpdateRequestDto.getImages().get(index),
-                            createDailyImageName(daily.getPet().getId(), daily.getDate(),
+                            createDailyImageName(daily.getId(), daily.getDate(),
                                 index));
 
                         DailyImage newDailyImage = DailyImage.builder()
@@ -138,10 +138,30 @@ public class DailyService {
         return new DailyRecordUpdateResponseDto(dailyId);
     }
 
+    @Transactional
+    public void deleteDaily(Long dailyId) {
+
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.DAILY_NOT_FOUND);
+        });
+
+        //S3 이미지 전체 삭제
+        dailyImageRepository.findAllByDaily(daily).forEach(dailyImage -> {
+            String targetImage = dailyImage.getPath();
+            imageService.deleteImage(targetImage.substring(targetImage.lastIndexOf("daily/")));
+        });
+
+        //DailyImage Table 기록 삭제
+        dailyImageRepository.deleteAllByDaily(daily);
+
+        //daily 삭제
+        dailyRepository.delete(daily);
+
+    }
 
     //PetId, 기록시간, 저장 시각, 사진 숫자로 저장
-    private String createDailyImageName(Long petId, LocalDate date, int index) {
-        return "daily/" + petId + "_" + date + "_" + index;
+    private String createDailyImageName(Long dailyId, LocalDate date, int index) {
+        return "daily/" + dailyId + "_" + date + "_" + index;
     }
 
 }
