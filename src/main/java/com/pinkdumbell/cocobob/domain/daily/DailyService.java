@@ -15,14 +15,18 @@ import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -43,27 +47,7 @@ public class DailyService {
 
         Daily savedDaily = dailyRepository.save(new Daily(dailyRecordRegisterRequestDto, pet));
 
-        if (dailyRecordRegisterRequestDto.getImages() != null) {
-            try {
-                IntStream.range(0, dailyRecordRegisterRequestDto.getImages().size())
-                    .forEach(index -> {
-                        String saveImagePath = imageService.saveImage(
-                            dailyRecordRegisterRequestDto.getImages().get(index),
-                            createDailyImageName(savedDaily.getId(),
-                                dailyRecordRegisterRequestDto.getDate(),
-                                index));
-
-                        DailyImage newDailyImage = DailyImage.builder()
-                            .daily(savedDaily)
-                            .path(saveImagePath)
-                            .build();
-
-                        dailyImageRepository.save(newDailyImage);
-                    });
-            } catch (NullPointerException e) {
-                throw new CustomException(ErrorCode.NOT_IMAGE);
-            }
-        }
+        saveDailyImages(dailyRecordRegisterRequestDto.getImages(), savedDaily);
 
         return new DailyRecordRegisterResponseDto(savedDaily.getId());
     }
@@ -113,29 +97,7 @@ public class DailyService {
         daily.updateDaily(dailyRecordUpdateRequestDto); // 요청 정보를 바탕으로 정보 변경
 
         //새로 추가된 이미지 저장
-        if (dailyRecordUpdateRequestDto.getImages() != null) {
-            try {
-                int existingImageCount = dailyImageRepository.countAllByDaily(daily).intValue();
-                IntStream.range(existingImageCount,
-                        existingImageCount + dailyRecordUpdateRequestDto.getImages().size())
-                    .forEach(index -> {
-
-                        String saveImagePath = imageService.saveImage(
-                            dailyRecordUpdateRequestDto.getImages().get(index),
-                            createDailyImageName(daily.getId(), daily.getDate(),
-                                index));
-
-                        DailyImage newDailyImage = DailyImage.builder()
-                            .daily(daily)
-                            .path(saveImagePath)
-                            .build();
-
-                        dailyImageRepository.save(newDailyImage);
-                    });
-            } catch (NullPointerException e) {
-                throw new CustomException(ErrorCode.NOT_IMAGE);
-            }
-        }
+        saveDailyImages(dailyRecordUpdateRequestDto.getImages(), daily);
 
         return new DailyRecordUpdateResponseDto(dailyId);
     }
@@ -175,11 +137,11 @@ public class DailyService {
     @Transactional
     public void deleteDailyImage(Long dailyId, Long dailyImageId) {
 
-        Daily daily = dailyRepository.findById(dailyId).orElseThrow(()->{
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.DAILY_NOT_FOUND);
         });
 
-        DailyImage dailyImage = dailyImageRepository.findByIdAndDaily(dailyImageId,daily)
+        DailyImage dailyImage = dailyImageRepository.findByIdAndDaily(dailyImageId, daily)
             .orElseThrow(() -> {
                 throw new CustomException(ErrorCode.DAILY_IMAGE_NOT_FOUND);
             });
@@ -190,9 +152,34 @@ public class DailyService {
         dailyImageRepository.delete(dailyImage);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void saveDailyImages(List<MultipartFile> images, Daily daily) {
+        if (images != null) {
+            try {
+                IntStream.range(0, images.size())
+                    .forEach(index -> {
+                        String saveImagePath = imageService.saveImage(images.get(index),
+                            createDailyImageName(daily.getId(), daily.getDate(), index));
+
+                        DailyImage newDailyImage = DailyImage.builder()
+                            .daily(daily)
+                            .path(saveImagePath)
+                            .build();
+
+                        dailyImageRepository.save(newDailyImage);
+                    });
+            } catch (NullPointerException e) {
+                throw new CustomException(ErrorCode.NOT_IMAGE);
+            }
+        }
+
+    }
+
     //PetId, 기록시간, 저장 시각, 사진 숫자로 저장
     private String createDailyImageName(Long dailyId, LocalDate date, int index) {
-        return "daily/" + dailyId + "_" + date + "_" + index;
+
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        return "daily/" + dailyId + "_" + date + "_" + timeStamp + "_" + index;
     }
 
 }
