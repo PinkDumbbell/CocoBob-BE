@@ -4,8 +4,6 @@ package com.pinkdumbell.cocobob.domain.daily;
 import static org.mockito.BDDMockito.*;
 
 import com.pinkdumbell.cocobob.common.ImageService;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateRequestDto;
@@ -13,9 +11,7 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -77,25 +73,5 @@ class DailyServiceTest {
 
         //Expect
         Assertions.assertThat(result.getDailyId()).isEqualTo(1L);
-    }
-
-    @Test
-    @DisplayName("데일리 기록을 삭제할 수 있다.")
-    void testDeleteDaily() {
-    }
-
-    @Test
-    @DisplayName("데일리 기록 상세 정보를 조회할 수 있다.")
-    void testGetDailyDetailRecord() {
-    }
-
-    @Test
-    @DisplayName("데일리 기록내에 이미지를 개별적으로 삭제할 수 있다.")
-    void testDeleteDailyImage() {
-    }
-
-    @Test
-    @DisplayName("데일리 기록 이미지를 저장할 수 있다.")
-    void testSaveDailyImages() {
     }
 }
