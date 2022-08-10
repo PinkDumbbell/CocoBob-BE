@@ -217,6 +217,16 @@ class DailyControllerTest {
     }
 
     @Test
-    void deleteDailyImage() {
+    @WithMockUser("USER")
+    @DisplayName("데일리 상세 정보를 정상적으로 가져올 수 있다.")
+    void 데일리_기록_하나만_가져올_수_있다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(get("/v1/dailys/1"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("데일리 기록을 불러오는데 성공하였습니다.");
     }
 }
