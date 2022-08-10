@@ -28,9 +28,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Map;
 
 @ApiOperation("User API")
 @RequestMapping("/v1/users")
@@ -162,6 +164,15 @@ public class UserController {
                 "구글 로그인 성공",
                 userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret, googleRedirectUrl)
         ));
+    }
+
+    @PostMapping("/login/oauth/apple")
+    public void appleTest(@RequestParam Map<String, Object> body, HttpServletRequest request) {
+        System.out.println("================================================");
+        for (String s : body.keySet()) {
+            System.out.println(s + ": " + body.get(s));
+        }
+        System.out.println("================================================");
     }
 
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
