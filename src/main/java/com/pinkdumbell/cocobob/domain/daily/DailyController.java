@@ -10,7 +10,12 @@ import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailySimpleResponseDto;
+import com.pinkdumbell.cocobob.exception.ErrorResponse;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +84,12 @@ public class DailyController {
         }
     }
 
+    @ApiOperation(value = "create daily record", notes = "데일리 기록 생성")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = DailyRecordRegisterResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
     @PostMapping("/pets/{petId}")
     public ResponseEntity<DailyRecordRegisterResponseClass> createDailyRecord(
         @Valid @ModelAttribute
@@ -92,6 +103,18 @@ public class DailyController {
                 dailyService.createDailyRecord(dailyRecordRegisterRequestDto, petId)));
     }
 
+    @ApiOperation(value = "get all daily record", notes = "데일리 기록 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = RecordDailyNoteGetResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "startDate", dataType = "LocalDate", paramType = "query",
+            value = "2022-01-01"),
+        @ApiImplicitParam(name = "lastDate", dataType = "LocalDate", paramType = "query",
+            value = "2022-12-31"),
+    })
     @GetMapping("/pets/{petId}")
     public ResponseEntity<RecordDailyNoteGetResponseClass> getAllDailyRecord(
         @PathVariable("petId") Long petId,
@@ -104,6 +127,16 @@ public class DailyController {
                 dailyService.getDaily(petId, dailyRecordGetRequestDto)));
     }
 
+    @ApiOperation(value = "get all simple daily record", notes = "데일리 기록 단순 날짜 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = SimpleDailyResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "yearMonth", dataType = "LocalDate", paramType = "query",
+            value = "2022-08"),
+    })
     @GetMapping("/pets/simple/{petId}")
     public ResponseEntity<SimpleDailyResponseClass> getSimpleDaily(
         @PathVariable("petId") Long petId, @Valid DailySimpleRequestDto dailySimpleRequestDto) {
@@ -115,7 +148,13 @@ public class DailyController {
                 dailyService.getSimpleDaily(petId, dailySimpleRequestDto.getYearMonth())));
     }
 
-    @PutMapping ("/{dailyId}")
+    @ApiOperation(value = "update daily record", notes = "데일리 기록 수정")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = DailyRecordUpdateResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
+    @PutMapping("/{dailyId}")
     public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(
         @PathVariable("dailyId") Long dailyId, @ModelAttribute
     DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto) {
@@ -127,6 +166,12 @@ public class DailyController {
                 dailyService.updateDailyRecord(dailyId, dailyRecordUpdateRequestDto)));
     }
 
+    @ApiOperation(value = "delete daily record", notes = "데일리 기록 삭제")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
     @DeleteMapping("/{dailyId}")
     public ResponseEntity<CommonResponseDto> deleteDailyRecord(
         @PathVariable("dailyId") Long dailyId) {
@@ -141,6 +186,12 @@ public class DailyController {
             .build());
     }
 
+    @ApiOperation(value = "view detail daily record", notes = "데일리 상세 기록 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = DailyRecordDetailResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
     @GetMapping("/{dailyId}")
     public ResponseEntity<DailyRecordDetailResponseClass> getDailyDetailRecord(
         @PathVariable("dailyId") Long dailyId) {
@@ -152,11 +203,17 @@ public class DailyController {
             dailyService.getDailyDetailRecord(dailyId)));
     }
 
+    @ApiOperation(value = "delete daily image", notes = "데일리 이미지 삭제")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = CommonResponseDto.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+    })
     @DeleteMapping("/{dailyId}/images/{dailyimageId}")
     public ResponseEntity<CommonResponseDto> deleteDailyImage(
         @PathVariable("dailyId") Long dailyId, @PathVariable("dailyimageId") Long dailyImageId) {
 
-        dailyService.deleteDailyImage(dailyId,dailyImageId);
+        dailyService.deleteDailyImage(dailyId, dailyImageId);
 
         return ResponseEntity.ok(CommonResponseDto.builder().
             status(HttpStatus.OK.value())
