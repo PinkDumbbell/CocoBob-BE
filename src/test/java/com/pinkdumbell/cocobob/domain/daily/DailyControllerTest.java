@@ -109,6 +109,7 @@ class DailyControllerTest {
         Assertions.assertThat(result.getResponse().getContentAsString())
             .contains("필수 입력 항목(시작 날짜)가 없습니다.");
     }
+
     @Test
     @WithMockUser("USER")
     @DisplayName("종료 날짜가 없으면 데일리 기록을 정상적으로 조회 할 수 없다.")
@@ -124,6 +125,7 @@ class DailyControllerTest {
         Assertions.assertThat(result.getResponse().getContentAsString())
             .contains("필수 입력 항목(종료 날짜)가 없습니다.");
     }
+
     @Test
     @WithMockUser("USER")
     @DisplayName("날짜가 없으면 데일리 기록을 정상적으로 조회 할 수 없다.")
@@ -136,11 +138,36 @@ class DailyControllerTest {
         //Expect
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(400);
         Assertions.assertThat(result.getResponse().getContentAsString())
-            .contains(Arrays.asList("필수 입력 항목(시작 날짜)가 없습니다.","필수 입력 항목(종료 날짜)가 없습니다."));
+            .contains(Arrays.asList("필수 입력 항목(시작 날짜)가 없습니다.", "필수 입력 항목(종료 날짜)가 없습니다."));
     }
 
     @Test
-    void getSimpleDaily() {
+    @WithMockUser("USER")
+    @DisplayName("연월을 입력하여 기록한 날짜 정보를 정상적으로 조회할 수 있다.")
+    void 연월을_통해_단순_기록_정보를_조회_할수_있다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(get("/v1/dailys/pets/simple/1")
+                .param("yearMonth", "2022-08"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("데일리 기록을 불러오는데 성공하였습니다.");
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("연월이 없으면 기록한 날짜 정보를 정상적으로 조회할 수 없다.")
+    void 연월이_없으면_단순_기록_정보를_조회_할수_없다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(get("/v1/dailys/pets/simple/1"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(400);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("필수 입력 항목(년 월)이 없습니다.");
     }
 
     @Test
