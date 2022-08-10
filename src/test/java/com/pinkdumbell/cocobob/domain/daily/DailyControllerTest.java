@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -188,11 +189,31 @@ class DailyControllerTest {
     }
 
     @Test
-    void deleteDailyRecord() {
+    @WithMockUser("USER")
+    @DisplayName("기존 저장된 데일리 기록을 정상적으로 삭제할 수 있다.")
+    void 데일리_기록을_정상적으로_삭제_할수_있다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(delete("/v1/dailys/1"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("데일리 기록을 정상적으로 삭제하였습니다.");
     }
 
     @Test
-    void getDailyDetailRecord() {
+    @WithMockUser("USER")
+    @DisplayName("기존 저장된 데일리안에 이미지를 정상적으로 삭제할 수 있다.")
+    void 데일리_기록_이미지를_정상적으로_삭제_요청이_가능하다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(delete("/v1/dailys/1/images/13"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("데일리 이미지를 삭제하는데 성공하였습니다.");
     }
 
     @Test
