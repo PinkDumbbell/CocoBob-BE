@@ -4,12 +4,18 @@ package com.pinkdumbell.cocobob.domain.daily;
 import static org.mockito.BDDMockito.*;
 
 import com.pinkdumbell.cocobob.common.ImageService;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordGetResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterResponseDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordUpdateResponseDto;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -38,14 +44,9 @@ class DailyServiceTest {
     void testCreateDailyRecord() {
 
         //Given
-        DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto = DailyRecordRegisterRequestDto.builder()
-            .date(LocalDate.of(2022, 8, 15))
-            .note("행복하고 안녕하개")
-            .build();
+        DailyRecordRegisterRequestDto dailyRecordRegisterRequestDto = new DailyRecordRegisterRequestDto();
         Long petId = 1L;
-
-        given(petRepository.findById(anyLong())).willReturn(
-            Optional.of(Pet.builder().name("코코").build()));
+        given(petRepository.findById(anyLong())).willReturn(Optional.of(new Pet()));
 
         given(dailyRepository.save(any(Daily.class))).willReturn(Daily.builder().id(13L).build());
 
@@ -59,18 +60,23 @@ class DailyServiceTest {
     }
 
     @Test
-    @DisplayName("데일리 기록을 조회할 수 있다.")
-    void testGetDaily() {
-    }
-
-    @Test
-    @DisplayName("새로운 단순 데일리 일자를 조회할 수 있다.")
-    void testGetSimpleDaily() {
-    }
-
-    @Test
     @DisplayName("데일리 기록을 수정할 수 있다.")
     void testUpdateDailyRecord() {
+
+        //Given
+        Long dailyId = 1L;
+        DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto = new DailyRecordUpdateRequestDto(
+            new ArrayList<>(), "행복하게", 434, 3, 4.4f, "{latitude:}");
+
+        given(dailyRepository.findById(anyLong())).willReturn(
+            Optional.of(Daily.builder().note("Dog Bow").build()));
+
+        //Execute
+        DailyRecordUpdateResponseDto result = dailyService.updateDailyRecord(
+            dailyId, dailyRecordUpdateRequestDto);
+
+        //Expect
+        Assertions.assertThat(result.getDailyId()).isEqualTo(1L);
     }
 
     @Test
