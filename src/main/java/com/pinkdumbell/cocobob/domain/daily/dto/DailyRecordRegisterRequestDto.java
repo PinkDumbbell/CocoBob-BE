@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DailyRecordRegisterRequestDto {
 
     @ApiModelProperty(notes = "데일리 기록 날짜", example = "2022-08-15")
