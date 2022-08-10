@@ -60,7 +60,7 @@ public class DailyService {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
 
-        List<Daily> petDailys = dailyRepository.findAllByPetAndDateBetween(pet,
+        List<Daily> petDailys = dailyRepository.findAllByPetAndDateBetweenOrderByIdDesc(pet,
             dailyRecordGetRequestDto.getStartDate(), dailyRecordGetRequestDto.getLastDate());
 
         return petDailys.stream().map(
@@ -80,7 +80,7 @@ public class DailyService {
         LocalDate startDate = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1);
         LocalDate lastDate = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 31);
 
-        return dailyRepository.findAllByPetAndDateBetween(pet, startDate, lastDate).stream()
+        return dailyRepository.findAllByPetAndDateBetweenOrderByIdDesc(pet, startDate, lastDate).stream()
             .map(DailySimpleResponseDto::new)
             .collect(Collectors.toList());
 
