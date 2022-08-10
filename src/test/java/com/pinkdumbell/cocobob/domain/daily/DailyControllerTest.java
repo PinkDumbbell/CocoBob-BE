@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.daily;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import java.util.Arrays;
@@ -171,7 +172,19 @@ class DailyControllerTest {
     }
 
     @Test
-    void updateDailyRecord() {
+    @WithMockUser("USER")
+    @DisplayName("기존 저장된 데일리 기록을 정상적으로 수정할 수 있다.")
+    void 데일리_기록을_정상적으로_수정할_수_있다() throws Exception {
+        //Execute
+        MvcResult result = mvc.perform(put("/v1/dailys/1")
+                .param("note", "코코가 농사를 지으면 코코팜"))
+            .andReturn();
+
+        //Expect
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains("데일리 기록을 변경하는데 성공하였습니다.");
+
     }
 
     @Test
