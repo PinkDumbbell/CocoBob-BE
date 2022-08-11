@@ -196,14 +196,13 @@ public class UserController {
     @GetMapping("/login/oauth/kakao")
     public ResponseEntity<LoginResponseClass> kakaoLogin(
         @RequestParam(value = "code") String code) {
-        System.out.println("================"+code+"================");
         return ResponseEntity.ok(new LoginResponseClass(
             HttpStatus.OK.value(),
             "SUCCESS KAKAO LOGIN",
             "카카오 로그인 성공",
-            userService.kakaoLogin(code,kakaoLoginUrl, kakaoTokenUrl, kakaoProfileUrl,
-                kakaoClientId,kakaoRedirectUrl)
-        ));
+
+            userService.kakaoLogin(code, kakaoTokenUrl, kakaoProfileUrl, kakaoClientId,
+                kakaoRedirectUrl)));
     }
 
     @GetMapping("/login/oauth/apple")
