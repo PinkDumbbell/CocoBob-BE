@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.daily.image;
 
 import com.pinkdumbell.cocobob.domain.daily.Daily;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +10,8 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class DailyImage {
     @Id
