@@ -77,11 +77,8 @@ public class UserService {
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             });
 
-        if (user.getAccountType() != null && !user.getAccountType().equals(AccountType.GOOGLE)
-            && !user.getAccountType().equals(AccountType.KAKAO)) {
-            if (!bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-                throw new CustomException(ErrorCode.INVALID_PASSWORD);
-            }
+        if (!bCryptPasswordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
@@ -98,6 +95,31 @@ public class UserService {
         }
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
+            newRefreshToken);
+    }
+
+    @Transactional
+    public UserLoginResponseDto socialLogin(String email) {
+
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            });
+
+        String newRefreshToken = jwtTokenProvider.createRefreshToken();
+
+        if (user.getRefreshToken() == null) {
+            Token newUserToken = tokenRepository.save(Token.builder()
+                .value(newRefreshToken)
+                .user(user).build());
+            user.updateRefreshToken(newUserToken);
+        } else {
+            Token userRefreshToken = user.getRefreshToken();
+            userRefreshToken.updateRefreshTokenValue(newRefreshToken);
+            user.updateRefreshToken(userRefreshToken);
+        }
+
+        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(email),
             newRefreshToken);
     }
 
@@ -124,7 +146,7 @@ public class UserService {
                 .build());
         }
 
-        return login(new UserLoginRequestDto(email, null));
+        return socialLogin(email);
     }
 
     private JSONObject getUserInfoFromGoogle(
@@ -168,8 +190,6 @@ public class UserService {
         String username = profile.get("nickname").toString();
         String email = kakaoAccount.get("email").toString();
 
-        System.out.println("username: " + username);
-        System.out.println("email: " + email);
         Optional<User> foundUser = userRepository.findByEmail(email);
 
         if (foundUser.isEmpty()) {
@@ -180,7 +200,7 @@ public class UserService {
                 .build());
         }
 
-        return login(new UserLoginRequestDto(email, null));
+        return socialLogin(email);
     }
 
     private JSONObject getUserInfoFromKakao(
