@@ -166,7 +166,7 @@ public class UserController {
         ));
     }
 
-    @GetMapping("/login/oauth/apple")
+    @PostMapping("/login/oauth/apple")
     public void appleTest(@RequestParam Map<String, Object> body, HttpServletRequest request) {
         System.out.println("================================================");
         for (String s : body.keySet()) {
