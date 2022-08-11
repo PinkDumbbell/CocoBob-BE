@@ -96,9 +96,8 @@ public class UserController {
     }
 
     private static class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
-
         public UserGetResponseClass(int status, String code, String message,
-            UserGetResponseDto data) {
+                UserGetResponseDto data) {
             super(status, code, message, data);
         }
     }
@@ -154,27 +153,26 @@ public class UserController {
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                googleLoginUrl +
-                    "/o/oauth2/v2/auth?client_id=" +
-                    googleClientId +
-                    "&redirect_uri=" +
-                    googleRedirectUrl +
-                    "&response_type=code&scope=email%20profile%20openid&access_type=offline"
+                    googleLoginUrl +
+                            "/o/oauth2/v2/auth?client_id=" +
+                            googleClientId +
+                            "&redirect_uri=" +
+                            googleRedirectUrl +
+                            "&response_type=code&scope=email%20profile%20openid&access_type=offline"
             );
         } catch (IOException e) {
             throw new RuntimeException("");
         }
+
     }
 
     @GetMapping("/login/oauth/google")
-    public ResponseEntity<LoginResponseClass> googleLogin(
-        @RequestParam(value = "code") String code) {
+    public ResponseEntity<LoginResponseClass> googleLogin(@RequestParam(value = "code") String code) {
         return ResponseEntity.ok(new LoginResponseClass(
-            HttpStatus.OK.value(),
-            "SUCCESS GOOGLE LOGIN",
-            "구글 로그인 성공",
-            userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret,
-                googleRedirectUrl)
+                HttpStatus.OK.value(),
+                "SUCCESS GOOGLE LOGIN",
+                "구글 로그인 성공",
+                userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret, googleRedirectUrl)
         ));
     }
 
@@ -204,7 +202,7 @@ public class UserController {
                 kakaoRedirectUrl)));
     }
 
-    @GetMapping("/login/oauth/apple")
+    @PostMapping("/login/oauth/apple")
     public void appleTest(@RequestParam Map<String, Object> body, HttpServletRequest request) {
         System.out.println("================================================");
         for (String s : body.keySet()) {
