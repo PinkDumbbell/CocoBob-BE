@@ -60,18 +60,24 @@ class DailyServiceTest {
     void testUpdateDailyRecord() {
 
         //Given
+        Daily daily = Daily.builder()
+            .id(1L)
+            .note("aaaa")
+            .build();
+
         Long dailyId = 1L;
         DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto = new DailyRecordUpdateRequestDto(
             new ArrayList<>(), "행복하게", 434, 3, 4.4f, "{latitude:}");
 
         given(dailyRepository.findById(anyLong())).willReturn(
-            Optional.of(Daily.builder().note("Dog Bow").build()));
+            Optional.of(daily));
 
         //Execute
         DailyRecordUpdateResponseDto result = dailyService.updateDailyRecord(
             dailyId, dailyRecordUpdateRequestDto);
 
         //Expect
+        Assertions.assertThat(daily.getNote()).isEqualTo(dailyRecordUpdateRequestDto.getNote());
         Assertions.assertThat(result.getDailyId()).isEqualTo(1L);
     }
 }
