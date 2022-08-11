@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
+import org.bytedeco.javacpp.presets.opencv_core.Str;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,16 @@ public class UserController {
     private String googleClientSecret;
     @Value("${google.redirect.url}")
     private String googleRedirectUrl;
+    @Value("${kakao.url.login}")
+    private String kakaoLoginUrl;
+    @Value("${kakao.url.token}")
+    private String kakaoTokenUrl;
+    @Value("${kakao.url.profile}")
+    private String kakaoProfileUrl;
+    @Value("${kakao.client_id}")
+    private String kakaoClientId;
+    @Value("${kakao.redirect}")
+    private String kakaoRedirectUrl;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
@@ -86,8 +97,9 @@ public class UserController {
     }
 
     private static class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
+
         public UserGetResponseClass(int status, String code, String message,
-                UserGetResponseDto data) {
+            UserGetResponseDto data) {
             super(status, code, message, data);
         }
     }
@@ -143,26 +155,54 @@ public class UserController {
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                    googleLoginUrl +
-                            "/o/oauth2/v2/auth?client_id=" +
-                            googleClientId +
-                            "&redirect_uri=" +
-                            googleRedirectUrl +
-                            "&response_type=code&scope=email%20profile%20openid&access_type=offline"
+                googleLoginUrl +
+                    "/o/oauth2/v2/auth?client_id=" +
+                    googleClientId +
+                    "&redirect_uri=" +
+                    googleRedirectUrl +
+                    "&response_type=code&scope=email%20profile%20openid&access_type=offline"
             );
         } catch (IOException e) {
             throw new RuntimeException("");
         }
-
     }
 
     @GetMapping("/login/oauth/google")
-    public ResponseEntity<LoginResponseClass> googleLogin(@RequestParam(value = "code") String code) {
+    public ResponseEntity<LoginResponseClass> googleLogin(
+        @RequestParam(value = "code") String code) {
         return ResponseEntity.ok(new LoginResponseClass(
-                HttpStatus.OK.value(),
-                "SUCCESS GOOGLE LOGIN",
-                "구글 로그인 성공",
-                userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret, googleRedirectUrl)
+            HttpStatus.OK.value(),
+            "SUCCESS GOOGLE LOGIN",
+            "구글 로그인 성공",
+            userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret,
+                googleRedirectUrl)
+        ));
+    }
+
+    @GetMapping("/kakao")
+    public void redirectKakaoAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                kakaoLoginUrl +
+                    "?client_id=" + kakaoClientId +
+                    "&response_type=code" +
+                    "&redirect_uri=" + kakaoRedirectUrl
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("");
+        }
+    }
+
+    @GetMapping("/login/oauth/kakao")
+    public ResponseEntity<LoginResponseClass> kakaoLogin(
+        @RequestParam(value = "code") String code) {
+        System.out.println("================"+code+"================");
+        return ResponseEntity.ok(new LoginResponseClass(
+            HttpStatus.OK.value(),
+            "SUCCESS KAKAO LOGIN",
+            "카카오 로그인 성공",
+            userService.kakaoLogin(code,kakaoLoginUrl, kakaoTokenUrl, kakaoProfileUrl,
+                kakaoClientId,kakaoRedirectUrl)
         ));
     }
 
@@ -272,16 +312,17 @@ public class UserController {
 
     @ApiOperation(value = "GetUserInfo", notes = "사용자 정보와 함께 등록된 반려동물의 간단한 정보를 가져온다.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
-            @ApiResponse(code = 404, message = "USER_NOT_FOUND")
+        @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
+        @ApiResponse(code = 404, message = "USER_NOT_FOUND")
     })
     @GetMapping("")
-    public ResponseEntity<UserGetResponseClass> getUserInfo(@LoginUser LoginUserInfo loginUserInfo) {
+    public ResponseEntity<UserGetResponseClass> getUserInfo(
+        @LoginUser LoginUserInfo loginUserInfo) {
         return ResponseEntity.ok(new UserGetResponseClass(
-                HttpStatus.OK.value(),
-                "GET_USER_INFO_SUCCESS",
-                "사용자 정보가 성공적으로 반환되었습니다.",
-                userService.getUserInfo(loginUserInfo)
+            HttpStatus.OK.value(),
+            "GET_USER_INFO_SUCCESS",
+            "사용자 정보가 성공적으로 반환되었습니다.",
+            userService.getUserInfo(loginUserInfo)
         ));
 
 
