@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.auth.GoogleInfo;
 import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
@@ -42,17 +43,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    @Value("${google.auth.url}")
-    private String googleAuthUrl;
-    @Value("${google.login.url}")
-    private String googleLoginUrl;
-    @Value("${google.client.id}")
-    private String googleClientId;
-    @Value("${google.client.secret}")
-    private String googleClientSecret;
-    @Value("${google.redirect.url}")
-    private String googleRedirectUrl;
 
+    private final GoogleInfo googleInfo;
     private final KakaoInfo kakaoInfo;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
@@ -147,11 +139,11 @@ public class UserController {
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                googleLoginUrl +
+                googleInfo.getGoogleLoginUrl() +
                     "/o/oauth2/v2/auth?client_id=" +
-                    googleClientId +
+                    googleInfo.getGoogleClientId() +
                     "&redirect_uri=" +
-                    googleRedirectUrl +
+                    googleInfo.getGoogleRedirectUrl() +
                     "&response_type=code&scope=email%20profile%20openid&access_type=offline"
             );
         } catch (IOException e) {
@@ -167,8 +159,7 @@ public class UserController {
             HttpStatus.OK.value(),
             "SUCCESS GOOGLE LOGIN",
             "구글 로그인 성공",
-            userService.googleLogin(code, googleAuthUrl, googleClientId, googleClientSecret,
-                googleRedirectUrl)
+            userService.googleLogin(code)
         ));
     }
 

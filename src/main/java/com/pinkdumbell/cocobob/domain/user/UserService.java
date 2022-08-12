@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
+import com.pinkdumbell.cocobob.domain.auth.GoogleInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
 import com.pinkdumbell.cocobob.domain.auth.Token;
@@ -49,6 +50,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailUtil emailUtil;
+    private final GoogleInfo googleInfo;
     private final KakaoInfo kakaoInfo;
 
 
@@ -122,15 +124,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserLoginResponseDto googleLogin(
-        String code,
-        String googleAuthUrl,
-        String googleClientId,
-        String googleClientSecret,
-        String googleRedirectUrl
-    ) {
-        JSONObject userInfoFromGoogle = getUserInfoFromGoogle(code, googleAuthUrl, googleClientId,
-            googleClientSecret, googleRedirectUrl);
+    public UserLoginResponseDto googleLogin(String code) {
+
+        JSONObject userInfoFromGoogle = getUserInfoFromGoogle(code);
+
         String username = (String) userInfoFromGoogle.get("name");
         String email = (String) userInfoFromGoogle.get("email");
 
@@ -147,26 +144,21 @@ public class UserService {
         return socialLogin(email);
     }
 
-    private JSONObject getUserInfoFromGoogle(
-        String code,
-        String googleAuthUrl,
-        String googleClientId,
-        String googleClientSecret,
-        String googleRedirectUrl
-    ) {
+    private JSONObject getUserInfoFromGoogle(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest.builder()
-            .clientId(googleClientId)
-            .clientSecret(googleClientSecret)
+            .clientId(googleInfo.getGoogleClientId())
+            .clientSecret(googleInfo.getGoogleClientSecret())
             .code(code)
-            .redirectUri(googleRedirectUrl)
+            .redirectUri(googleInfo.getGoogleRedirectUrl())
             .grantType("authorization_code")
             .build();
 
         ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
-            googleAuthUrl + "/token", googleOAuthRequest, JSONObject.class);
-        String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo")
+            googleInfo.getGoogleAuthUrl() + "/token", googleOAuthRequest, JSONObject.class);
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(
+                googleInfo.getGoogleAuthUrl() + "/tokeninfo")
             .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
         return restTemplate.getForObject(requestUrl, JSONObject.class);
     }
