@@ -53,7 +53,9 @@ public class AppleUtil {
         try {
             return userInfo.get("email").toString();
         } catch (NullPointerException e) {
-            throw new RuntimeException(e);
+            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
+            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
+            throw new RuntimeException();
         }
     }
     private String createClientSecret() {
@@ -84,6 +86,8 @@ public class AppleUtil {
 
             return converter.getPrivateKey(privateKeyInfo);
         } catch (IOException e) {
+            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
+            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
             throw new RuntimeException(e);
         }
 
@@ -152,6 +156,8 @@ public class AppleUtil {
             }
             return properPublicKey;
         } catch (ParseException e) {
+            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
+            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
             throw new RuntimeException(e);
         }
     }
@@ -171,6 +177,8 @@ public class AppleUtil {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePublic(publicKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
+            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
             throw new RuntimeException(ex);
         }
     }
