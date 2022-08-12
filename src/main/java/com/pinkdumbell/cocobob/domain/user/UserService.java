@@ -168,8 +168,19 @@ public class UserService {
     }
 
     @Transactional
-    public void appleLogin(AppleRedirectResponse body) {
-
+    public UserLoginResponseDto appleLogin(AppleRedirectResponse body) {
+        if (body.getUser() == null) {
+            return socialLogin(appleUtil.getEmailFromIdToken(body.getCode()));
+        } else {
+            AppleRedirectResponse.UserInfoFromApple.Name name = body.getUser().getName();
+            userRepository.save(
+                    User.builder()
+                            .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                            .email(body.getUser().getEmail())
+                            .accountType(AccountType.APPLE)
+                    .build());
+            return socialLogin(body.getUser().getEmail());
+        }
     }
 
     @Transactional
