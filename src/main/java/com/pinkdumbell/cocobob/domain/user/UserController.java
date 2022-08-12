@@ -134,7 +134,6 @@ public class UserController {
             userService.login(requestDto)));
     }
 
-    @CrossOrigin
     @GetMapping("/google")
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
@@ -152,7 +151,6 @@ public class UserController {
 
     }
 
-    @CrossOrigin
     @GetMapping("/login/oauth/google")
     public ResponseEntity<LoginResponseClass> googleLogin(
         @RequestParam(value = "code") String code) {
@@ -164,7 +162,6 @@ public class UserController {
         ));
     }
 
-    @CrossOrigin
     @GetMapping("/kakao")
     public void redirectKakaoAuthUrl(HttpServletResponse response) {
         try {
@@ -179,7 +176,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin
     @GetMapping("/login/oauth/kakao")
     public ResponseEntity<LoginResponseClass> kakaoLogin(
         @RequestParam(value = "code") String code) {
