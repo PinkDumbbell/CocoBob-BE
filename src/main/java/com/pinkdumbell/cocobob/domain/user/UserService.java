@@ -1,9 +1,11 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -48,6 +51,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final EmailUtil emailUtil;
+    private final AppleUtil appleUtil;
 
 
     @Transactional
@@ -142,6 +146,11 @@ public class UserService {
         String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo")
                 .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
         return restTemplate.getForObject(requestUrl, JSONObject.class);
+    }
+
+    @Transactional
+    public void appleLogin(AppleRedirectResponse body) {
+
     }
 
     @Transactional(readOnly = true)
