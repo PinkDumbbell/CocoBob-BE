@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -39,7 +41,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
+    private final AppleUtil appleUtil;
     private final UserService userService;
     @Value("${google.auth.url}")
     private String googleAuthUrl;
@@ -166,15 +168,21 @@ public class UserController {
         ));
     }
 
-    @PostMapping("/login/oauth/apple")
-    public void appleTest(@RequestParam Map<String, Object> body, HttpServletRequest request) {
-        System.out.println("================================================");
-        for (String s : body.keySet()) {
-            System.out.println(s + ": " + body.get(s));
+    @GetMapping("/apple")
+    public void redirectAppleAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                    appleUtil.getAppleOauthLoginUrl()
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        System.out.println("================================================");
     }
 
+    @PostMapping("/login/oauth/apple")
+    public void appleLogin(AppleRedirectResponse body) {
+        userService.appleLogin(body);
+    }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),
