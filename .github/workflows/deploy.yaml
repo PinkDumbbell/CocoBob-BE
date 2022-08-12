@@ -45,6 +45,12 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
           KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
+          APPLE_AUTH_URL: ${{ secrets.APPLE_AUTH_URL }}
+          APPLE_CLIENT_ID: ${{ secrets.APPLE_CLIENT_ID }}
+          APPLE_REDIRECT_URI: ${{ secrets.APPLE_REDIRECT_URI }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_KEY_PATH: ${{ secrets.APPLE_KEY_PATH }}
 
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
@@ -91,6 +97,18 @@ jobs:
           echo "    login: https://kauth.kakao.com/oauth/authorize" >> ./src/main/resources/application-secret.yml
           echo "    token: https://kauth.kakao.com/oauth/token" >> ./src/main/resources/application-secret.yml
           echo "    profile: https://kapi.kakao.com/v2/user/me" >> ./src/main/resources/application-secret.yml
+          echo "apple:"
+          echo "  auth:"
+          echo "    url:"
+          echo "  client:"
+          echo "    id:"
+          echo "  redirect:"
+          echo "    uri:"
+          echo "  team:"
+          echo "    id:"
+          echo "  key:"
+          echo "    id:"
+          echo "    path:"
           
           cat ./src/main/resources/application-secret.yml
 
