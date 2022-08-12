@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class GoogleInfo {
+public class GoogleOauthInfo {
 
     @Value("${google.auth.url}")
     private String googleAuthUrl;

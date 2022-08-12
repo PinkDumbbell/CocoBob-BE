@@ -1,9 +1,9 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
-import com.pinkdumbell.cocobob.domain.auth.GoogleInfo;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
@@ -50,8 +50,8 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailUtil emailUtil;
-    private final GoogleInfo googleInfo;
-    private final KakaoInfo kakaoInfo;
+    private final GoogleOauthInfo googleOauthInfo;
+    private final KakaoOauthInfo kakaoOauthInfo;
 
 
     @Transactional
@@ -148,17 +148,17 @@ public class UserService {
         RestTemplate restTemplate = new RestTemplate();
 
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest.builder()
-            .clientId(googleInfo.getGoogleClientId())
-            .clientSecret(googleInfo.getGoogleClientSecret())
+            .clientId(googleOauthInfo.getGoogleClientId())
+            .clientSecret(googleOauthInfo.getGoogleClientSecret())
             .code(code)
-            .redirectUri(googleInfo.getGoogleRedirectUrl())
+            .redirectUri(googleOauthInfo.getGoogleRedirectUrl())
             .grantType("authorization_code")
             .build();
 
         ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
-            googleInfo.getGoogleAuthUrl() + "/token", googleOAuthRequest, JSONObject.class);
+            googleOauthInfo.getGoogleAuthUrl() + "/token", googleOAuthRequest, JSONObject.class);
         String requestUrl = UriComponentsBuilder.fromHttpUrl(
-                googleInfo.getGoogleAuthUrl() + "/tokeninfo")
+                googleOauthInfo.getGoogleAuthUrl() + "/tokeninfo")
             .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
         return restTemplate.getForObject(requestUrl, JSONObject.class);
     }
@@ -195,8 +195,8 @@ public class UserService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
         parameters.set("grant_type", "authorization_code");
-        parameters.set("client_id", kakaoInfo.getKakaoClientId());
-        parameters.set("redirect_uri", kakaoInfo.getKakaoRedirectUrl());
+        parameters.set("client_id", kakaoOauthInfo.getKakaoClientId());
+        parameters.set("redirect_uri", kakaoOauthInfo.getKakaoRedirectUrl());
         parameters.set("code", code);
 
         HttpEntity<MultiValueMap<String, Object>> kakaoTokenRequest = new HttpEntity<>(parameters,
@@ -204,7 +204,7 @@ public class UserService {
 
         // kakao accessToken 발급
         ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
-            kakaoInfo.getKakaoTokenUrl(),
+            kakaoOauthInfo.getKakaoTokenUrl(),
             kakaoTokenRequest,
             JSONObject.class);
 
@@ -213,7 +213,7 @@ public class UserService {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
             new HttpEntity<>(headers);
 
-        return restTemplate.postForObject(kakaoInfo.getKakaoProfileUrl(), kakaoProfileRequest,
+        return restTemplate.postForObject(kakaoOauthInfo.getKakaoProfileUrl(), kakaoProfileRequest,
             JSONObject.class);
     }
 

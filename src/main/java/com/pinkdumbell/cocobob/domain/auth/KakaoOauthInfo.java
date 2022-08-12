@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class KakaoInfo {
+public class KakaoOauthInfo {
     @Value("${kakao.url.login}")
     private String kakaoLoginUrl;
     @Value("${kakao.url.token}")

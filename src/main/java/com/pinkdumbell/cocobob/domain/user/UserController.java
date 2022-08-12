@@ -1,8 +1,8 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
-import com.pinkdumbell.cocobob.domain.auth.GoogleInfo;
-import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -25,7 +25,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +43,8 @@ public class UserController {
 
     private final UserService userService;
 
-    private final GoogleInfo googleInfo;
-    private final KakaoInfo kakaoInfo;
+    private final GoogleOauthInfo googleOauthInfo;
+    private final KakaoOauthInfo kakaoOauthInfo;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
@@ -139,11 +138,11 @@ public class UserController {
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                googleInfo.getGoogleLoginUrl() +
+                googleOauthInfo.getGoogleLoginUrl() +
                     "/o/oauth2/v2/auth?client_id=" +
-                    googleInfo.getGoogleClientId() +
+                    googleOauthInfo.getGoogleClientId() +
                     "&redirect_uri=" +
-                    googleInfo.getGoogleRedirectUrl() +
+                    googleOauthInfo.getGoogleRedirectUrl() +
                     "&response_type=code&scope=email%20profile%20openid&access_type=offline"
             );
         } catch (IOException e) {
@@ -167,10 +166,10 @@ public class UserController {
     public void redirectKakaoAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                kakaoInfo.getKakaoLoginUrl() +
-                    "?client_id=" + kakaoInfo.getKakaoClientId() +
+                kakaoOauthInfo.getKakaoLoginUrl() +
+                    "?client_id=" + kakaoOauthInfo.getKakaoClientId() +
                     "&response_type=code" +
-                    "&redirect_uri=" + kakaoInfo.getKakaoRedirectUrl()
+                    "&redirect_uri=" + kakaoOauthInfo.getKakaoRedirectUrl()
             );
         } catch (IOException e) {
             throw new RuntimeException("");
