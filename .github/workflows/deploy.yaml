@@ -43,6 +43,8 @@ jobs:
           GOOGLE_REDIRECT_URL: ${{ secrets.GOOGLE_REDIRECT_URL }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
 
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
@@ -82,6 +84,14 @@ jobs:
           echo "  client:" >> ./src/main/resources/application-secret.yml
           echo "    id: $GOOGLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
           echo "    secret: $GOOGLE_CLIENT_SECRET" >> ./src/main/resources/application-secret.yml
+          echo "kakao:" >> ./src/main/resources/application-secret.yml 
+          echo "  client_id: $KAKAO_CLIENT_ID" >> ./src/main/resources/application-secret.yml
+          echo "  redirect: $KAKAO_REDIRECT_URL" >> ./src/main/resources/application-secret.yml
+          echo "  url:" >> ./src/main/resources/application-secret.yml
+          echo "    login: https://kauth.kakao.com/oauth/authorize" >> ./src/main/resources/application-secret.yml
+          echo "    token: https://kauth.kakao.com/oauth/token" >> ./src/main/resources/application-secret.yml
+          echo "    profile: https://kapi.kakao.com/v2/user/me" >> ./src/main/resources/application-secret.yml
+          
           cat ./src/main/resources/application-secret.yml
 
       - name: Build with Gradle

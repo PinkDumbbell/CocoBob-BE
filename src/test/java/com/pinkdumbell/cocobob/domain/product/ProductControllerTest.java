@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,16 +49,11 @@ class ProductControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Value("${google.auth.url}")
-    private String googleAuthUrl;
-    @Value("${google.login.url}")
-    private String googleLoginUrl;
-    @Value("${google.client.id}")
-    private String googleClientId;
-    @Value("${google.client.secret}")
-    private String googleClientSecret;
-    @Value("${google.redirect.url}")
-    private String googleRedirectUrl;
+    @MockBean
+    GoogleOauthInfo googleOauthInfo;
+
+    @MockBean
+    KakaoOauthInfo kakaoOauthInfo;
     MockMvc mvc;
 
     @BeforeEach
