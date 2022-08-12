@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
 import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
@@ -44,14 +45,11 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final TokenRepository tokenRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final EmailUtil emailUtil;
+    private final KakaoInfo kakaoInfo;
 
 
     @Transactional
@@ -174,15 +172,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserLoginResponseDto kakaoLogin(
-        String code,
-        String kakaoTokenUrl,
-        String kakaoProfileUrl,
-        String kakaoClientId,
-        String kakaoRedirectUrl) {
+    public UserLoginResponseDto kakaoLogin(String code) {
 
-        JSONObject userInfoFromKakao = getUserInfoFromKakao(code, kakaoTokenUrl,
-            kakaoProfileUrl, kakaoClientId, kakaoRedirectUrl);
+        JSONObject userInfoFromKakao = getUserInfoFromKakao(code);
 
         JSONObject kakaoAccount = new JSONObject((Map) userInfoFromKakao.get("kakao_account"));
         JSONObject profile = new JSONObject((Map) kakaoAccount.get("profile"));
@@ -203,12 +195,7 @@ public class UserService {
         return socialLogin(email);
     }
 
-    private JSONObject getUserInfoFromKakao(
-        String code,
-        String kakaoTokenUrl,
-        String kakaoProfileUrl,
-        String kakaoClientId,
-        String kakaoRedirectUrl) {
+    private JSONObject getUserInfoFromKakao(String code) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -216,15 +203,16 @@ public class UserService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
         parameters.set("grant_type", "authorization_code");
-        parameters.set("client_id", kakaoClientId);
-        parameters.set("redirect_uri", kakaoRedirectUrl);
+        parameters.set("client_id", kakaoInfo.getKakaoClientId());
+        parameters.set("redirect_uri", kakaoInfo.getKakaoRedirectUrl());
         parameters.set("code", code);
 
         HttpEntity<MultiValueMap<String, Object>> kakaoTokenRequest = new HttpEntity<>(parameters,
             headers);
 
         // kakao accessToken 발급
-        ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(kakaoTokenUrl,
+        ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
+            kakaoInfo.getKakaoTokenUrl(),
             kakaoTokenRequest,
             JSONObject.class);
 
@@ -233,7 +221,8 @@ public class UserService {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
             new HttpEntity<>(headers);
 
-        return restTemplate.postForObject(kakaoProfileUrl, kakaoProfileRequest, JSONObject.class);
+        return restTemplate.postForObject(kakaoInfo.getKakaoProfileUrl(), kakaoProfileRequest,
+            JSONObject.class);
     }
 
     @Transactional(readOnly = true)

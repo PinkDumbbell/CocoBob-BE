@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.auth.KakaoInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -51,16 +52,8 @@ public class UserController {
     private String googleClientSecret;
     @Value("${google.redirect.url}")
     private String googleRedirectUrl;
-    @Value("${kakao.url.login}")
-    private String kakaoLoginUrl;
-    @Value("${kakao.url.token}")
-    private String kakaoTokenUrl;
-    @Value("${kakao.url.profile}")
-    private String kakaoProfileUrl;
-    @Value("${kakao.client_id}")
-    private String kakaoClientId;
-    @Value("${kakao.redirect}")
-    private String kakaoRedirectUrl;
+
+    private final KakaoInfo kakaoInfo;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
@@ -183,10 +176,10 @@ public class UserController {
     public void redirectKakaoAuthUrl(HttpServletResponse response) {
         try {
             response.sendRedirect(
-                kakaoLoginUrl +
-                    "?client_id=" + kakaoClientId +
+                kakaoInfo.getKakaoLoginUrl() +
+                    "?client_id=" + kakaoInfo.getKakaoClientId() +
                     "&response_type=code" +
-                    "&redirect_uri=" + kakaoRedirectUrl
+                    "&redirect_uri=" + kakaoInfo.getKakaoRedirectUrl()
             );
         } catch (IOException e) {
             throw new RuntimeException("");
@@ -200,8 +193,7 @@ public class UserController {
             HttpStatus.OK.value(),
             "SUCCESS KAKAO LOGIN",
             "카카오 로그인 성공",
-            userService.kakaoLogin(code, kakaoTokenUrl, kakaoProfileUrl, kakaoClientId,
-                kakaoRedirectUrl)));
+            userService.kakaoLogin(code)));
     }
 
     @PostMapping("/login/oauth/apple")
