@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob;
 
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.AppleOauthInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,8 @@ class CocobobApplicationTests {
 	EmailUtil emailUtil;
 	@MockBean
 	MailConfig mailConfig;
+	@MockBean
+	AppleOauthInfo appleOauthInfo;
 	@Value("${google.auth.url}")
 	private String googleAuthUrl;
 	@Value("${google.login.url}")

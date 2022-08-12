@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUserArgumentResolver;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
 import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
@@ -9,6 +10,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.domain.user.dto.UserGetResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,6 +48,8 @@ public class UserControllerUnitTest {
     GoogleOauthInfo googleOauthInfo;
     @MockBean
     KakaoOauthInfo kakaoOauthInfo;
+    @MockBean
+    AppleUtil appleUtil;
 
     @BeforeEach
     void setUp() {
