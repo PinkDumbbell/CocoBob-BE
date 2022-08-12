@@ -27,16 +27,13 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
 
 @ApiOperation("User API")
 @RequestMapping("/v1/users")
@@ -137,6 +134,7 @@ public class UserController {
             userService.login(requestDto)));
     }
 
+    @CrossOrigin
     @GetMapping("/google")
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
@@ -154,6 +152,7 @@ public class UserController {
 
     }
 
+    @CrossOrigin
     @GetMapping("/login/oauth/google")
     public ResponseEntity<LoginResponseClass> googleLogin(
         @RequestParam(value = "code") String code) {
@@ -165,6 +164,7 @@ public class UserController {
         ));
     }
 
+    @CrossOrigin
     @GetMapping("/kakao")
     public void redirectKakaoAuthUrl(HttpServletResponse response) {
         try {
@@ -179,6 +179,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/login/oauth/kakao")
     public ResponseEntity<LoginResponseClass> kakaoLogin(
         @RequestParam(value = "code") String code) {
@@ -189,6 +190,7 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
+    @CrossOrigin
     @GetMapping("/apple")
     public void redirectAppleAuthUrl(HttpServletResponse response) {
         try {
@@ -200,6 +202,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/login/oauth/apple")
     public void appleLogin(AppleRedirectResponse body) {
         System.out.println("===============================");
