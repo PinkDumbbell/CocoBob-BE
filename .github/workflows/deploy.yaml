@@ -97,18 +97,18 @@ jobs:
           echo "    login: https://kauth.kakao.com/oauth/authorize" >> ./src/main/resources/application-secret.yml
           echo "    token: https://kauth.kakao.com/oauth/token" >> ./src/main/resources/application-secret.yml
           echo "    profile: https://kapi.kakao.com/v2/user/me" >> ./src/main/resources/application-secret.yml
-          echo "apple:"
-          echo "  auth:"
-          echo "    url:"
-          echo "  client:"
-          echo "    id:"
-          echo "  redirect:"
-          echo "    uri:"
-          echo "  team:"
-          echo "    id:"
-          echo "  key:"
-          echo "    id:"
-          echo "    path:"
+          echo "apple:" >> ./src/main/resources/application-secret.yml
+          echo "  auth:" >> ./src/main/resources/application-secret.yml
+          echo "    url: $APPLE_AUTH_URL" >> ./src/main/resources/application-secret.yml
+          echo "  client:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
+          echo "  redirect:" >> ./src/main/resources/application-secret.yml
+          echo "    uri: $APPLE_REDIRECT_URI" >> ./src/main/resources/application-secret.yml
+          echo "  team:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_TEAM_ID" >> ./src/main/resources/application-secret.yml
+          echo "  key:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_KEY_ID" >> ./src/main/resources/application-secret.yml
+          echo "    path: $APPLE_KEY_PATH" >> ./src/main/resources/application-secret.yml
           
           cat ./src/main/resources/application-secret.yml
 
