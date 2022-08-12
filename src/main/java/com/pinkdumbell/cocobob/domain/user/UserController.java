@@ -186,7 +186,6 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
-    @CrossOrigin
     @GetMapping("/apple")
     public void redirectAppleAuthUrl(HttpServletResponse response) {
         try {
@@ -198,7 +197,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin
     @PostMapping("/login/oauth/apple")
     public void appleLogin(AppleRedirectResponse body) {
         System.out.println("===============================");
