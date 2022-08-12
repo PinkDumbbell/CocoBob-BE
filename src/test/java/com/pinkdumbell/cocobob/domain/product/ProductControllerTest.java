@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.AppleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import javax.transaction.Transactional;
@@ -54,6 +55,10 @@ class ProductControllerTest {
 
     @MockBean
     KakaoOauthInfo kakaoOauthInfo;
+
+    @MockBean
+    AppleOauthInfo appleOauthInfo;
+
     MockMvc mvc;
 
     @BeforeEach

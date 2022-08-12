@@ -3,6 +3,8 @@ package com.pinkdumbell.cocobob.domain.user;
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.AppleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
@@ -40,6 +42,12 @@ class UserServiceTest {
 
     @MockBean
     MailConfig mailConfig;
+
+    @MockBean
+    AppleUtil appleUtil;
+
+    @MockBean
+    AppleOauthInfo appleOauthInfo;
 
 
     @Test
