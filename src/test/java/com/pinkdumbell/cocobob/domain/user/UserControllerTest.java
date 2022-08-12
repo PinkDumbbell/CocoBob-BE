@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
 
@@ -63,16 +65,12 @@ class UserControllerTest {
     MailConfig mailConfig;
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
-    @Value("${google.auth.url}")
-    private String googleAuthUrl;
-    @Value("${google.login.url}")
-    private String googleLoginUrl;
-    @Value("${google.client.id}")
-    private String googleClientId;
-    @Value("${google.client.secret}")
-    private String googleClientSecret;
-    @Value("${google.redirect.url}")
-    private String googleRedirectUrl;
+
+    @MockBean
+    GoogleOauthInfo googleOauthInfo;
+
+    @MockBean
+    KakaoOauthInfo kakaoOauthInfo;
 
 
     @Autowired

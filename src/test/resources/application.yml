@@ -52,3 +52,11 @@ google:
   client:
     id: test
     secret: test
+
+kakao:
+  client_id: test
+  redirect: test
+  url:
+    login: test
+    token: test
+    profile: test

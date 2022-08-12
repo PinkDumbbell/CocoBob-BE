@@ -1,7 +1,9 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUserArgumentResolver;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.pet.dto.SimplePetInfoDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.domain.user.dto.UserGetResponseDto;
@@ -40,6 +42,10 @@ public class UserControllerUnitTest {
     JwtTokenProvider jwtTokenProvider;
     @MockBean
     LoginUserArgumentResolver loginUserArgumentResolver;
+    @MockBean
+    GoogleOauthInfo googleOauthInfo;
+    @MockBean
+    KakaoOauthInfo kakaoOauthInfo;
 
     @BeforeEach
     void setUp() {
