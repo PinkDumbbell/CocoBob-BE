@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
@@ -25,6 +27,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +43,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
+    private final AppleUtil appleUtil;
     private final UserService userService;
 
     private final GoogleOauthInfo googleOauthInfo;
@@ -186,15 +189,25 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
-    @PostMapping("/login/oauth/apple")
-    public void appleTest(@RequestParam Map<String, Object> body, HttpServletRequest request) {
-        System.out.println("================================================");
-        for (String s : body.keySet()) {
-            System.out.println(s + ": " + body.get(s));
+    @GetMapping("/apple")
+    public void redirectAppleAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                    appleUtil.getAppleOauthLoginUrl()
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        System.out.println("================================================");
     }
 
+    @PostMapping("/login/oauth/apple")
+    public void appleLogin(AppleRedirectResponse body) {
+        System.out.println("===============================");
+        System.out.println("code : " + body.getCode());
+        System.out.println("last name : " + body.getUser().getName().getLastName());
+        System.out.println("===============================");
+        userService.appleLogin(body);
+    }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),

@@ -45,6 +45,12 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
           KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
+          APPLE_AUTH_URL: ${{ secrets.APPLE_AUTH_URL }}
+          APPLE_CLIENT_ID: ${{ secrets.APPLE_CLIENT_ID }}
+          APPLE_REDIRECT_URI: ${{ secrets.APPLE_REDIRECT_URI }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_KEY_PATH: ${{ secrets.APPLE_KEY_PATH }}
 
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
@@ -91,6 +97,18 @@ jobs:
           echo "    login: https://kauth.kakao.com/oauth/authorize" >> ./src/main/resources/application-secret.yml
           echo "    token: https://kauth.kakao.com/oauth/token" >> ./src/main/resources/application-secret.yml
           echo "    profile: https://kapi.kakao.com/v2/user/me" >> ./src/main/resources/application-secret.yml
+          echo "apple:" >> ./src/main/resources/application-secret.yml
+          echo "  auth:" >> ./src/main/resources/application-secret.yml
+          echo "    url: $APPLE_AUTH_URL" >> ./src/main/resources/application-secret.yml
+          echo "  client:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
+          echo "  redirect:" >> ./src/main/resources/application-secret.yml
+          echo "    uri: $APPLE_REDIRECT_URI" >> ./src/main/resources/application-secret.yml
+          echo "  team:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_TEAM_ID" >> ./src/main/resources/application-secret.yml
+          echo "  key:" >> ./src/main/resources/application-secret.yml
+          echo "    id: $APPLE_KEY_ID" >> ./src/main/resources/application-secret.yml
+          echo "    path: $APPLE_KEY_PATH" >> ./src/main/resources/application-secret.yml
           
           cat ./src/main/resources/application-secret.yml
 

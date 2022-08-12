@@ -1,11 +1,13 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
 import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.Token;
 import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -38,6 +40,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -52,6 +55,7 @@ public class UserService {
     private final EmailUtil emailUtil;
     private final GoogleOauthInfo googleOauthInfo;
     private final KakaoOauthInfo kakaoOauthInfo;
+    private final AppleUtil appleUtil;
 
 
     @Transactional
@@ -161,6 +165,22 @@ public class UserService {
                 googleOauthInfo.getGoogleAuthUrl() + "/tokeninfo")
             .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
         return restTemplate.getForObject(requestUrl, JSONObject.class);
+    }
+
+    @Transactional
+    public UserLoginResponseDto appleLogin(AppleRedirectResponse body) {
+        if (body.getUser() == null) {
+            return socialLogin(appleUtil.getEmailFromIdToken(body.getCode()));
+        } else {
+            AppleRedirectResponse.UserInfoFromApple.Name name = body.getUser().getName();
+            userRepository.save(
+                    User.builder()
+                            .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                            .email(body.getUser().getEmail())
+                            .accountType(AccountType.APPLE)
+                    .build());
+            return socialLogin(body.getUser().getEmail());
+        }
     }
 
     @Transactional
