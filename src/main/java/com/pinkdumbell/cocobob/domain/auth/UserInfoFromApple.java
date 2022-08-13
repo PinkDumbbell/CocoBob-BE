@@ -4,6 +4,7 @@ import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import lombok.*;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserInfoFromApple {
@@ -11,6 +12,7 @@ public class UserInfoFromApple {
     private String email;
 
     @Getter
+    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class Name {
