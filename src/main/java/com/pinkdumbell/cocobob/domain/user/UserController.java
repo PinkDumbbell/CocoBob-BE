@@ -201,10 +201,12 @@ public class UserController {
     }
 
     @PostMapping("/login/oauth/apple")
-    public void appleLogin(AppleRedirectResponse body) {
+    public void appleLogin(@ModelAttribute AppleRedirectResponse body) {
         System.out.println("===============================");
         System.out.println("code : " + body.getCode());
-        System.out.println("last name : " + body.getUser().getName().getLastName());
+        if (body.getUser() != null) {
+            System.out.println("last name : " + body.getUser().getName().getLastName());
+        }
         System.out.println("===============================");
         userService.appleLogin(body);
     }
