@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.pet.breed.BreedRepository;
 import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -92,6 +93,13 @@ public class PetService {
         }
 
         return new PetCreateResponseDto(pet);
+    }
+
+    @Transactional
+    public ProductSpecificSearchDto makeRecommendationWithAge(Long petId){
+
+
+        return ProductSpecificSearchDto.builder().build();
     }
 
     private String createImageName(String prefix, Long petId) {

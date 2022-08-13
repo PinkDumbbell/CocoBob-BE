@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.pet.PetService;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
+    private final PetService petService;
 
     private static class ProvideAllResponseClass extends
         CommonResponseDto<FindAllResponseDto> {
@@ -65,7 +67,8 @@ public class ProductController {
 
         return ResponseEntity.ok(
             new ProductDetailResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCT",
-                "상품 가져오기 성공", productService.findProductDetailById(productId,loginUserInfo.getEmail())));
+                "상품 가져오기 성공",
+                productService.findProductDetailById(productId, loginUserInfo.getEmail())));
     }
 
     @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
@@ -125,7 +128,7 @@ public class ProductController {
         Long petId, @LoginUser LoginUserInfo loginUserInfo,
         Pageable pageable) {
 
-        ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().build();
+        ProductSpecificSearchDto searchCondition = petService.makeRecommendationWithAge(petId);
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
