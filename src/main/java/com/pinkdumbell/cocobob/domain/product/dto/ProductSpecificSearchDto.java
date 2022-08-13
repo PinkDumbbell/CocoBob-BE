@@ -1,6 +1,8 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductSpecificSearchDto {
 
     @ApiModelProperty(notes = "상품 코드", example = "101202")
