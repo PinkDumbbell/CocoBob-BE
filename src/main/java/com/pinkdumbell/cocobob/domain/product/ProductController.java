@@ -120,4 +120,18 @@ public class ProductController {
                     loginUserInfo.getEmail(), pageable)));
     }
 
+    @GetMapping("/recommendation/age")
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(
+        Long petId, @LoginUser LoginUserInfo loginUserInfo,
+        Pageable pageable) {
+
+        ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().build();
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
+                "상품 검색 성공",
+                productService.queryDslSearchProducts(searchCondition,
+                    loginUserInfo.getEmail(), pageable)));
+    }
+
 }
