@@ -76,6 +76,8 @@ class UserControllerTest {
     @MockBean
     AppleOauthInfo appleOauthInfo;
 
+    @Value("${apple.private-key}")
+    private String privateKey;
 
     @Autowired
     private WebApplicationContext context;

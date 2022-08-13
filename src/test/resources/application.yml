@@ -60,3 +60,6 @@ kakao:
     login: test
     token: test
     profile: test
+
+apple:
+  private-key: test
