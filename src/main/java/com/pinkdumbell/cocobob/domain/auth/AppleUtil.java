@@ -13,6 +13,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,8 +22,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -39,6 +38,8 @@ import java.util.Map;
 public class AppleUtil {
 
     private final AppleOauthInfo appleOauthInfo;
+    @Value("${apple.private-key}")
+    private String privateKey;
 
     public String getAppleOauthLoginUrl() {
 
@@ -78,7 +79,6 @@ public class AppleUtil {
     private PrivateKey getPrivateKey() {
 
         try {
-            String privateKey = new String(Files.readAllBytes(Paths.get(appleOauthInfo.getKeyPath())));
             Reader reader = new StringReader(privateKey);
             PEMParser pemParser = new PEMParser(reader);
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();

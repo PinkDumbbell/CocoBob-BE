@@ -51,6 +51,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
           APPLE_KEY_PATH: ${{ secrets.APPLE_KEY_PATH }}
+          APPLE_PRIVATE_KEY: ${{ secrets.APPLE_PRIVATE_KEY }}
 
         run: |
           echo "spring:" >> ./src/main/resources/application-secret.yml
@@ -109,6 +110,7 @@ jobs:
           echo "  key:" >> ./src/main/resources/application-secret.yml
           echo "    id: $APPLE_KEY_ID" >> ./src/main/resources/application-secret.yml
           echo "    path: $APPLE_KEY_PATH" >> ./src/main/resources/application-secret.yml
+          echo "  private-key: $APPLE_PRIVATE_KEY" >> ./src/main/resources/application-secret.yml
           
           cat ./src/main/resources/application-secret.yml
 

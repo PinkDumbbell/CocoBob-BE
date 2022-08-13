@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -199,12 +200,7 @@ public class UserController {
 
     @PostMapping("/login/oauth/apple")
     public void appleLogin(@ModelAttribute AppleRedirectResponse body) {
-        System.out.println("===============================");
-        System.out.println("code : " + body.getCode());
-        if (body.getUser() != null) {
-            System.out.println("last name : " + body.getUser().getName().getLastName());
-        }
-        System.out.println("===============================");
+
         userService.appleLogin(body);
     }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
