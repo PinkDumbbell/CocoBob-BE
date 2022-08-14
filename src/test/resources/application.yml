@@ -42,6 +42,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
 google:
   auth:
     url: test
@@ -62,4 +63,14 @@ kakao:
     profile: test
 
 apple:
-  private-key: test
+  auth:
+    url: test
+  client:
+    id: test
+  redirect:
+    uri: test
+  team:
+    id: test
+  key:
+    id: test
+    path: test

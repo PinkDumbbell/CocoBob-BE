@@ -27,7 +27,7 @@ class CocobobApplicationTests {
 	private String googleClientSecret;
 	@Value("${google.redirect.url}")
 	private String googleRedirectUrl;
-	@Value("${apple.private-key}")
+	@Value("${apple.key.path}")
 	private String privateKey;
 
 	@Test
