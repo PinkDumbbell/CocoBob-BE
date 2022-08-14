@@ -28,6 +28,7 @@ out/
 !**/src/test/**/out/
 !**/src/main/resources/application-secret.yml
 !**/src/main/resources/application-cloud.yml
+!**/src/main/resources/*.p8
 
 ### NetBeans ###
 /nbproject/private/
@@ -38,5 +39,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
 
 **/application-*
