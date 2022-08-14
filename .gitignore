@@ -28,7 +28,6 @@ out/
 !**/src/test/**/out/
 !**/src/main/resources/application-secret.yml
 !**/src/main/resources/application-cloud.yml
-!**/src/main/resources/*.p8
 
 ### NetBeans ###
 /nbproject/private/
@@ -42,3 +41,4 @@ out/
 
 
 **/application-*
+/src/main/resources/AuthKey_33CM4RFUVC.p8

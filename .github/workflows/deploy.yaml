@@ -31,8 +31,8 @@ jobs:
           GNUPG2_PASSPHRASE: ${{ secrets.GNUPG2_PASSPHRASE }}
 
         run: |
-          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/AuthKey_33CM4RFUVC.p8 AuthKey_33CM4RFUVC.p8.gpg
-          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/application-secret.yml application-secret.yml.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/AuthKey_33CM4RFUVC.p8 src/main/resources/AuthKey_33CM4RFUVC.p8.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/application-secret.yml src/main/resources/application-secret.yml.gpg
 
       - name: Build with Gradle
         run: ./gradlew build -x test
