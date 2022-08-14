@@ -38,7 +38,7 @@ import java.util.Map;
 public class AppleUtil {
 
     private final AppleOauthInfo appleOauthInfo;
-    @Value("${apple.private-key}")
+    @Value("${apple.key.path}")
     private String privateKey;
 
     public String getAppleOauthLoginUrl() {
