@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -39,7 +42,7 @@ public class AppleUtil {
 
     private final AppleOauthInfo appleOauthInfo;
     @Value("${apple.key.path}")
-    private String privateKey;
+    private String privateKeyPath;
 
     public String getAppleOauthLoginUrl() {
 
@@ -79,6 +82,8 @@ public class AppleUtil {
     private PrivateKey getPrivateKey() {
 
         try {
+            ClassPathResource resource = new ClassPathResource(privateKeyPath);
+            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
             Reader reader = new StringReader(privateKey);
             PEMParser pemParser = new PEMParser(reader);
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
