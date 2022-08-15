@@ -83,6 +83,11 @@ public class AppleUtil {
 
         try {
             ClassPathResource resource = new ClassPathResource(privateKeyPath);
+            System.out.println("========================================");
+            System.out.println("privateKey exists ? " + resource.exists());
+            System.out.println("========================================");
+            System.out.println("privateKey URI : " + resource.getURI());
+            System.out.println("========================================");
             InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
             Stream<String> stringStream = new BufferedReader(inputStreamReader).lines();
             String privateKey = stringStream.collect(Collectors.joining());
