@@ -199,9 +199,14 @@ public class UserController {
     }
 
     @PostMapping("/login/oauth/apple")
-    public void appleLogin(@ModelAttribute AppleRedirectResponse body) {
+    public ResponseEntity<LoginResponseClass> appleLogin(@ModelAttribute AppleRedirectResponse body) {
 
-        userService.appleLogin(body);
+        return ResponseEntity.ok(new LoginResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS APPLE LOGIN",
+                "애플 로그인 성공",
+                userService.appleLogin(body)
+        ));
     }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
