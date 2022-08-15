@@ -19,9 +19,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -35,6 +33,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Component
@@ -83,7 +83,10 @@ public class AppleUtil {
 
         try {
             ClassPathResource resource = new ClassPathResource(privateKeyPath);
-            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+            InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
+            Stream<String> stringStream = new BufferedReader(inputStreamReader).lines();
+            String privateKey = stringStream.collect(Collectors.joining());
+//            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
             Reader reader = new StringReader(privateKey);
             PEMParser pemParser = new PEMParser(reader);
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
