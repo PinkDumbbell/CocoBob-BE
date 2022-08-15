@@ -1,6 +1,5 @@
 package com.pinkdumbell.cocobob.domain.auth;
 
-import com.pinkdumbell.cocobob.domain.auth.dto.AppleOauthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.AppleOauthResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.ApplePublicKeysResponse;
 import io.jsonwebtoken.Claims;
@@ -56,9 +55,10 @@ public class AppleUtil {
         try {
             return userInfo.get("email").toString();
         } catch (NullPointerException e) {
-            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
-            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
-            throw new RuntimeException();
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
     }
     private String createClientSecret() {
@@ -82,12 +82,8 @@ public class AppleUtil {
 
         try {
             ClassPathResource resource = new ClassPathResource(privateKeyPath);
-            System.out.println("========================================");
-            System.out.println("privateKey exists ? " + resource.exists());
-            System.out.println("========================================");
             InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
             Stream<String> stringStream = new BufferedReader(inputStreamReader).lines();
-//            String privateKey = stringStream.collect(Collectors.joining());
             List<String> collect = stringStream.map(s -> s + '\n').collect(Collectors.toList());
             StringBuilder sb = new StringBuilder();
             for (String s : collect) {
@@ -95,7 +91,6 @@ public class AppleUtil {
             }
             String lines = new String(sb);
             String privateKey = lines.substring(0, lines.length() - 1);
-//            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
             Reader reader = new StringReader(privateKey);
             PEMParser pemParser = new PEMParser(reader);
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
@@ -103,9 +98,10 @@ public class AppleUtil {
 
             return converter.getPrivateKey(privateKeyInfo);
         } catch (IOException e) {
-            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
-            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
 
     }
@@ -113,13 +109,7 @@ public class AppleUtil {
     private AppleOauthResponse doPost(String code) {
 
         RestTemplate restTemplate = new RestTemplate();
-//        AppleOauthRequest appleOauthRequest = AppleOauthRequest.builder()
-//                .client_id(appleOauthInfo.getClientId())
-//                .client_secret(createClientSecret())
-//                .code(code)
-//                .grant_type("authorization_code")
-//                .redirect_uri(appleOauthInfo.getRedirectUri())
-//                .build();
+
         MultiValueMap<String, String> appleOauthRequest = new LinkedMultiValueMap<>();
         appleOauthRequest.add("client_id", appleOauthInfo.getClientId());
         appleOauthRequest.add("client_secret", createClientSecret());
@@ -137,7 +127,10 @@ public class AppleUtil {
                 AppleOauthResponse.class);
 
         if (!appleOauthResponseResponseEntity.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("");
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
 
         return appleOauthResponseResponseEntity.getBody();
@@ -156,7 +149,10 @@ public class AppleUtil {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<ApplePublicKeysResponse> response = restTemplate.getForEntity(appleOauthInfo.getAppleAuthUrl() + "/auth/keys", ApplePublicKeysResponse.class);
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("");
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
 
         return response.getBody();
@@ -179,9 +175,10 @@ public class AppleUtil {
             }
             return properPublicKey;
         } catch (ParseException e) {
-            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
-            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
     }
 
@@ -200,9 +197,10 @@ public class AppleUtil {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePublic(publicKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            System.out.println("클래스명 : "+Thread.currentThread().getStackTrace()[1].getClassName());
-            System.out.println("메소드명 : "+Thread.currentThread().getStackTrace()[1].getMethodName());
-            throw new RuntimeException(ex);
+            throw new RuntimeException(
+                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
+                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+            );
         }
     }
 }
