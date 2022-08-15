@@ -144,6 +144,8 @@ public class ProductController {
 
         if (type.contains("aged")) {
             searchCondition = petService.makeRecommendationWithAge(petId);
+        } else if (type.contains("pregnancy")) {
+            searchCondition = petService.makeRecommendationWithPregnancy(petId);
         }
 
         return ResponseEntity.ok(

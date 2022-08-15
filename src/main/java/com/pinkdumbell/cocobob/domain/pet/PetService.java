@@ -129,6 +129,22 @@ public class PetService {
         return productSpecificSearchDto;
     }
 
+    @Transactional
+    public ProductSpecificSearchDto makeRecommendationWithPregnancy(Long petId) {
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.PET_NOT_FOUND);
+        });
+
+        ProductSpecificSearchDto productSpecificSearchDto = ProductSpecificSearchDto.builder()
+            .aafco(true).build();
+
+        if (pet.getIsPregnant()) {
+            productSpecificSearchDto.setPregnant(true);
+        }
+
+        return productSpecificSearchDto;
+    }
+
     private String createImageName(String prefix, Long petId) {
         return prefix + "/" + petId;
     }
@@ -161,7 +177,7 @@ public class PetService {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void updatePetInfo(Pet pet, PetUpdateRequestDto requestDto) {
-        if (pet.getBreed().getId() == requestDto.getBreedId()) {
+        if (pet.getBreed().getId().equals(requestDto.getBreedId())) {
             pet.update(requestDto, pet.getBreed());
         } else {
             pet.update(
