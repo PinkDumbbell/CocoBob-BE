@@ -26,91 +26,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Generate Application Environment Variables File
+      - name: Generate Application Environment Variables File(decryption)
         env:
-          DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
-          DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          ACCESS_TOKEN_VALID_TIME: ${{ secrets.ACCESS_TOKEN_VALID_TIME }}
-          REFRESH_TOKEN_VALID_TIME: ${{ secrets.REFRESH_TOKEN_VALID_TIME }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          PETALOG_NAVER_PASSWORD: ${{secrets.PETALOG_NAVER_PASSWORD}}
-          AWS_REGION: ${{ env.AWS_REGION }}
-          GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
-          GOOGLE_LOGIN_URL: ${{ secrets.GOOGLE_LOGIN_URL }}
-          GOOGLE_REDIRECT_URL: ${{ secrets.GOOGLE_REDIRECT_URL }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-          KAKAO_REDIRECT_URL: ${{ secrets.KAKAO_REDIRECT_URL }}
-          APPLE_AUTH_URL: ${{ secrets.APPLE_AUTH_URL }}
-          APPLE_CLIENT_ID: ${{ secrets.APPLE_CLIENT_ID }}
-          APPLE_REDIRECT_URI: ${{ secrets.APPLE_REDIRECT_URI }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
-          APPLE_KEY_PATH: ${{ secrets.APPLE_KEY_PATH }}
+          GNUPG2_PASSPHRASE: ${{ secrets.GNUPG2_PASSPHRASE }}
 
         run: |
-          echo "spring:" >> ./src/main/resources/application-secret.yml
-          echo "  datasource:" >> ./src/main/resources/application-secret.yml
-          echo "    url: $DATASOURCE_URL" >> ./src/main/resources/application-secret.yml
-          echo "    username: admin" >> ./src/main/resources/application-secret.yml
-          echo "    password: $DATASOURCE_PASSWORD" >> ./src/main/resources/application-secret.yml
-          echo "    driver-class-name: org.mariadb.jdbc.Driver" >> ./src/main/resources/application-secret.yml
-          echo "  jwt:" >> ./src/main/resources/application-secret.yml
-          echo "    secretKey: $JWT_SECRET_KEY" >> ./src/main/resources/application-secret.yml
-          echo "    accessTokenValidTime: $ACCESS_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
-          echo "    refreshTokenValidTime: $REFRESH_TOKEN_VALID_TIME" >> ./src/main/resources/application-secret.yml
-          echo "  mail:" >> ./src/main/resources/application-secret.yml
-          echo "    host: \"smtp.naver.com\"" >> ./src/main/resources/application-secret.yml
-          echo "    port: 465" >> ./src/main/resources/application-secret.yml
-          echo "    username: \"petalog@naver.com\"" >> ./src/main/resources/application-secret.yml
-          echo "    password: $PETALOG_NAVER_PASSWORD" >> ./src/main/resources/application-secret.yml
-          echo "cloud:" >> ./src/main/resources/application-secret.yml
-          echo "  aws:" >> ./src/main/resources/application-secret.yml
-          echo "    s3:" >> ./src/main/resources/application-secret.yml
-          echo "      bucket: $S3_BUCKET" >> ./src/main/resources/application-secret.yml
-          echo "    credentials:" >> ./src/main/resources/application-secret.yml
-          echo "      access-key: $AWS_ACCESS_KEY_ID" >> ./src/main/resources/application-secret.yml
-          echo "      secret-key: $AWS_SECRET_ACCESS_KEY" >> ./src/main/resources/application-secret.yml
-          echo "    region:" >> ./src/main/resources/application-secret.yml
-          echo "      static: $AWS_REGION" >> ./src/main/resources/application-secret.yml
-          echo "      auto: false" >> ./src/main/resources/application-secret.yml
-          echo "    stack:" >> ./src/main/resources/application-secret.yml
-          echo "      auto: false" >> ./src/main/resources/application-secret.yml
-          echo "google:" >> ./src/main/resources/application-secret.yml 
-          echo "  auth:" >> ./src/main/resources/application-secret.yml
-          echo "    url: $GOOGLE_AUTH_URL" >> ./src/main/resources/application-secret.yml
-          echo "  login:" >> ./src/main/resources/application-secret.yml
-          echo "    url: $GOOGLE_LOGIN_URL" >> ./src/main/resources/application-secret.yml
-          echo "  redirect:" >> ./src/main/resources/application-secret.yml
-          echo "    url: $GOOGLE_REDIRECT_URL" >> ./src/main/resources/application-secret.yml
-          echo "  client:" >> ./src/main/resources/application-secret.yml
-          echo "    id: $GOOGLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
-          echo "    secret: $GOOGLE_CLIENT_SECRET" >> ./src/main/resources/application-secret.yml
-          echo "kakao:" >> ./src/main/resources/application-secret.yml 
-          echo "  client_id: $KAKAO_CLIENT_ID" >> ./src/main/resources/application-secret.yml
-          echo "  redirect: $KAKAO_REDIRECT_URL" >> ./src/main/resources/application-secret.yml
-          echo "  url:" >> ./src/main/resources/application-secret.yml
-          echo "    login: https://kauth.kakao.com/oauth/authorize" >> ./src/main/resources/application-secret.yml
-          echo "    token: https://kauth.kakao.com/oauth/token" >> ./src/main/resources/application-secret.yml
-          echo "    profile: https://kapi.kakao.com/v2/user/me" >> ./src/main/resources/application-secret.yml
-          echo "apple:" >> ./src/main/resources/application-secret.yml
-          echo "  auth:" >> ./src/main/resources/application-secret.yml
-          echo "    url: $APPLE_AUTH_URL" >> ./src/main/resources/application-secret.yml
-          echo "  client:" >> ./src/main/resources/application-secret.yml
-          echo "    id: $APPLE_CLIENT_ID" >> ./src/main/resources/application-secret.yml
-          echo "  redirect:" >> ./src/main/resources/application-secret.yml
-          echo "    uri: $APPLE_REDIRECT_URI" >> ./src/main/resources/application-secret.yml
-          echo "  team:" >> ./src/main/resources/application-secret.yml
-          echo "    id: $APPLE_TEAM_ID" >> ./src/main/resources/application-secret.yml
-          echo "  key:" >> ./src/main/resources/application-secret.yml
-          echo "    id: $APPLE_KEY_ID" >> ./src/main/resources/application-secret.yml
-          echo "    path: $APPLE_KEY_PATH" >> ./src/main/resources/application-secret.yml
-          
-          cat ./src/main/resources/application-secret.yml
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/AuthKey_33CM4RFUVC.p8 src/main/resources/AuthKey_33CM4RFUVC.p8.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/application-secret.yml src/main/resources/application-secret.yml.gpg
 
       - name: Build with Gradle
         run: ./gradlew build -x test

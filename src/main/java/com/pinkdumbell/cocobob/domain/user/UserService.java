@@ -1,12 +1,10 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
-import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
-import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
-import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
-import com.pinkdumbell.cocobob.domain.auth.Token;
-import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
+import com.pinkdumbell.cocobob.domain.auth.*;
 import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
@@ -172,14 +170,20 @@ public class UserService {
         if (body.getUser() == null) {
             return socialLogin(appleUtil.getEmailFromIdToken(body.getCode()));
         } else {
-            AppleRedirectResponse.UserInfoFromApple.Name name = body.getUser().getName();
-            userRepository.save(
-                    User.builder()
-                            .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
-                            .email(body.getUser().getEmail())
-                            .accountType(AccountType.APPLE)
-                    .build());
-            return socialLogin(body.getUser().getEmail());
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                UserInfoFromApple userInfoFromApple = objectMapper.readValue(body.getUser(), UserInfoFromApple.class);
+                UserInfoFromApple.Name name = userInfoFromApple.getName();
+                userRepository.save(
+                        User.builder()
+                                .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                                .email(userInfoFromApple.getEmail())
+                                .accountType(AccountType.APPLE)
+                                .build());
+                return socialLogin(userInfoFromApple.getEmail());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

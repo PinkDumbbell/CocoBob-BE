@@ -59,6 +59,9 @@ class ProductControllerTest {
     @MockBean
     AppleOauthInfo appleOauthInfo;
 
+    @Value("${apple.key.path}")
+    private String privateKey;
+
     MockMvc mvc;
 
     @BeforeEach
