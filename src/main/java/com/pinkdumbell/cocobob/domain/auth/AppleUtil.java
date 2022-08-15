@@ -29,10 +29,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -86,12 +83,17 @@ public class AppleUtil {
             System.out.println("========================================");
             System.out.println("privateKey exists ? " + resource.exists());
             System.out.println("========================================");
-            System.out.println("privateKey URI : " + resource.getURI());
-            System.out.println("========================================");
-//            InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
-//            Stream<String> stringStream = new BufferedReader(inputStreamReader).lines();
+            InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
+            Stream<String> stringStream = new BufferedReader(inputStreamReader).lines();
 //            String privateKey = stringStream.collect(Collectors.joining());
-            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+            List<String> collect = stringStream.map(s -> s + '\n').collect(Collectors.toList());
+            StringBuilder sb = new StringBuilder();
+            for (String s : collect) {
+                sb.append(s);
+            }
+            String lines = new String(sb);
+            String privateKey = lines.substring(0, lines.length() - 1);
+//            String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
             Reader reader = new StringReader(privateKey);
             PEMParser pemParser = new PEMParser(reader);
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
