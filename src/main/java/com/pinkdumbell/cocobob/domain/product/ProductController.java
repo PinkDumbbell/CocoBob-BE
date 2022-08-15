@@ -123,16 +123,33 @@ public class ProductController {
                     loginUserInfo.getEmail(), pageable)));
     }
 
-    @GetMapping("/recommendation/age")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
+            value = "반려동물 Id"),
+        @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)"),
+    })
+    @GetMapping("/recommendation/{type}")
     public ResponseEntity<ProvideAllResponseClass> recommendWithAge(
-        Long petId, @LoginUser LoginUserInfo loginUserInfo,
+        Long petId, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type,
         Pageable pageable) {
 
-        ProductSpecificSearchDto searchCondition = petService.makeRecommendationWithAge(petId);
+        ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().aafco(true)
+            .build();
+
+        if (type.contains("aged")) {
+            searchCondition = petService.makeRecommendationWithAge(petId);
+        }
 
         return ResponseEntity.ok(
-            new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
-                "상품 검색 성공",
+            new ProvideAllResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD RECOMMENDATION PRODUCT",
+                "추천 상품 검색 성공",
                 productService.queryDslSearchProducts(searchCondition,
                     loginUserInfo.getEmail(), pageable)));
     }
