@@ -154,7 +154,7 @@ public class AppleUtil {
     private ApplePublicKeysResponse getPublicKeys() {
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<ApplePublicKeysResponse> response = restTemplate.getForEntity(appleOauthInfo.getAppleAuthUrl() + "/keys", ApplePublicKeysResponse.class);
+        ResponseEntity<ApplePublicKeysResponse> response = restTemplate.getForEntity(appleOauthInfo.getAppleAuthUrl() + "/auth/keys", ApplePublicKeysResponse.class);
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("");
         }
