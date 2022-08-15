@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
@@ -111,18 +113,24 @@ public class AppleUtil {
     private AppleOauthResponse doPost(String code) {
 
         RestTemplate restTemplate = new RestTemplate();
-        AppleOauthRequest appleOauthRequest = AppleOauthRequest.builder()
-                .client_id(appleOauthInfo.getClientId())
-                .client_secret(createClientSecret())
-                .code(code)
-                .grant_type("authorization_code")
-                .redirect_uri(appleOauthInfo.getRedirectUri())
-                .build();
+//        AppleOauthRequest appleOauthRequest = AppleOauthRequest.builder()
+//                .client_id(appleOauthInfo.getClientId())
+//                .client_secret(createClientSecret())
+//                .code(code)
+//                .grant_type("authorization_code")
+//                .redirect_uri(appleOauthInfo.getRedirectUri())
+//                .build();
+        MultiValueMap<String, String> appleOauthRequest = new LinkedMultiValueMap<>();
+        appleOauthRequest.add("client_id", appleOauthInfo.getClientId());
+        appleOauthRequest.add("client_secret", createClientSecret());
+        appleOauthRequest.add("code", code);
+        appleOauthRequest.add("grant_type", "authorization_code");
+        appleOauthRequest.add("redirect_uri", appleOauthInfo.getRedirectUri());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
-        HttpEntity<AppleOauthRequest> appleOauthRequestHttpEntity = new HttpEntity<>(appleOauthRequest, httpHeaders);
+        HttpEntity<MultiValueMap<String, String>> appleOauthRequestHttpEntity = new HttpEntity<>(appleOauthRequest, httpHeaders);
         ResponseEntity<AppleOauthResponse> appleOauthResponseResponseEntity = restTemplate.postForEntity(
                 appleOauthInfo.getAppleAuthUrl() + "/auth/token",
                 appleOauthRequestHttpEntity,
