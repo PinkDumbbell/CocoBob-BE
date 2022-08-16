@@ -259,13 +259,13 @@ public class UserService {
         try {
             jwtTokenProvider.validateTokenExpiration(rawRefreshToken);
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+            throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
 
         User user = findUserByToken(requestDto.getAccessToken());
 
         if (!user.getRefreshToken().getValue().equals(rawRefreshToken)) {
-            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+            throw new CustomException(ErrorCode.INVALID_ACCESS_AFTER_LOGOUT);
         }
 
         String accessToken = jwtTokenProvider.createToken(user.getEmail());
