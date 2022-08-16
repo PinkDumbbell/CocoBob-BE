@@ -187,17 +187,6 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
-//    @GetMapping("/apple")
-//    public void redirectAppleAuthUrl(HttpServletResponse response) {
-//        try {
-//            response.sendRedirect(
-//                    appleUtil.getAppleOauthLoginUrl()
-//            );
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @PostMapping("/login/oauth/apple")
     public ResponseEntity<LoginResponseClass> appleLogin(@ModelAttribute AppleRedirectResponse body) {
 
@@ -208,6 +197,8 @@ public class UserController {
                 userService.appleLogin(body)
         ));
     }
+
+
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),
