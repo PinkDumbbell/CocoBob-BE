@@ -179,7 +179,9 @@ public class UserService {
                 if (foundUser.isEmpty()) {
                     userRepository.save(
                             User.builder()
-                                    .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                                    .username(name.getMiddleName() == null ?
+                                            name.getLastName() + name.getFirstName():
+                                            name.getLastName() + name.getMiddleName() + name.getFirstName() )
                                     .email(userInfoFromApple.getEmail())
                                     .accountType(AccountType.APPLE)
                                     .build());

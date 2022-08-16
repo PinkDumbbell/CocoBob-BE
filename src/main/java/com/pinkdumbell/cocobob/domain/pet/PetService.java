@@ -192,21 +192,25 @@ public class PetService {
     public void updateImage(MultipartFile newImage, Optional<PetImage> petImage, Pet pet) {
         Long petId = pet.getId();
         if (petImage.isPresent()) {
-            String postfix = "/" + petId;
-            imageService.deleteImage(PET_IMAGE_DIR + postfix);
-            imageService.deleteImage(PET_THUMBNAIL_DIR + postfix);
-            imageService.saveImage(newImage, PET_IMAGE_DIR + postfix);
-            imageService.saveImage(
-                imageService.resizeImage(newImage, RESIZE_TARGET_WIDTH),
-                createImageName(PET_THUMBNAIL_DIR, petId));
+            imageService.deleteImage(createImageName(PET_IMAGE_DIR, petId));
+            imageService.deleteImage(createImageName(PET_THUMBNAIL_DIR, petId));
+            petImage.get().updatePath(
+                    imageService.saveImage(
+                            newImage,
+                            createImageName(PET_IMAGE_DIR, petId)
+                    )
+            );
         } else {
             String imageName = createImageName(PET_IMAGE_DIR, petId);
             petImageRepository.save(new PetImage(
                 imageService.saveImage(newImage, imageName),
                 pet
             ));
-            pet.setThumbnailPath(createImageName(PET_THUMBNAIL_DIR, petId));
         }
+        pet.setThumbnailPath(imageService.saveImage(
+                imageService.resizeImage(newImage, RESIZE_TARGET_WIDTH),
+                createImageName(PET_THUMBNAIL_DIR, petId)
+        ));
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

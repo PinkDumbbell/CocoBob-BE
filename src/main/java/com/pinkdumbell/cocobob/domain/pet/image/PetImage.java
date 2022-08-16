@@ -29,4 +29,8 @@ public class PetImage {
         this.path = path;
         this.pet = pet;
     }
+
+    public void updatePath(String path) {
+        this.path = path;
+    }
 }
