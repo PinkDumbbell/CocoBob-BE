@@ -174,12 +174,15 @@ public class UserService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 UserInfoFromApple userInfoFromApple = objectMapper.readValue(body.getUser(), UserInfoFromApple.class);
                 UserInfoFromApple.Name name = userInfoFromApple.getName();
-                userRepository.save(
-                        User.builder()
-                                .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
-                                .email(userInfoFromApple.getEmail())
-                                .accountType(AccountType.APPLE)
-                                .build());
+                Optional<User> foundUser = userRepository.findByEmail(userInfoFromApple.getEmail());
+                if (foundUser.isEmpty()) {
+                    userRepository.save(
+                            User.builder()
+                                    .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                                    .email(userInfoFromApple.getEmail())
+                                    .accountType(AccountType.APPLE)
+                                    .build());
+                }
                 return socialLogin(userInfoFromApple.getEmail());
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
