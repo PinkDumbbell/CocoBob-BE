@@ -187,22 +187,14 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
-//    @GetMapping("/apple")
-//    public void redirectAppleAuthUrl(HttpServletResponse response) {
-//        try {
-//            response.sendRedirect(
-//                    appleUtil.getAppleOauthLoginUrl()
-//            );
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-    @PostMapping("/apple")
-    public void controlRedirectAppleAuth(AppleRedirectResponse body) {
-        System.out.println(body.getCode());
-        if (body.getUser() != null) {
-            System.out.println(body.getUser());
+    @GetMapping("/apple")
+    public void redirectAppleAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                    appleUtil.getAppleOauthLoginUrl()
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
