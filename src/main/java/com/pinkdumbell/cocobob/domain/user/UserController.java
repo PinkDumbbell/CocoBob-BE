@@ -135,6 +135,13 @@ public class UserController {
             userService.login(requestDto)));
     }
 
+    @DeleteMapping("/withdrawal")
+    public ResponseEntity<Void> withdraw(@LoginUser LoginUserInfo loginUserInfo) {
+
+        userService.withdraw(loginUserInfo);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/google")
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {

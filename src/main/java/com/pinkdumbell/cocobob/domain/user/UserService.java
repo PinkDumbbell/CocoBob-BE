@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.*;
@@ -26,7 +25,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,7 +35,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -97,6 +94,13 @@ public class UserService {
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
             newRefreshToken);
+    }
+
+    @Transactional
+    public void withdraw(LoginUserInfo loginUserInfo) {
+        User user = findUserByEmail(loginUserInfo.getEmail());
+        Optional<AppleRefreshToken> appleRefreshToken = appleUtil.getAppleRefreshToken(user.getId());
+        appleRefreshToken.ifPresent(appleUtil::revoke);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
