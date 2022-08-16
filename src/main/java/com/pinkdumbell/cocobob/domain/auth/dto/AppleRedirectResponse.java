@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class AppleRedirectResponse {
     private String code;
     private String user;
