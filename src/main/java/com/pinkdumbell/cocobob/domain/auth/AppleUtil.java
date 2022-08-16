@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -62,6 +63,34 @@ public class AppleUtil {
             foundAppleRefreshToken.get().update(refreshToken);
         }
     }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Optional<AppleRefreshToken> getAppleRefreshToken(Long userId) {
+        return appleRefreshTokenRepository.findById(userId);
+    }
+
+    public void revoke(AppleRefreshToken appleRefreshToken) {
+        MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+        request.add("client_id", appleOauthInfo.getClientId());
+        request.add("client_secret", createClientSecret());
+        request.add("token", appleRefreshToken.getValue());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(request, httpHeaders);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Object> response = restTemplate.postForEntity(
+                appleOauthInfo.getAppleAuthUrl() + "/auth/revoke",
+                httpEntity,
+                Object.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("애플 계정 탈퇴를 실패하였습니다.");
+        }
+    }
+
     private String createClientSecret() {
 
         Map<String, Object> header = new HashMap<>();
