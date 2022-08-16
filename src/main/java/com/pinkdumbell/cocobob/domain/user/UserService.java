@@ -1,9 +1,12 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
-import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.domain.auth.Token;
-import com.pinkdumbell.cocobob.domain.auth.TokenRepository;
+import com.pinkdumbell.cocobob.domain.auth.*;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
+import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
 import com.pinkdumbell.cocobob.common.EmailUtil;
@@ -18,14 +21,25 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -33,14 +47,13 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final TokenRepository tokenRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final EmailUtil emailUtil;
+    private final GoogleOauthInfo googleOauthInfo;
+    private final KakaoOauthInfo kakaoOauthInfo;
+    private final AppleUtil appleUtil;
 
 
     @Transactional
@@ -85,6 +98,150 @@ public class UserService {
 
         return new UserLoginResponseDto(user, jwtTokenProvider.createToken(requestDto.getEmail()),
             newRefreshToken);
+    }
+
+    @Transactional
+    public UserLoginResponseDto socialLogin(String email) {
+
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            });
+
+        String newRefreshToken = jwtTokenProvider.createRefreshToken();
+
+        if (user.getRefreshToken() == null) {
+            Token newUserToken = tokenRepository.save(Token.builder()
+                .value(newRefreshToken)
+                .user(user).build());
+            user.updateRefreshToken(newUserToken);
+        } else {
+            Token userRefreshToken = user.getRefreshToken();
+            userRefreshToken.updateRefreshTokenValue(newRefreshToken);
+            user.updateRefreshToken(userRefreshToken);
+        }
+
+        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(email),
+            newRefreshToken);
+    }
+
+    @Transactional
+    public UserLoginResponseDto googleLogin(String code) {
+
+        JSONObject userInfoFromGoogle = getUserInfoFromGoogle(code);
+
+        String username = (String) userInfoFromGoogle.get("name");
+        String email = (String) userInfoFromGoogle.get("email");
+
+        Optional<User> foundUser = userRepository.findByEmail(email);
+
+        if (foundUser.isEmpty()) {
+            userRepository.save(User.builder()
+                .username(username)
+                .email(email)
+                .accountType(AccountType.GOOGLE)
+                .build());
+        }
+
+        return socialLogin(email);
+    }
+
+    private JSONObject getUserInfoFromGoogle(String code) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest.builder()
+            .clientId(googleOauthInfo.getGoogleClientId())
+            .clientSecret(googleOauthInfo.getGoogleClientSecret())
+            .code(code)
+            .redirectUri(googleOauthInfo.getGoogleRedirectUrl())
+            .grantType("authorization_code")
+            .build();
+
+        ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
+            googleOauthInfo.getGoogleAuthUrl() + "/token", googleOAuthRequest, JSONObject.class);
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(
+                googleOauthInfo.getGoogleAuthUrl() + "/tokeninfo")
+            .queryParam("id_token", postResponse.getBody().get("id_token")).toUriString();
+        return restTemplate.getForObject(requestUrl, JSONObject.class);
+    }
+
+    @Transactional
+    public UserLoginResponseDto appleLogin(AppleRedirectResponse body) {
+        if (body.getUser() == null) {
+            return socialLogin(appleUtil.getEmailFromIdToken(body.getCode()));
+        } else {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                UserInfoFromApple userInfoFromApple = objectMapper.readValue(body.getUser(), UserInfoFromApple.class);
+                UserInfoFromApple.Name name = userInfoFromApple.getName();
+                Optional<User> foundUser = userRepository.findByEmail(userInfoFromApple.getEmail());
+                if (foundUser.isEmpty()) {
+                    userRepository.save(
+                            User.builder()
+                                    .username(name.getLastName() + name.getMiddleName() + name.getFirstName())
+                                    .email(userInfoFromApple.getEmail())
+                                    .accountType(AccountType.APPLE)
+                                    .build());
+                }
+                return socialLogin(userInfoFromApple.getEmail());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Transactional
+    public UserLoginResponseDto kakaoLogin(String code) {
+
+        JSONObject userInfoFromKakao = getUserInfoFromKakao(code);
+
+        JSONObject kakaoAccount = new JSONObject((Map) userInfoFromKakao.get("kakao_account"));
+        JSONObject profile = new JSONObject((Map) kakaoAccount.get("profile"));
+
+        String username = profile.get("nickname").toString();
+        String email = kakaoAccount.get("email").toString();
+
+        Optional<User> foundUser = userRepository.findByEmail(email);
+
+        if (foundUser.isEmpty()) {
+            userRepository.save(User.builder()
+                .username(username)
+                .email(email)
+                .accountType(AccountType.KAKAO)
+                .build());
+        }
+
+        return socialLogin(email);
+    }
+
+    private JSONObject getUserInfoFromKakao(String code) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
+        parameters.set("grant_type", "authorization_code");
+        parameters.set("client_id", kakaoOauthInfo.getKakaoClientId());
+        parameters.set("redirect_uri", kakaoOauthInfo.getKakaoRedirectUrl());
+        parameters.set("code", code);
+
+        HttpEntity<MultiValueMap<String, Object>> kakaoTokenRequest = new HttpEntity<>(parameters,
+            headers);
+
+        // kakao accessToken 발급
+        ResponseEntity<JSONObject> postResponse = restTemplate.postForEntity(
+            kakaoOauthInfo.getKakaoTokenUrl(),
+            kakaoTokenRequest,
+            JSONObject.class);
+
+        // accessToken을 이용한 사용자 정보 생성
+        headers.set("Authorization", "bearer " + postResponse.getBody().get("access_token"));
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
+            new HttpEntity<>(headers);
+
+        return restTemplate.postForObject(kakaoOauthInfo.getKakaoProfileUrl(), kakaoProfileRequest,
+            JSONObject.class);
     }
 
     @Transactional(readOnly = true)
@@ -162,12 +319,12 @@ public class UserService {
     }
 
     @Transactional
-    public String sendNewPassword(UserEmailRequestDto userEmailRequestDto){
+    public String sendNewPassword(UserEmailRequestDto userEmailRequestDto) {
 
         User user = userRepository.findByEmail(userEmailRequestDto.getEmail())
-                .orElseThrow(()->{
-                    throw new CustomException(ErrorCode.USER_NOT_FOUND);
-                });
+            .orElseThrow(() -> {
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            });
         String capitalCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
         String specialCharacters = "!@#$";
@@ -176,8 +333,7 @@ public class UserService {
         Random random = new Random();
         String newPassword = "";
 
-
-        for(int i = 0; i< 13 ; i++) {
+        for (int i = 0; i < 13; i++) {
             newPassword += combinedChars.charAt(random.nextInt(combinedChars.length()));
         }
 
@@ -188,13 +344,14 @@ public class UserService {
             , "[Petalog] 안녕하세요!" + user.getUsername() + "님 새로운 비밀번호 입니다."
             , newPassword);
 
-        if(emailSendResultDto.getStatus() == HttpStatus.NOT_FOUND.value()){
+        if (emailSendResultDto.getStatus() == HttpStatus.NOT_FOUND.value()) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
         return newPassword;
-        
+
     }
+
     @Transactional
     public void updatePassword(String accessToken, UserPasswordRequestDto userPasswordRequestDto) {
         User user = findUserByToken(accessToken);
@@ -204,7 +361,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserGetResponseDto getUserInfo(LoginUserInfo loginUserInfo) {
         User user = userRepository.findUserByEmailWithPet(loginUserInfo.getEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return new UserGetResponseDto(user);
     }
 }

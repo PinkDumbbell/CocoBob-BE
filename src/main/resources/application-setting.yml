@@ -8,6 +8,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        default_batch_fetch_size: 500 # 컬렉션 관계 조회시 최적화
   servlet:
     multipart:
       max-file-size: 50MB

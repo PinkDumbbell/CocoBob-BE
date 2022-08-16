@@ -9,12 +9,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.config.MailConfig;
+import com.pinkdumbell.cocobob.domain.auth.AppleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,6 +49,19 @@ class ProductControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @MockBean
+    GoogleOauthInfo googleOauthInfo;
+
+    @MockBean
+    KakaoOauthInfo kakaoOauthInfo;
+
+    @MockBean
+    AppleOauthInfo appleOauthInfo;
+
+    @Value("${apple.key.path}")
+    private String privateKey;
+
     MockMvc mvc;
 
     @BeforeEach

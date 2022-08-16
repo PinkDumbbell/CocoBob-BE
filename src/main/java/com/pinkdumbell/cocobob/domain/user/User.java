@@ -46,10 +46,13 @@ public class User extends BaseEntity {
     @Builder
     public User(@NotBlank String username,
         @NotBlank String email,
-        @NotBlank String password) {
+        @NotBlank String password,
+        AccountType accountType
+    ) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.accountType = accountType;
         this.role = UserRole.USER; // 일반 회원 기본 권한 USER
     }
 

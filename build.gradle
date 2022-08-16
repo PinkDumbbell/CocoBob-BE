@@ -55,6 +55,12 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+	// JSON
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
+
 
 	implementation 'org.springframework:spring-test:5.3.21'
 

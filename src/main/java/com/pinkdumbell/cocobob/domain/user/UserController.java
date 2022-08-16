@@ -1,6 +1,10 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
+import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
+import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
+import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
@@ -27,15 +31,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @ApiOperation("User API")
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
+    private final AppleUtil appleUtil;
     private final UserService userService;
+
+    private final GoogleOauthInfo googleOauthInfo;
+    private final KakaoOauthInfo kakaoOauthInfo;
 
     private static class SignUpResponseClass extends CommonResponseDto<UserCreateResponseDto> {
 
@@ -70,9 +80,10 @@ public class UserController {
         }
     }
 
-    private class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
+    private static class UserGetResponseClass extends CommonResponseDto<UserGetResponseDto> {
+
         public UserGetResponseClass(int status, String code, String message,
-                UserGetResponseDto data) {
+            UserGetResponseDto data) {
             super(status, code, message, data);
         }
     }
@@ -124,6 +135,79 @@ public class UserController {
             userService.login(requestDto)));
     }
 
+    @GetMapping("/google")
+    public void redirectGoogleAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                googleOauthInfo.getGoogleLoginUrl() +
+                    "/o/oauth2/v2/auth?client_id=" +
+                    googleOauthInfo.getGoogleClientId() +
+                    "&redirect_uri=" +
+                    googleOauthInfo.getGoogleRedirectUrl() +
+                    "&response_type=code&scope=email%20profile%20openid&access_type=offline"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("");
+        }
+
+    }
+
+    @GetMapping("/login/oauth/google")
+    public ResponseEntity<LoginResponseClass> googleLogin(
+        @RequestParam(value = "code") String code) {
+        return ResponseEntity.ok(new LoginResponseClass(
+            HttpStatus.OK.value(),
+            "SUCCESS GOOGLE LOGIN",
+            "구글 로그인 성공",
+            userService.googleLogin(code)
+        ));
+    }
+
+    @GetMapping("/kakao")
+    public void redirectKakaoAuthUrl(HttpServletResponse response) {
+        try {
+            response.sendRedirect(
+                kakaoOauthInfo.getKakaoLoginUrl() +
+                    "?client_id=" + kakaoOauthInfo.getKakaoClientId() +
+                    "&response_type=code" +
+                    "&redirect_uri=" + kakaoOauthInfo.getKakaoRedirectUrl()
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("");
+        }
+    }
+
+    @GetMapping("/login/oauth/kakao")
+    public ResponseEntity<LoginResponseClass> kakaoLogin(
+        @RequestParam(value = "code") String code) {
+        return ResponseEntity.ok(new LoginResponseClass(
+            HttpStatus.OK.value(),
+            "SUCCESS KAKAO LOGIN",
+            "카카오 로그인 성공",
+            userService.kakaoLogin(code)));
+    }
+
+//    @GetMapping("/apple")
+//    public void redirectAppleAuthUrl(HttpServletResponse response) {
+//        try {
+//            response.sendRedirect(
+//                    appleUtil.getAppleOauthLoginUrl()
+//            );
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    @PostMapping("/login/oauth/apple")
+    public ResponseEntity<LoginResponseClass> appleLogin(@ModelAttribute AppleRedirectResponse body) {
+
+        return ResponseEntity.ok(new LoginResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS APPLE LOGIN",
+                "애플 로그인 성공",
+                userService.appleLogin(body)
+        ));
+    }
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),
@@ -221,16 +305,17 @@ public class UserController {
 
     @ApiOperation(value = "GetUserInfo", notes = "사용자 정보와 함께 등록된 반려동물의 간단한 정보를 가져온다.")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
-            @ApiResponse(code = 404, message = "USER_NOT_FOUND")
+        @ApiResponse(code = 200, message = "GET_USER_INFO_SUCCESS", response = UserGetResponseClass.class),
+        @ApiResponse(code = 404, message = "USER_NOT_FOUND")
     })
     @GetMapping("")
-    public ResponseEntity<UserGetResponseClass> getUserInfo(@LoginUser LoginUserInfo loginUserInfo) {
+    public ResponseEntity<UserGetResponseClass> getUserInfo(
+        @LoginUser LoginUserInfo loginUserInfo) {
         return ResponseEntity.ok(new UserGetResponseClass(
-                HttpStatus.OK.value(),
-                "GET_USER_INFO_SUCCESS",
-                "사용자 정보가 성공적으로 반환되었습니다.",
-                userService.getUserInfo(loginUserInfo)
+            HttpStatus.OK.value(),
+            "GET_USER_INFO_SUCCESS",
+            "사용자 정보가 성공적으로 반환되었습니다.",
+            userService.getUserInfo(loginUserInfo)
         ));
 
 
