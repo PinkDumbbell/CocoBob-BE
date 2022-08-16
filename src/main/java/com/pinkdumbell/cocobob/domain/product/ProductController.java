@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
+import com.pinkdumbell.cocobob.domain.pet.PetService;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
+    private final PetService petService;
 
     private static class ProvideAllResponseClass extends
         CommonResponseDto<FindAllResponseDto> {
@@ -65,7 +67,8 @@ public class ProductController {
 
         return ResponseEntity.ok(
             new ProductDetailResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PROUDCT",
-                "상품 가져오기 성공", productService.findProductDetailById(productId,loginUserInfo.getEmail())));
+                "상품 가져오기 성공",
+                productService.findProductDetailById(productId, loginUserInfo.getEmail())));
     }
 
     @ApiOperation(value = "productSpecificSearchDto", notes = "상품 정보 조회")
@@ -117,6 +120,39 @@ public class ProductController {
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
                 "상품 검색 성공",
                 productService.queryDslSearchProducts(productSpecificSearchDto,
+                    loginUserInfo.getEmail(), pageable)));
+    }
+
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
+            value = "반려동물 Id"),
+        @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)"),
+    })
+    @GetMapping("/recommendation/{type}")
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(
+        Long petId, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type,
+        Pageable pageable) {
+
+        ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().aafco(true)
+            .build();
+
+        if (type.contains("aged")) {
+            searchCondition = petService.makeRecommendationWithAge(petId);
+        } else if (type.contains("pregnancy")) {
+            searchCondition = petService.makeRecommendationWithPregnancy(petId);
+        }
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD RECOMMENDATION PRODUCT",
+                "추천 상품 검색 성공",
+                productService.queryDslSearchProducts(searchCondition,
                     loginUserInfo.getEmail(), pageable)));
     }
 
