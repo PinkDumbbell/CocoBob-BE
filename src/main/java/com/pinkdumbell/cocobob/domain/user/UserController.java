@@ -198,7 +198,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/login/oauth/apple")
+    @PostMapping("/login/oauth/apple")
     public ResponseEntity<LoginResponseClass> appleLogin(AppleRedirectResponse body) {
 
         return ResponseEntity.ok(new LoginResponseClass(
