@@ -2,6 +2,8 @@ package com.pinkdumbell.cocobob.domain.auth;
 
 import com.pinkdumbell.cocobob.domain.auth.dto.AppleOauthResponse;
 import com.pinkdumbell.cocobob.domain.auth.dto.ApplePublicKeysResponse;
+import com.pinkdumbell.cocobob.domain.auth.dto.DecodedIdTokenAndRefreshTokenDto;
+import com.pinkdumbell.cocobob.domain.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,14 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -39,26 +40,26 @@ import java.util.stream.Stream;
 public class AppleUtil {
 
     private final AppleOauthInfo appleOauthInfo;
+    private final AppleRefreshTokenRepository appleRefreshTokenRepository;
     @Value("${apple.key.path}")
     private String privateKeyPath;
 
-    public String getAppleOauthLoginUrl() {
-
-        return appleOauthInfo.getAppleAuthUrl() +
-                "/auth/authorize?response_type=code&client_id=" +
-                appleOauthInfo.getClientId() + "&redirect_uri=" + appleOauthInfo.getRedirectUri() +
-                "&scope=name%20email&response_mode=form_post";
+    public DecodedIdTokenAndRefreshTokenDto getEmailFromIdToken(String code) {
+        return decodeIdToken(doPost(code));
     }
 
-    public String getEmailFromIdToken(String code) {
-        JSONObject userInfo = decodeIdToken(doPost(code));
-        try {
-            return userInfo.get("email").toString();
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Class Name : " + Thread.currentThread().getStackTrace()[1].getClassName() + "\n" +
-                    "Method Name : " + Thread.currentThread().getStackTrace()[1].getMethodName()
+    @Transactional
+    public void saveOrUpdateRefreshToken(User user, String refreshToken) {
+        Optional<AppleRefreshToken> foundAppleRefreshToken = appleRefreshTokenRepository.findById(user.getId());
+        if (foundAppleRefreshToken.isEmpty()) {
+            appleRefreshTokenRepository.save(
+                    AppleRefreshToken.builder()
+                            .user(user)
+                            .value(refreshToken)
+                            .build()
             );
+        } else {
+            foundAppleRefreshToken.get().update(refreshToken);
         }
     }
     private String createClientSecret() {
@@ -136,12 +137,15 @@ public class AppleUtil {
         return appleOauthResponseResponseEntity.getBody();
     }
 
-    private JSONObject decodeIdToken(AppleOauthResponse appleOauthResponse) {
+    private DecodedIdTokenAndRefreshTokenDto decodeIdToken(AppleOauthResponse appleOauthResponse) {
         String idToken = appleOauthResponse.getId_token();
         PublicKey publicKey = createPublicKey(getProperPublicKey(idToken));
         Claims decodedIdToken = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(idToken).getBody();
 
-        return new JSONObject(decodedIdToken);
+        return new DecodedIdTokenAndRefreshTokenDto(
+                new JSONObject(decodedIdToken),
+                appleOauthResponse.getRefresh_token()
+        );
     }
 
     private ApplePublicKeysResponse getPublicKeys() {
