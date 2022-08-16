@@ -166,7 +166,6 @@ public class AppleUtil {
 
         try {
             String[] split = idToken.split("[.]");
-            Base64.Decoder decoder = Base64.getDecoder();
             String headerString = new String(Base64.getDecoder().decode(split[0]));
             JSONParser jsonParser = new JSONParser();
             JSONObject header = (JSONObject) jsonParser.parse(headerString);
