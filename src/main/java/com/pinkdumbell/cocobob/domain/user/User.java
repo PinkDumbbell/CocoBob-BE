@@ -31,9 +31,7 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private AccountType accountType;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "representative_pet_id")
-    private Pet representativePet;
+    private Long representativePetId;
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
@@ -65,7 +63,7 @@ public class User extends BaseEntity {
     }
 
     public void updateRepresentativePet(Pet pet) {
-        this.representativePet = pet;
+        this.representativePetId = pet.getId();
     }
 
     public void updatePassword(String newPassword){
