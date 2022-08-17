@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -104,6 +105,28 @@ public class DailyController {
 
     @ApiOperation(value = "get all daily record", notes = "데일리 기록 조회")
     @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "{\n"
+            + "  \"status\": 200,\n"
+            + "  \"code\": \"SUCCESS GET DAILY\",\n"
+            + "  \"message\": \"데일리 기록을 불러오는데 성공하였습니다.\",\n"
+            + "  \"data\": [\n"
+            + "    {\n"
+            + "      \"id\": 46,\n"
+            + "      \"date\": \"2022-05-01\",\n"
+            + "      \"feedAmount\": null,\n"
+            + "      \"walkTotalTime\": null,\n"
+            + "      \"walkDistance\": null,\n"
+            + "      \"walkGps\": null,\n"
+            + "      \"note\": \"25631512fhj\",\n"
+            + "      \"images\": [\n"
+            + "        {\n"
+            + "          \"imagePath\": \"https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/daily/6_2022-05-01_0\",\n"
+            + "          \"dailyImageId\": 20\n"
+            + "        }\n"
+            + "      ]\n"
+            + "    }\n"
+            + "  ]\n"
+            + "}"),
         @ApiResponse(code = 200, message = "", response = RecordDailyNoteGetResponseClass.class),
         @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
@@ -128,6 +151,21 @@ public class DailyController {
 
     @ApiOperation(value = "get all simple daily record", notes = "데일리 기록 단순 날짜 조회")
     @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "{\n"
+            + "  \"status\": 200,\n"
+            + "  \"code\": \"SUCCESS GET SIMPLE DAILY\",\n"
+            + "  \"message\": \"데일리 기록을 불러오는데 성공하였습니다.\",\n"
+            + "  \"data\": [\n"
+            + "    {\n"
+            + "      \"date\": \"2022-08-08\",\n"
+            + "      \"dailyId\": 58\n"
+            + "    },\n"
+            + "    {\n"
+            + "      \"date\": \"2022-08-08\",\n"
+            + "      \"dailyId\": 55\n"
+            + "    }\n"
+            + "  ]\n"
+            + "}"),
         @ApiResponse(code = 200, message = "", response = SimpleDailyResponseClass.class),
         @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
@@ -153,7 +191,7 @@ public class DailyController {
         @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
     })
-    @PutMapping("/{dailyId}")
+    @PatchMapping("/{dailyId}")
     public ResponseEntity<DailyRecordUpdateResponseClass> updateDailyRecord(
         @PathVariable("dailyId") Long dailyId, @ModelAttribute
     DailyRecordUpdateRequestDto dailyRecordUpdateRequestDto) {
