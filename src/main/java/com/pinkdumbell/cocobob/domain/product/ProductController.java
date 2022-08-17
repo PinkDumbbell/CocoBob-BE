@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -128,7 +127,7 @@ public class ProductController {
             value = "페이지 번호(0...N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "페이지 크기"),
-        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query", required = true,
+        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",required = true,
             value = "반려동물 Id"),
         @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path", defaultValue = ""),
         @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
