@@ -14,6 +14,11 @@ public class ProductSearchSpecification {
             "%" + name + "%");
     }
 
+    public static Specification<Product> likeBrand(String brand) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("brand"),
+            "%" + brand + "%");
+    }
+
     public static Specification<Product> likeDescription(String description) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("description"),
             "%" + description + "%");
@@ -118,6 +123,10 @@ public class ProductSearchSpecification {
 
         if (requestParameter.getName() != null) {
             spec = spec.and(likeName(requestParameter.getName())); // 상품명
+        }
+
+        if (requestParameter.getBrand() != null) {
+            spec = spec.and(likeBrand(requestParameter.getBrand())); // 브랜드명
         }
 
         if (requestParameter.getDescription() != null) {

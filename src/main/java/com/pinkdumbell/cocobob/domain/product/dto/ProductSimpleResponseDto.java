@@ -17,8 +17,10 @@ public class ProductSimpleResponseDto {
     private Long productId;
     @ApiModelProperty(notes = "상품 코드", example = "101202")
     private String code;
-    @ApiModelProperty(notes = "상품 이름", example = "[2+1] 하림펫푸드 더리얼 밀 그레인프리 닭고기 60g 6개")
+    @ApiModelProperty(notes = "상품 이름", example = "하림펫푸드 더리얼 밀 그레인프리 닭고기 60g 6개")
     private String name;
+    @ApiModelProperty(notes = "상품 브랜드", example = "하림펫푸드")
+    private String brand;
     @ApiModelProperty(notes = "상품 카테고리", example = "화식/습식")
     private String category;
     @ApiModelProperty(notes = "상품 가격", example = "13260")
@@ -55,6 +57,7 @@ public class ProductSimpleResponseDto {
         this.growing = product.getGrowing();
         this.pregnant = product.getPregnant();
         this.obesity = product.getObesity();
+        this.brand = product.getBrand();
     }
 
 

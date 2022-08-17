@@ -19,6 +19,10 @@ public class ProductPredicate {
             builder.and(qProduct.name.contains(requestParameter.getName())); // 상품명
         }
 
+        if (requestParameter.getBrand() != null) {
+            builder.and(qProduct.brand.contains(requestParameter.getBrand())); // 브랜드명
+        }
+
         if (requestParameter.getDescription() != null) {
             builder.and(qProduct.description.contains(requestParameter.getDescription())); // 상품 내용
         }

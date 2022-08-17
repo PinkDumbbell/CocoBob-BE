@@ -36,8 +36,9 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
         JPAQuery<ProductSimpleResponseDto> query = jpaQueryFactory.select(
                 Projections.constructor(ProductSimpleResponseDto.class,
                     qProduct.id.as("productId"), qProduct.code.as("code"), qProduct.name.as("name"),
-                    qProduct.category.as("category"), qProduct.price.as("price"),
-                    qProduct.thumbnail.as("thumbnail"), qProduct.description.as("description"),
+                    qProduct.brand.as("brand"), qProduct.category.as("category"),
+                    qProduct.price.as("price"), qProduct.thumbnail.as("thumbnail"),
+                    qProduct.description.as("description"),
                     qProduct.isAAFCOSatisfied.as("isAAFCOSatisfied"), qProduct.aged.as("aged"),
                     qProduct.growing.as("growing"), qProduct.pregnant.as("pregnant"),
                     qProduct.obesity.as("obesity"),

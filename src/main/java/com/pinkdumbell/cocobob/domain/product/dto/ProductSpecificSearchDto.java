@@ -16,8 +16,10 @@ public class ProductSpecificSearchDto {
 
     @ApiModelProperty(notes = "상품 코드", example = "101202")
     private String code;
-    @ApiModelProperty(notes = "상품 이름", example = "하림펫푸드 더리얼 밀 닭고기 200g")
+    @ApiModelProperty(notes = "상품 이름", example = "더리얼 밀 닭고기 200g")
     private String name;
+    @ApiModelProperty(notes = "상품 브랜드", example = "하림펫푸드")
+    private String brand;
     @ApiModelProperty(notes = "상품 내용", example = "눈물 자국")
     private String description;
     @ApiModelProperty(notes = "AFFCO 기준 충족", example = "true")

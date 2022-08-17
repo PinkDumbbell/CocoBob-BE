@@ -21,8 +21,10 @@ public class ProductDetailResponseDto {
     private String code;
     @ApiModelProperty(notes = "상품 카테고리", example = "101202")
     private String category;
-    @ApiModelProperty(notes = "상품 이름", example = "하림펫푸드 더리얼 밀 그레인프리 닭고기 60g")
+    @ApiModelProperty(notes = "상품 이름", example = "더리얼 밀 그레인프리 닭고기 60g")
     private String name;
+    @ApiModelProperty(notes = "상품 브랜드", example = "하림펫푸드")
+    private String brand;
     @ApiModelProperty(notes = "상품 가격", example = "13260")
     private Integer price;
     @ApiModelProperty(notes = "상품 이미지", example = "상품 이미지 URL")
@@ -109,6 +111,7 @@ public class ProductDetailResponseDto {
         this.code = product.getCode();
         this.category = product.getCategory();
         this.name = product.getName();
+        this.brand = product.getBrand();
         this.price = product.getPrice();
         this.productImage = product.getProductImage();
         this.productDetailImage = product.getProductDetailImage();
