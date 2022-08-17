@@ -283,6 +283,10 @@ public class UserService {
         User user = findUserByToken(requestDto.getAccessToken());
 
         if (!user.getRefreshToken().getValue().equals(rawRefreshToken)) {
+            System.out.println("===========================");
+            System.out.println("User RefreshToken: "+user.getRefreshToken().getValue());
+            System.out.println("Now RefreshToken: "+rawRefreshToken);
+            System.out.println("=============================");
             throw new CustomException(ErrorCode.INVALID_ACCESS_AFTER_LOGOUT);
         }
 
