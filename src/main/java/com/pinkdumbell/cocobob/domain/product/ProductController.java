@@ -129,7 +129,7 @@ public class ProductController {
             value = "페이지 크기"),
         @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",required = true,
             value = "반려동물 Id"),
-        @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+        @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path"),
         @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
@@ -153,6 +153,35 @@ public class ProductController {
                 "추천 상품 검색 성공",
                 productService.queryDslSearchProducts(searchCondition,
                     loginUserInfo.getEmail(), pageable)));
+    }
+
+    @ApiOperation(value = "provideWishList", notes = "유저가 좋아요 누른 상품들 조회")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+            value = "페이지 번호(0...N)"),
+        @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+            value = "페이지 크기"),
+        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
+            value = "반려동물 Id"),
+        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)"),
+    })
+    @GetMapping("/wishlist")
+    public ResponseEntity<ProvideAllResponseClass> provideWishList(
+        @LoginUser LoginUserInfo loginUserInfo, Pageable pageable) {
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD WISH LIST PRODUCT",
+                "찜한 상품 불러오기 성공",
+                productService.findAllWishList(loginUserInfo.getEmail(), pageable)));
+
     }
 
 }
