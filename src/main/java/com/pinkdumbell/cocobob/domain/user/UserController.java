@@ -19,6 +19,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
 
 import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.jsonwebtoken.JwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -135,6 +136,20 @@ public class UserController {
             userService.login(requestDto)));
     }
 
+    @ApiOperation(value = "Withdraw", notes = "서비스 탈퇴")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = ResponseEntity.class),
+            @ApiResponse(code = 400, message = "회원 탈퇴 실패", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND", response = ErrorResponse.class)
+
+    })
+    @DeleteMapping("/withdrawal")
+    public ResponseEntity<Void> withdraw(@LoginUser LoginUserInfo loginUserInfo) {
+
+        userService.withdraw(loginUserInfo);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/google")
     public void redirectGoogleAuthUrl(HttpServletResponse response) {
         try {
@@ -187,17 +202,6 @@ public class UserController {
             userService.kakaoLogin(code)));
     }
 
-//    @GetMapping("/apple")
-//    public void redirectAppleAuthUrl(HttpServletResponse response) {
-//        try {
-//            response.sendRedirect(
-//                    appleUtil.getAppleOauthLoginUrl()
-//            );
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @PostMapping("/login/oauth/apple")
     public ResponseEntity<LoginResponseClass> appleLogin(@ModelAttribute AppleRedirectResponse body) {
 
@@ -208,6 +212,8 @@ public class UserController {
                 userService.appleLogin(body)
         ));
     }
+
+
     @ApiOperation(value = "Reissue", notes = "refresh Token을 통한 Token 재발행")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "", response = ReissueResponseClass.class),

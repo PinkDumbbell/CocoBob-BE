@@ -1,14 +1,10 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.*;
-import com.pinkdumbell.cocobob.domain.auth.dto.AppleRedirectResponse;
-import com.pinkdumbell.cocobob.domain.auth.dto.GoogleOAuthRequest;
-import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
-import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
+import com.pinkdumbell.cocobob.domain.auth.dto.*;
 import com.pinkdumbell.cocobob.common.EmailUtil;
 import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -32,13 +28,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -101,12 +97,22 @@ public class UserService {
     }
 
     @Transactional
-    public UserLoginResponseDto socialLogin(String email) {
+    public void withdraw(LoginUserInfo loginUserInfo) {
+        User user = findUserByEmail(loginUserInfo.getEmail());
+        Optional<AppleRefreshToken> appleRefreshToken = appleUtil.getAppleRefreshToken(user.getId());
+        appleRefreshToken.ifPresent(appleUtil::revoke);
+    }
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> {
-                throw new CustomException(ErrorCode.USER_NOT_FOUND);
-            });
+    @Transactional(propagation = Propagation.MANDATORY)
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                });
+    }
+
+    @Transactional
+    public UserLoginResponseDto socialLogin(User user) {
 
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
 
@@ -121,7 +127,7 @@ public class UserService {
             user.updateRefreshToken(userRefreshToken);
         }
 
-        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(email),
+        return new UserLoginResponseDto(user, jwtTokenProvider.createToken(user.getEmail()),
             newRefreshToken);
     }
 
@@ -143,7 +149,7 @@ public class UserService {
                 .build());
         }
 
-        return socialLogin(email);
+        return socialLogin(findUserByEmail(email));
     }
 
     private JSONObject getUserInfoFromGoogle(String code) {
@@ -167,9 +173,8 @@ public class UserService {
 
     @Transactional
     public UserLoginResponseDto appleLogin(AppleRedirectResponse body) {
-        if (body.getUser() == null) {
-            return socialLogin(appleUtil.getEmailFromIdToken(body.getCode()));
-        } else {
+
+        if (body.getUser() != null) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 UserInfoFromApple userInfoFromApple = objectMapper.readValue(body.getUser(), UserInfoFromApple.class);
@@ -185,10 +190,18 @@ public class UserService {
                                     .accountType(AccountType.APPLE)
                                     .build());
                 }
-                return socialLogin(userInfoFromApple.getEmail());
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        DecodedIdTokenAndRefreshTokenDto userInfoAndRefreshToken = appleUtil.getEmailFromIdToken(body.getCode());
+        try {
+            User user = findUserByEmail(userInfoAndRefreshToken.getDecodedIdToken().get("email").toString());
+            appleUtil.saveOrUpdateRefreshToken(user, userInfoAndRefreshToken.getRefreshToken());
+            return socialLogin(user);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("IdToken에서 이메일을 찾을 수 없습니다.");
         }
     }
 
@@ -213,7 +226,7 @@ public class UserService {
                 .build());
         }
 
-        return socialLogin(email);
+        return socialLogin(findUserByEmail(email));
     }
 
     private JSONObject getUserInfoFromKakao(String code) {
