@@ -7,6 +7,8 @@ import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
+import com.pinkdumbell.cocobob.exception.CustomException;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -127,16 +130,20 @@ public class ProductController {
             value = "페이지 번호(0...N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "페이지 크기"),
-        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",required = true,
+        @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query", required = true,
             value = "반려동물 Id"),
         @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path"),
         @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
     @GetMapping("/recommendation/{type}")
-    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(
-        @RequestParam Long petId, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type,
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId,
+        @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type,
         Pageable pageable) {
+
+        if (petId == null) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
 
         ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().aafco(true)
             .build();
