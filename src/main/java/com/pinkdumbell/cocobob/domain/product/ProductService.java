@@ -3,15 +3,16 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.like.Like;
-import com.pinkdumbell.cocobob.domain.product.like.LikeId;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-
     private final LikeRepository likeRepository;
 
     public ProductDetailResponseDto findProductDetailById(Long productId, String userEmail) {
@@ -63,5 +63,13 @@ public class ProductService {
         return new FindAllResponseDto(
             productRepository.findAllWithLikes(requestParameter, user.getId(), pageable));
 
+    }
+
+    public FindAllResponseDto findAllWishList(String userEmail, Pageable pageable) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        });
+
+        return new FindAllResponseDto(likeRepository.findAllByUserLike(user, pageable));
     }
 }
