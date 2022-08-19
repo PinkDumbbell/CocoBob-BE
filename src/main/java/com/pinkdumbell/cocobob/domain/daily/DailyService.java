@@ -38,14 +38,14 @@ public class DailyService {
     }
 
     @Transactional(readOnly = true)
-    public TempDailyDatesResponseDto getDatesOfRecordedDailyOfMonth(LocalDate date, Long petId) {
+    public TempDailyDatesResponseDto getDatesOfRecordedDailyOfMonth(YearMonth date, Long petId) {
 
         return new TempDailyDatesResponseDto(dailyRepository.findAllByPetAndDateBetweenOrderByIdDesc(
                 petRepository.findById(petId)
                         .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)),
-                date.withDayOfMonth(1),
-                date.withDayOfMonth(date.getMonth().length(date.isLeapYear())))
-        );
+                date.atDay(1),
+                date.atEndOfMonth()
+        ));
     }
 
     @Transactional(readOnly = true)
