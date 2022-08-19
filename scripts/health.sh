@@ -6,15 +6,15 @@ source ${ABSDIR}/profile.sh
 source ${ABSDIR}/switch.sh
 
 IDLE_PORT=$(find_idle_port)
-
+CURRENT_ELASTIC_IP=$(find_current_elastic_ip)
 echo "> Health Check Start!"
 echo "> IDLE_PORT: $IDLE_PORT"
-echo "> curl -s http://15.164.63.237:$IDLE_PORT/"
+echo "> curl -s http://$CURRENT_ELASTIC_IP:$IDLE_PORT/"
 sleep 10
 
 for RETRY_COUNT in {1..10}
 do
-  RESPONSE=$(curl -s http://15.164.63.237:${IDLE_PORT})
+  RESPONSE=$(curl -s http://${CURRENT_ELASTIC_IP}:${IDLE_PORT})
   UP_COUNT=$(echo ${RESPONSE} | grep 'real' | wc -l)
 
   if [ ${UP_COUNT} -ge 1 ]

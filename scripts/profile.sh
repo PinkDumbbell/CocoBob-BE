@@ -32,3 +32,16 @@ function find_idle_port()
       echo "8082"
     fi
 }
+# 현재 Host IP에 따른 Public IP 사용
+function find_current_elastic_ip()
+{
+    CURRENT_HOSTNAME="$(sudo hostname -i)"
+
+    if [ ${CURRENT_HOSTNAME} = 172.31.48.26 ]
+    then
+      CURRENT_ELASTIC_IP="15.164.20.79"
+    else
+      CURRENT_ELASTIC_IP="15.164.63.237"
+    fi
+    echo ${CURRENT_ELASTIC_IP}
+}
