@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -228,6 +229,9 @@ public class DailyController {
             super(status, code, message, data);
         }
     }
+
+    @ApiOperation(value = "createDaily", notes = "데일리 생성")
+    @ApiResponse(code = 200, message = "데일리 기록 생성을 성공했습니다.")
     @PostMapping("/pets/{petId}")
     public ResponseEntity<CommonResponseDto> createDaily(
             @RequestBody TempDailyRequestDto requestDto,
@@ -243,32 +247,39 @@ public class DailyController {
         );
     }
 
+    @ApiOperation(value = "Get all dates with daily", notes = "데일리를 기록한 해당 월의 모든 날짜를 반환")
+    @ApiResponse(code = 200, message = "금월의 데일리 기록이 존재하는 날짜 조회를 성공했습니다.")
+    @ApiImplicitParam(name = "date", value = "검색하고 싶은 달", example = "2022-08", required = true)
     @GetMapping("/pets/{petId}")
     public ResponseEntity<TempDailyDatesResponseClass> getDatesOfRecordedDailyOfMonth(
-            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM") YearMonth date,
             @PathVariable("petId") Long petId
             ) {
 
         return ResponseEntity.ok(new TempDailyDatesResponseClass(
                 HttpStatus.OK.value(),
                 "SUCCESS TO GET DATES",
-                "금월의 데일리 기록이 존재하는 날짜 조회를 성공했습니다.",
+                "해당 월의 데일리 기록이 존재하는 날짜 조회를 성공했습니다.",
                 dailyService.getDatesOfRecordedDailyOfMonth(date, petId)
                 )
         );
     }
 
+    @ApiOperation(value = "Get daily", notes = "데일리 아이디에 해당하는 데일리 반환")
+    @ApiResponse(code = 200, message = "데일리 기록 조회를 성공했습니다.")
     @GetMapping("/{dailyId}")
     public ResponseEntity<TempDailyResponseClass> getDaily(@PathVariable("dailyId") Long dailyId) {
         return ResponseEntity.ok(new TempDailyResponseClass(
                         HttpStatus.OK.value(),
                         "SUCCESS TO GET DATES",
-                        "금월의 데일리 기록이 존재하는 날짜 조회를 성공했습니다.",
+                        "데일리 기록 조회를 성공했습니다.",
                         dailyService.getDaily(dailyId)
                 )
         );
     }
 
+    @ApiOperation(value = "Update daily", notes = "데일리 아이디에 해당하는 데일리를 수정한다.")
+    @ApiResponse(code = 200, message = "데일리 기록 수정을 성공했습니다.")
     @PutMapping("/{dailyId}")
     public ResponseEntity<CommonResponseDto> updateDaily(
             @RequestBody TempDailyRequestDto requestDto,
@@ -277,12 +288,14 @@ public class DailyController {
         return ResponseEntity.ok(CommonResponseDto.builder()
                 .status(HttpStatus.OK.value())
                 .code("SUCCESS TO CREATE DAILY")
-                .message("데일리 기록 생성을 성공했습니다.")
+                .message("데일리 기록 수정을 성공했습니다.")
                 .data(null)
                 .build()
         );
     }
 
+    @ApiOperation(value = "Delete daily", notes = "데일리 아이디에 해당하는 데일리를 삭제한다.")
+    @ApiResponse(code = 200, message = "데일리 기록 삭제를 성공했습니다.")
     @DeleteMapping("/{dailyId}")
     public ResponseEntity<CommonResponseDto> deleteDaily(@PathVariable("dailyId") Long dailyId) {
         dailyService.deleteDaily(dailyId);
