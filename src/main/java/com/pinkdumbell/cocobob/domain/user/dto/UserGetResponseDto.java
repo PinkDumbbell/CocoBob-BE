@@ -25,8 +25,8 @@ public class UserGetResponseDto {
         this.name = entity.getUsername();
         this.email = entity.getEmail();
         this.pets = entity.getPets().stream().map(SimplePetInfoDto::new).collect(Collectors.toList());
-        if (entity.getRepresentativePet() != null) {
-            this.representativeAnimalId = entity.getRepresentativePet().getId();
+        if (entity.getRepresentativePetId() != null) {
+            this.representativeAnimalId = entity.getRepresentativePetId();
         } else {
             this.representativeAnimalId = null;
         }

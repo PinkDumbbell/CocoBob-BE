@@ -42,8 +42,8 @@ public class PetService {
         User user = userRepository.findByEmail(loginUserInfo.getEmail())
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Pet pet = savePet(requestDto, user);
-        Optional<Pet> representativePet = Optional.ofNullable(user.getRepresentativePet());
-        if (representativePet.isEmpty()) {
+
+        if (user.getRepresentativePetId() == null) {
             user.updateRepresentativePet(pet);
         }
         saveImage(requestDto.getPetImage(), pet);
