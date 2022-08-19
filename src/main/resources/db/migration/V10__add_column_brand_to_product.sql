@@ -1,0 +1,1 @@
+alter table product add brand varchar(100) null;
