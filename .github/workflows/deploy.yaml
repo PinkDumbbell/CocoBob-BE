@@ -3,7 +3,7 @@ name: Push Docker Image to Amazon ECR
 on:
   push:
     branches:
-      - dev
+      - main
 
 env:
   AWS_REGION: ap-northeast-2
