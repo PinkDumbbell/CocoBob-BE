@@ -2,7 +2,8 @@
 
 function find_idle_profile()
 {
-    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://15.164.63.237/)
+    CURRENT_ELASTIC_IP=$(find_current_elastic_ip)
+    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://${CURRENT_ELASTIC_IP}/)
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
