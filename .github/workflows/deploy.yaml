@@ -3,7 +3,7 @@ name: Push Docker Image to Amazon ECR
 on:
   push:
     branches:
-      - dev
+      - main
 
 env:
   AWS_REGION: ap-northeast-2
@@ -72,11 +72,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run:
-          aws s3 cp --region ap-northeast-2 ./deploy-script.zip s3://cocobob-storage/petalog-be-dev/deploy-script.zip
+          aws s3 cp --region ap-northeast-2 ./deploy-script.zip s3://cocobob-storage/petalog-be-main/deploy-script.zip
 
       - name: Deploy
         run: aws deploy create-deployment
-          --application-name petalog-be-dev
+          --application-name petalog-be-main
           --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name petalog-be-test
-          --s3-location bucket=cocobob-storage,key=petalog-be-dev/deploy-script.zip,bundleType=zip
+          --deployment-group-name petalog-be-main
+          --s3-location bucket=cocobob-storage,key=petalog-be-main/deploy-script.zip,bundleType=zip
