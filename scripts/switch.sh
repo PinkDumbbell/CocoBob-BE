@@ -9,7 +9,7 @@ function switch_proxy() {
 
     echo "> 전환할 Port: $IDLE_PORT"
     echo "> Port 전환"
-    echo "set \$service_url http://15.164.20.79:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
+    echo "set \$service_url http://15.164.63.237:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
 
     sudo sudo nginx -s reload
     echo "> sudo nginx -s reload"

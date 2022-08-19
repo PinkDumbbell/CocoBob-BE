@@ -2,7 +2,7 @@
 
 function find_idle_profile()
 {
-    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://15.164.20.79/)
+    RESPONSE_CODE=$(sudo curl -s -o /dev/null -w "%{http_code}" http://15.164.63.237/)
 
     if [ ${RESPONSE_CODE} -ge 400 ] # 400 보다 크면 (즉, 40x/50x 에러 모두 포함)
     then
