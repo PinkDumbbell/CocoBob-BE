@@ -1,0 +1,1 @@
+alter table daily add data text null;
