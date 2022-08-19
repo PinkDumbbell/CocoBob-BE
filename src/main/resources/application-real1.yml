@@ -1,0 +1,8 @@
+
+spring:
+  profiles:
+    include: setting
+  config:
+    use-legacy-processing: true
+server:
+  port: 8081

@@ -1,0 +1,82 @@
+name: Push Docker Image to Amazon ECR
+
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  AWS_REGION: ap-northeast-2
+  ECR_REPOSITORY: cocobob/be-api
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Generate Application Environment Variables File(decryption)
+        env:
+          GNUPG2_PASSPHRASE: ${{ secrets.GNUPG2_PASSPHRASE }}
+
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/AuthKey_33CM4RFUVC.p8 src/main/resources/AuthKey_33CM4RFUVC.p8.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$GNUPG2_PASSPHRASE" --output src/main/resources/application-secret.yml src/main/resources/application-secret.yml.gpg
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      - name: Test with Gradle
+        run: ./gradlew test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
+        run: |
+          echo $ECR_REGISTRY
+          echo $IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY"
+
+      - name: Create Deploy Script Zip
+        run: zip -r deploy-script.zip ./scripts ./appspec.yml
+        shell: bash
+
+      - name: Upload to S3
+        env:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run:
+          aws s3 cp --region ap-northeast-2 ./deploy-script.zip s3://cocobob-storage/cocobob-be-dev/deploy-script.zip
+
+      - name: Deploy
+        run: aws deploy create-deployment
+          --application-name cocobob-be-dev
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name cocobob-be-dev
+          --s3-location bucket=cocobob-storage,key=cocobob-be-dev/deploy-script.zip,bundleType=zip

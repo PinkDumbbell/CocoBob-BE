@@ -1,0 +1,76 @@
+spring:
+
+  flyway:
+    enabled: false
+
+  jwt:
+      secretKey: "PinkDumbbell"
+      accessTokenValidTime: 1800000 #30분
+      refreshTokenValidTime: 604800000 #7일
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    database: h2
+    generate-ddl: off
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb:MODE=MariaDB;
+    username: sa
+    password:
+
+cloud:
+  aws:
+    credentials:
+      accessKey: test
+      secretKey: test
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+google:
+  auth:
+    url: test
+  login:
+    url: test
+  redirect:
+    url: test
+  client:
+    id: test
+    secret: test
+
+kakao:
+  client_id: test
+  redirect: test
+  url:
+    login: test
+    token: test
+    profile: test
+
+apple:
+  auth:
+    url: test
+  client:
+    id: test
+  redirect:
+    uri: test
+  team:
+    id: test
+  key:
+    id: test
+    path: test

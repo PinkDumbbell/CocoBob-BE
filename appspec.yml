@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ec2-user/app/zip/
+    destination: /home/ec2-user/deploy
     overwrite: yes
 
 permissions:
@@ -10,20 +10,19 @@ permissions:
     pattern: "**"
     owner: ec2-user
     group: ec2-user
-    mode: 4755
 
 hooks:
   AfterInstall:
-    - location: stop.sh
+    - location: scripts/stop.sh
       timeout: 60
-      runas: root
+      runas: ec2-user
 
   ApplicationStart:
-    - location: start.sh
+    - location: scripts/start.sh
       timeout: 60
-      runas: root
+      runas: ec2-user
 
   ValidateService:
-    - location: health.sh
-      timeout: 120
-      runas: root
+    - location: scripts/health.sh
+      timeout: 60
+      runas: ec2-user
