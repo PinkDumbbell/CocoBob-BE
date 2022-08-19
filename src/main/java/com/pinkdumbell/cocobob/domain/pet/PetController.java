@@ -137,6 +137,11 @@ public class PetController {
         ));
     }
 
+    @ApiOperation(value = "delete pet", notes = "반려동물 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS DELETE PET", response = CommonResponseDto.class),
+            @ApiResponse(code = 400, message = "FAIL_TO_DELETE_REPRESENTATIVE_PET", response = ErrorResponse.class)
+    })
     @DeleteMapping("/{petId}")
     public ResponseEntity<CommonResponseDto> deletePet(
             @PathVariable("petId") Long petId,
