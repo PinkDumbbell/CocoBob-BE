@@ -145,6 +145,47 @@ public class PetService {
         return productSpecificSearchDto;
     }
 
+    @Transactional
+    public void deletePet(Long petId, LoginUserInfo loginUserInfo) {
+
+        removePet(setBeforeDeletePet(petId, loginUserInfo));
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public Pet setBeforeDeletePet(Long petId, LoginUserInfo loginUserInfo) {
+        User user = userRepository.findUserByEmailWithPet(loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.getRepresentativePetId().equals(petId)) {
+            throw new CustomException(ErrorCode.FAIL_TO_DELETE_REPRESENTATIVE_PET);
+        }
+
+        Pet pet = getPetOfUserByPetId(petId, user);
+        Optional<PetImage> petImage = petImageRepository.findPetImageByPet(pet);
+        if (petImage.isPresent()) {
+            deleteImage(petImage, pet);
+        }
+        petRepository.flush();
+        return pet;
+    }
+
+    @Transactional
+    public void removePet(Pet pet) {
+
+        petRepository.delete(pet);
+    }
+
+    private Pet getPetOfUserByPetId(Long petId, User user) {
+        List<Pet> collect = user.getPets().stream().filter(
+                (pet) -> petId.equals(pet.getId())
+        ).collect(Collectors.toList());
+
+        if (collect.size() == 0) {
+            throw new CustomException(ErrorCode.PET_NOT_FOUND);
+        }
+        return collect.get(0);
+    }
+
     private String createImageName(String prefix, Long petId) {
         return prefix + "/" + petId;
     }

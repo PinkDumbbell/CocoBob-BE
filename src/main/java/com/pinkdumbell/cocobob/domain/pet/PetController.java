@@ -136,4 +136,24 @@ public class PetController {
                 petService.updatePet(petId, loginUserInfo, requestDto)
         ));
     }
+
+    @ApiOperation(value = "delete pet", notes = "반려동물 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "SUCCESS DELETE PET", response = CommonResponseDto.class),
+            @ApiResponse(code = 400, message = "FAIL_TO_DELETE_REPRESENTATIVE_PET", response = ErrorResponse.class)
+    })
+    @DeleteMapping("/{petId}")
+    public ResponseEntity<CommonResponseDto> deletePet(
+            @PathVariable("petId") Long petId,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        petService.deletePet(petId, loginUserInfo);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .code("SUCCESS DELETE PET")
+                .message("반려동물 삭제를 성공했습니다.")
+                .data(null)
+                .build()
+        );
+    }
 }

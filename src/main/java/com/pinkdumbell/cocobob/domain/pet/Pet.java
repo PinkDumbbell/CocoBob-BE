@@ -4,15 +4,18 @@ import com.pinkdumbell.cocobob.common.BaseEntity;
 import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetUpdateRequestDto;
-import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@SQLDelete(sql = "update pet set deleted = true where pet_id = ?")
+@Where(clause = "deleted=false")
 @Getter
 @NoArgsConstructor
 @Entity
@@ -50,6 +53,8 @@ public class Pet extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "breed_id")
     private Breed breed;
+
+    private boolean deleted = false;
 
     @Builder
     public Pet(String name,
