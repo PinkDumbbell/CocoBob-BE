@@ -178,6 +178,8 @@ public class ProductController {
             value = "페이지 번호(0...N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "페이지 크기"),
+        @ApiImplicitParam(name = "sort", dataType = "string", paramType = "query",
+            value = "정렬(사용법: 컬럼명,ASC|DESC)"),
         @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
             value = "반려동물 Id"),
     })
