@@ -35,7 +35,7 @@ public class ProductSpecificSearchDto {
     @ApiModelProperty(notes = "칠면조 햠유", example = "false")
     private Boolean turkey;
     @ApiModelProperty(notes = "돼지고기 햠유", example = "ture")
-    private Boolean meat;
+    private Boolean pork;
     @ApiModelProperty(notes = "연어 햠유", example = "false")
     private Boolean salmon;
     @ApiModelProperty(notes = "가수분해 소고기 햠유", example = "false")
@@ -49,7 +49,7 @@ public class ProductSpecificSearchDto {
     @ApiModelProperty(notes = "가수분해 칠면조 햠유", example = "false")
     private Boolean hydrolyticTurkey;
     @ApiModelProperty(notes = "가수분해 돼지고기 햠유", example = "false")
-    private Boolean hydrolyticMeat;
+    private Boolean hydrolyticPork;
     @ApiModelProperty(notes = "가수분해 연어고기 햠유", example = "false")
     private Boolean hydrolyticSalmon;
     @ApiModelProperty(notes = "노령견 기준 충족", example = "false")

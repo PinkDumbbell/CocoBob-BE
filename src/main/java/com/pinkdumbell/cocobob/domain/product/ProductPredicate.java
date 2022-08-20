@@ -47,8 +47,8 @@ public class ProductPredicate {
             builder.and(qProduct.turkey.eq(requestParameter.getTurkey())); // 칠면조 포함 유무
         }
 
-        if (requestParameter.getMeat() != null) {
-            builder.and(qProduct.meat.eq(requestParameter.getMeat())); //  돼지고기 포함 유무
+        if (requestParameter.getPork() != null) {
+            builder.and(qProduct.meat.eq(requestParameter.getPork())); //  돼지고기 포함 유무
         }
 
         if (requestParameter.getSalmon() != null) {
@@ -84,10 +84,10 @@ public class ProductPredicate {
                     requestParameter.getHydrolyticTurkey())); // 가수분해 칠면조 포함 유무
         }
 
-        if (requestParameter.getHydrolyticMeat() != null) {
+        if (requestParameter.getHydrolyticPork() != null) {
             builder.and(
                 qProduct.hydrolyticMeat.eq(
-                    requestParameter.getHydrolyticMeat())); // 가수분해 돼지고기 포함 유무
+                    requestParameter.getHydrolyticPork())); // 가수분해 돼지고기 포함 유무
         }
 
         if (requestParameter.getHydrolyticSalmon() != null) {

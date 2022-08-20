@@ -153,8 +153,8 @@ public class ProductSearchSpecification {
             spec = spec.and(equalTurkey(requestParameter.getTurkey())); // 칠면조 포함 유무
         }
 
-        if (requestParameter.getMeat() != null) {
-            spec = spec.and(equalMeat(requestParameter.getMeat())); //  돼지고기 포함 유무
+        if (requestParameter.getPork() != null) {
+            spec = spec.and(equalMeat(requestParameter.getPork())); //  돼지고기 포함 유무
         }
 
         if (requestParameter.getSalmon() != null) {
@@ -186,9 +186,9 @@ public class ProductSearchSpecification {
                 equalHydrolyticTurkey(requestParameter.getHydrolyticTurkey())); // 가수분해 칠면조 포함 유무
         }
 
-        if (requestParameter.getHydrolyticMeat() != null) {
+        if (requestParameter.getHydrolyticPork() != null) {
             spec = spec.and(
-                equalHydrolyticMeat(requestParameter.getHydrolyticMeat())); // 가수분해 돼지고기 포함 유무
+                equalHydrolyticMeat(requestParameter.getHydrolyticPork())); // 가수분해 돼지고기 포함 유무
         }
 
         if (requestParameter.getHydrolyticSalmon() != null) {
