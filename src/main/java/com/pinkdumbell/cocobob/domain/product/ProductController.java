@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.domain.pet.PetService;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
@@ -110,19 +111,19 @@ public class ProductController {
             value = "페이지 번호(0...N)"),
         @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
             value = "페이지 크기"),
-        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
     @GetMapping("/search/likes")
     public ResponseEntity<ProvideAllResponseClass> searchAllProductsWithLikes(
-        ProductSpecificSearchDto productSpecificSearchDto, @LoginUser LoginUserInfo loginUserInfo,
-        Pageable pageable) {
+        ProductSpecificSearchWithLikeDto productSpecificSearchWithLikeDto,
+        @LoginUser LoginUserInfo loginUserInfo) {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(), "SUCCESS LOAD PRODUCT",
                 "상품 검색 성공",
-                productService.queryDslSearchProducts(productSpecificSearchDto,
-                    loginUserInfo.getEmail(), pageable)));
+                productService.queryDslSearchProducts(productSpecificSearchWithLikeDto,
+                    loginUserInfo.getEmail())));
     }
 
     @ApiImplicitParams({
@@ -133,19 +134,19 @@ public class ProductController {
         @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query", required = true,
             value = "반려동물 Id"),
         @ApiImplicitParam(name = "type", value = "추천 기준(aged | pregnancy)", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
+        @ApiImplicitParam(name = "sort", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
     @GetMapping("/recommendation/{type}")
-    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId,
-        @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type,
-        Pageable pageable) {
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, int page,
+        int size,String sort, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type) {
 
         if (petId == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
-        ProductSpecificSearchDto searchCondition = ProductSpecificSearchDto.builder().aafco(true)
+        ProductSpecificSearchWithLikeDto searchCondition = ProductSpecificSearchWithLikeDto.builder()
+            .aafco(true)
             .build();
 
         if (type.contains("aged")) {
@@ -154,12 +155,15 @@ public class ProductController {
             searchCondition = petService.makeRecommendationWithPregnancy(petId);
         }
 
+        searchCondition.setSize(size);
+        searchCondition.setPage(page);
+        searchCondition.setSort(sort);
+
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(),
                 "SUCCESS LOAD RECOMMENDATION PRODUCT",
                 "추천 상품 검색 성공",
-                productService.queryDslSearchProducts(searchCondition,
-                    loginUserInfo.getEmail(), pageable)));
+                productService.queryDslSearchProducts(searchCondition, loginUserInfo.getEmail())));
     }
 
     @ApiOperation(value = "provideWishList", notes = "유저가 좋아요 누른 상품들 조회")
@@ -176,8 +180,6 @@ public class ProductController {
             value = "페이지 크기"),
         @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
             value = "반려동물 Id"),
-        @ApiImplicitParam(name = "sortCriteria", dataType = "string", paramType = "query",
-            value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
     @GetMapping("/wishlist")
     public ResponseEntity<ProvideAllResponseClass> provideWishList(

@@ -2,12 +2,13 @@ package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.querydsl.core.BooleanBuilder;
 
 public class ProductPredicate {
 
     public static BooleanBuilder makeProductBooleanBuilder(
-        ProductSpecificSearchDto requestParameter) {
+        ProductSpecificSearchWithLikeDto requestParameter) {
         QProduct qProduct = QProduct.product;
         BooleanBuilder builder = new BooleanBuilder();
 

@@ -4,6 +4,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
@@ -50,16 +51,16 @@ public class ProductService {
 
     }
 
-    public FindAllResponseDto queryDslSearchProducts(ProductSpecificSearchDto requestParameter,
-        String email,
-        Pageable pageable) {
+    public FindAllResponseDto queryDslSearchProducts(
+        ProductSpecificSearchWithLikeDto requestParameter,
+        String email) {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         });
 
         return new FindAllResponseDto(
-            productRepository.findAllWithLikes(requestParameter, user.getId(), pageable));
+            productRepository.findAllWithLikes(requestParameter, user.getId()));
 
     }
 
