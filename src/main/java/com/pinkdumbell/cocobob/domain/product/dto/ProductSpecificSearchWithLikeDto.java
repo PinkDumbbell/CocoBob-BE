@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductSpecificSearchDto {
-
+public class ProductSpecificSearchWithLikeDto {
     @ApiModelProperty(notes = "상품 코드", example = "101202")
     private String code;
     @ApiModelProperty(notes = "상품 이름", example = "더리얼 밀 닭고기 200g")
@@ -60,5 +60,15 @@ public class ProductSpecificSearchDto {
     private Boolean pregnant;
     @ApiModelProperty(notes = "비만견 기준 충족", example = "false")
     private Boolean obesity;
+    @ApiModelProperty(notes = "정렬 기준", example = "ID,ASC | PRICE,ASC |LIKE,DESC")
+    private String sort;
+    @ApiModelProperty(notes = "페이지", example = "페이지 번호(0...N)")
+    private int page = 0;
+    @ApiModelProperty(notes = "페이지 크기", example = "페이지 사이즈(1...N)")
+    private int size = 20;
+
+    public int calOffset(){
+        return this.page*this.size;
+    }
 
 }

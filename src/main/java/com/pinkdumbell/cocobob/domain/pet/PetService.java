@@ -7,6 +7,7 @@ import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -62,13 +63,12 @@ public class PetService {
     @Transactional(readOnly = true)
     public List<BreedsInfoResponseDto> provideBreedsInfo() {
 
-        List<BreedsInfoResponseDto> breedsList = breedRepository.findAll().stream()
+        return breedRepository.findAll().stream()
             .map(breed ->
                 new BreedsInfoResponseDto(breed.getId(), breed.getName(),
                     breed.getSize().toString())
             ).collect(Collectors.toList());
 
-        return breedsList;
     }
 
     @Transactional(readOnly = true)
@@ -99,12 +99,12 @@ public class PetService {
     }
 
     @Transactional
-    public ProductSpecificSearchDto makeRecommendationWithAge(Long petId) {
+    public ProductSpecificSearchWithLikeDto makeRecommendationWithAge(Long petId) {
 
         Pet pet = petRepository.findById(petId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
-        ProductSpecificSearchDto productSpecificSearchDto = ProductSpecificSearchDto.builder()
+        ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
 
         //초소형 성장기
@@ -130,12 +130,12 @@ public class PetService {
     }
 
     @Transactional
-    public ProductSpecificSearchDto makeRecommendationWithPregnancy(Long petId) {
+    public ProductSpecificSearchWithLikeDto makeRecommendationWithPregnancy(Long petId) {
         Pet pet = petRepository.findById(petId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.PET_NOT_FOUND);
         });
 
-        ProductSpecificSearchDto productSpecificSearchDto = ProductSpecificSearchDto.builder()
+        ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
 
         if (pet.getIsPregnant()) {
@@ -154,7 +154,7 @@ public class PetService {
     @Transactional(propagation = Propagation.MANDATORY)
     public Pet setBeforeDeletePet(Long petId, LoginUserInfo loginUserInfo) {
         User user = userRepository.findUserByEmailWithPet(loginUserInfo.getEmail())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getRepresentativePetId().equals(petId)) {
             throw new CustomException(ErrorCode.FAIL_TO_DELETE_REPRESENTATIVE_PET);
@@ -177,7 +177,7 @@ public class PetService {
 
     private Pet getPetOfUserByPetId(Long petId, User user) {
         List<Pet> collect = user.getPets().stream().filter(
-                (pet) -> petId.equals(pet.getId())
+            (pet) -> petId.equals(pet.getId())
         ).collect(Collectors.toList());
 
         if (collect.size() == 0) {
@@ -236,10 +236,10 @@ public class PetService {
             imageService.deleteImage(createImageName(PET_IMAGE_DIR, petId));
             imageService.deleteImage(createImageName(PET_THUMBNAIL_DIR, petId));
             petImage.get().updatePath(
-                    imageService.saveImage(
-                            newImage,
-                            createImageName(PET_IMAGE_DIR, petId)
-                    )
+                imageService.saveImage(
+                    newImage,
+                    createImageName(PET_IMAGE_DIR, petId)
+                )
             );
         } else {
             String imageName = createImageName(PET_IMAGE_DIR, petId);
@@ -249,8 +249,8 @@ public class PetService {
             ));
         }
         pet.setThumbnailPath(imageService.saveImage(
-                imageService.resizeImage(newImage, RESIZE_TARGET_WIDTH),
-                createImageName(PET_THUMBNAIL_DIR, petId)
+            imageService.resizeImage(newImage, RESIZE_TARGET_WIDTH),
+            createImageName(PET_THUMBNAIL_DIR, petId)
         ));
     }
 

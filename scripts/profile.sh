@@ -9,7 +9,7 @@ function find_idle_profile()
     then
         CURRENT_PROFILE=real2
     else
-        CURRENT_PROFILE=$(sudo curl -s http://15.164.20.79/)
+        CURRENT_PROFILE=$(sudo curl -s http://${CURRENT_ELASTIC_IP}/)
     fi
 
     if [ ${CURRENT_PROFILE} == real1 ]

@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.product;
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -26,9 +28,9 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
 
     @Override
     public PageImpl<ProductSimpleResponseDto> findAllWithLikes(
-        ProductSpecificSearchDto productSpecificSearchDto,
-        Long userId,
-        Pageable pageable) {
+        ProductSpecificSearchWithLikeDto productSpecificSearchWithLikeDto,
+        Long userId) {
+
         QProduct qProduct = QProduct.product;
         QLike qLike = QLike.like;
         NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes");
@@ -52,10 +54,12 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         "isUserLike")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchDto));
+            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
-        if (productSpecificSearchDto.getSortCriteria() != null) {
-            String sortCriteria = productSpecificSearchDto.getSortCriteria();
+        int totalElements = query.fetch().size();
+
+        if (productSpecificSearchWithLikeDto.getSort() != null) {
+            String sortCriteria = productSpecificSearchWithLikeDto.getSort();
 
             if (Objects.equals(sortCriteria, "ID,ASC")) {
                 query = query.orderBy(qProduct.id.asc());
@@ -73,10 +77,14 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
         }
 
         List<ProductSimpleResponseDto> result = query
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
+            .offset(productSpecificSearchWithLikeDto.calOffset())
+            .limit(productSpecificSearchWithLikeDto.getSize())
             .fetch();
+        
 
-        return new PageImpl<>(result, pageable, result.size());
+        Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
+            productSpecificSearchWithLikeDto.getSize());
+
+        return new PageImpl<>(result, pageable, (long) totalElements);
     }
 }

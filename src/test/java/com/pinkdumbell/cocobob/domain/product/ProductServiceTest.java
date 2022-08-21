@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.Like;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
@@ -83,14 +84,12 @@ class ProductServiceTest {
         //When
         given(userRepository.findByEmail(userEmail)).willReturn(Optional.ofNullable(expectedUser));
 
-        given(productRepository.findAllWithLikes(any(), any(),
-            any())).willReturn(expectePageIml);
+        given(productRepository.findAllWithLikes(any(), any())).willReturn(expectePageIml);
 
         //Execute
-        ProductSpecificSearchDto request = new ProductSpecificSearchDto();
+        ProductSpecificSearchWithLikeDto request = new ProductSpecificSearchWithLikeDto();
 
-        FindAllResponseDto result = productService.queryDslSearchProducts(request,
-            userEmail, pageable);
+        FindAllResponseDto result = productService.queryDslSearchProducts(request, userEmail);
 
         Assertions.assertThat(result.getPageSize()).isEqualTo(10);
         Assertions.assertThat(result.getPageNumber()).isEqualTo(0);
