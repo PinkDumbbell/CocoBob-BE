@@ -5,8 +5,10 @@ import com.pinkdumbell.cocobob.domain.product.ProductRepository;
 import com.pinkdumbell.cocobob.domain.product.like.dto.LikeRequestDto;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +22,13 @@ public class LikeService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public void like(LikeRequestDto likeRequestDto) {
+    public void like(LikeRequestDto likeRequestDto, LoginUserInfo loginUserInfo) {
 
-        LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
+        User user = userRepository.findByEmail(loginUserInfo.getEmail()).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        });
+
+        LikeId target = new LikeId(user.getId(), likeRequestDto.getProductId());
 
         if (likeRepository.findByLikeId(target).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_LIKED);
@@ -34,9 +40,13 @@ public class LikeService {
     }
 
     @Transactional
-    public void unLike(LikeRequestDto likeRequestDto) {
+    public void unLike(LikeRequestDto likeRequestDto,LoginUserInfo loginUserInfo) {
 
-        LikeId target = new LikeId(likeRequestDto.getUserId(), likeRequestDto.getProductId());
+        User user = userRepository.findByEmail(loginUserInfo.getEmail()).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        });
+
+        LikeId target = new LikeId(user.getId(), likeRequestDto.getProductId());
 
         if (likeRepository.findByLikeId(target).isEmpty()) {
             throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
