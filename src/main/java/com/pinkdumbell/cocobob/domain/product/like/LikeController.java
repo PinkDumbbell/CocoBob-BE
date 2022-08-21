@@ -1,8 +1,10 @@
 package com.pinkdumbell.cocobob.domain.product.like;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
+import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.like.dto.LikeRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,9 +25,9 @@ public class LikeController {
 
 
     @PostMapping("")
-    public ResponseEntity<CommonResponseDto> like(@RequestBody LikeRequestDto likeRequestDto) {
+    public ResponseEntity<CommonResponseDto> like(@LoginUser LoginUserInfo loginUserInfo,@RequestBody LikeRequestDto likeRequestDto) {
 
-        likeService.like(likeRequestDto);
+        likeService.like(likeRequestDto,loginUserInfo);
 
         return ResponseEntity.ok(CommonResponseDto.builder()
             .status(HttpStatus.OK.value()).
@@ -36,9 +38,9 @@ public class LikeController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity<CommonResponseDto> unLike(@RequestBody LikeRequestDto likeRequestDto) {
+    public ResponseEntity<CommonResponseDto> unLike(@LoginUser LoginUserInfo loginUserInfo,@RequestBody LikeRequestDto likeRequestDto) {
 
-        likeService.unLike(likeRequestDto);
+        likeService.unLike(likeRequestDto,loginUserInfo);
 
         return ResponseEntity.ok(CommonResponseDto.builder()
             .status(HttpStatus.OK.value()).

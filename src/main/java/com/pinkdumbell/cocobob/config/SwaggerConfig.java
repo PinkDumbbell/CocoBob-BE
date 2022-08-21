@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.config;
 
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,7 +34,7 @@ public class SwaggerConfig {
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.OAS_30)
-            .ignoredParameterTypes(Pageable.class)
+            .ignoredParameterTypes(Pageable.class, LoginUserInfo.class)
             .useDefaultResponseMessages(false)
             .securityContexts(Arrays.asList(securityContext()))
             .securitySchemes(Arrays.asList(apiKey()))
