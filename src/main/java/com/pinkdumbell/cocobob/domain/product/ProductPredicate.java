@@ -97,7 +97,7 @@ public class ProductPredicate {
                     requestParameter.getHydrolyticSalmon())); // 가수분해 연어 포함 유무
         }
 
-        if (requestParameter.getAafco() != null) {
+        if (requestParameter.getAafco() == true) {
             builder.and(qProduct.isAAFCOSatisfied.eq(requestParameter.getAafco()));
         }
 
