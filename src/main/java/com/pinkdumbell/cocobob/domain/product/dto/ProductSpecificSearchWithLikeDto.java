@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ProductSpecificSearchWithLikeDto {
+
     @ApiModelProperty(notes = "상품 코드", example = "101202")
     private String code;
     @ApiModelProperty(notes = "상품 이름", example = "더리얼 밀 닭고기 200g")
@@ -68,19 +69,13 @@ public class ProductSpecificSearchWithLikeDto {
     private int size = 20;
 
     public void setSize(Integer size) {
-        if (size == null) {
-            this.size = 20;
-        } else {
-            this.size = size.intValue();
-        }
+
+        this.size = (size != null) ? size.intValue() : 20;
     }
 
     public void setPage(Integer page) {
-        if (page == null) {
-            this.page = 0;
-        } else {
-            this.page = page.intValue();
-        }
+        
+        this.page = (page != null) ? page.intValue() : 0;
     }
 
     public int calOffset() {
