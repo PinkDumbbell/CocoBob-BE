@@ -138,8 +138,9 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
     @GetMapping("/recommendation/{type}")
-    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, int page,
-        int size,String sort, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type) {
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, Integer page,
+        Integer size, String sort, @LoginUser LoginUserInfo loginUserInfo,
+        @PathVariable String type) {
 
         if (petId == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
