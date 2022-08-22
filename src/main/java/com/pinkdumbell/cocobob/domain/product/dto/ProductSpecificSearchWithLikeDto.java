@@ -67,8 +67,24 @@ public class ProductSpecificSearchWithLikeDto {
     @ApiModelProperty(notes = "페이지 크기", example = "페이지 사이즈(1...N)")
     private int size = 20;
 
-    public int calOffset(){
-        return this.page*this.size;
+    public void setSize(Integer size) {
+        if (size == null) {
+            this.size = 20;
+        } else {
+            this.size = size.intValue();
+        }
+    }
+
+    public void setPage(Integer page) {
+        if (page == null) {
+            this.page = 0;
+        } else {
+            this.page = page.intValue();
+        }
+    }
+
+    public int calOffset() {
+        return this.page * this.size;
     }
 
 }
