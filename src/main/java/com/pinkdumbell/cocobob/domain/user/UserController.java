@@ -319,6 +319,12 @@ public class UserController {
 
     }
 
+    @ApiOperation(value = "UpdateRepresentativePet", notes = "대표 반려동물을 변경한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "UPDATE_REPRESENTATIVE_PET_SUCCESS", response = CommonResponseDto.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
+            @ApiResponse(code = 404, message = "PET_NOT_FOUND"),
+    })
     @PatchMapping("/representative-pet")
     public ResponseEntity<CommonResponseDto> updateRepresentativePet(
             @RequestBody RepresentativePetUpdateDto requestDto,
