@@ -8,15 +8,7 @@ import com.pinkdumbell.cocobob.domain.auth.KakaoOauthInfo;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenRequestDto;
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.TokenResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserGetResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
+import com.pinkdumbell.cocobob.domain.user.dto.*;
 
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorResponse;
@@ -325,6 +317,26 @@ public class UserController {
         ));
 
 
+    }
+
+    @ApiOperation(value = "UpdateRepresentativePet", notes = "대표 반려동물을 변경한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "UPDATE_REPRESENTATIVE_PET_SUCCESS", response = CommonResponseDto.class),
+            @ApiResponse(code = 404, message = "USER_NOT_FOUND"),
+            @ApiResponse(code = 404, message = "PET_NOT_FOUND"),
+    })
+    @PatchMapping("/representative-pet")
+    public ResponseEntity<CommonResponseDto> updateRepresentativePet(
+            @RequestBody RepresentativePetUpdateDto requestDto,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        userService.updateRepresentativePet(requestDto, loginUserInfo);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .code("UPDATE_REPRESENTATIVE_PET_SUCCESS")
+                        .message("대표 반려동물 변경에 성공하였습니다.")
+                        .data(null)
+                .build());
     }
 
 }
