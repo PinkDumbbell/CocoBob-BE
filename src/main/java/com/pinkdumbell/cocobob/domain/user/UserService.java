@@ -6,15 +6,8 @@ import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.domain.auth.*;
 import com.pinkdumbell.cocobob.domain.auth.dto.*;
 import com.pinkdumbell.cocobob.common.EmailUtil;
-import com.pinkdumbell.cocobob.domain.user.dto.EmailDuplicationCheckResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserCreateResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserEmailRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserGetResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginRequestDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserLoginResponseDto;
-import com.pinkdumbell.cocobob.domain.user.dto.UserPasswordRequestDto;
+import com.pinkdumbell.cocobob.domain.pet.PetRepository;
+import com.pinkdumbell.cocobob.domain.user.dto.*;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.util.Map;
@@ -44,6 +37,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final PetRepository petRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmailUtil emailUtil;
@@ -382,5 +376,16 @@ public class UserService {
         User user = userRepository.findUserByEmailWithPet(loginUserInfo.getEmail())
             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return new UserGetResponseDto(user);
+    }
+
+    @Transactional
+    public void updateRepresentativePet(RepresentativePetUpdateDto requestDto, LoginUserInfo loginUserInfo) {
+        User user = userRepository.findByEmail(loginUserInfo.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateRepresentativePet(
+                petRepository.findById(requestDto.getRepresentativePetId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))
+        );
     }
 }
