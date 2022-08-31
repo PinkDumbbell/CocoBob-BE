@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 @Service
@@ -70,5 +70,9 @@ public class ProductService {
         });
 
         return new FindAllResponseDto(likeRepository.findAllByUserLike(user, pageable));
+    }
+
+    public ProductKeywordDto getKeyword(String keyword) {
+        return new ProductKeywordDto(productRepository.findProductNamesByKeyword(keyword));
     }
 }

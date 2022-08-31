@@ -12,4 +12,6 @@ public interface ProductSearchQueryDsl {
 
     PageImpl<ProductSimpleResponseDto> findAllWithLikes(
         ProductSpecificSearchWithLikeDto productSpecificSearchDto, Long userId);
+
+    List<String> findProductNamesByKeyword(String keyword);
 }
