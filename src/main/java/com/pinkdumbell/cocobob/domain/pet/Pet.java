@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.pet.breed.Breed;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ import java.time.LocalDate;
 @Where(clause = "deleted=false")
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Entity
 public class Pet extends BaseEntity {
     @Id
