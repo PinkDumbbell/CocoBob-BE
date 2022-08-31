@@ -204,6 +204,17 @@ public class ProductController {
 
     }
 
+    @ApiOperation(value = "getProductsKeyword", notes = "연관된 검색어 목록 제공")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProductKeywordResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "keyword", dataType = "String", paramType = "query",
+            value = "검색 keyword"),
+    })
     @GetMapping("/keyword")
     public ResponseEntity<ProductKeywordResponseClass> getProductsKeyword(String keyword) {
 
