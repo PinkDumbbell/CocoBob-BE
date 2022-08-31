@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.pet.PetService;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
@@ -53,6 +52,15 @@ public class ProductController {
 
         public ProductDetailResponseClass(int status, String code, String message,
             ProductDetailResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private static class ProductKeywordResponseClass extends
+        CommonResponseDto<ProductKeywordDto> {
+
+        public ProductKeywordResponseClass(int status, String code, String message,
+            ProductKeywordDto data) {
             super(status, code, message, data);
         }
     }
@@ -194,6 +202,16 @@ public class ProductController {
                 "찜한 상품 불러오기 성공",
                 productService.findAllWishList(loginUserInfo.getEmail(), pageable)));
 
+    }
+
+    @GetMapping("/keyword")
+    public ResponseEntity<ProductKeywordResponseClass> getProductsKeyword(String keyword) {
+
+        return ResponseEntity.ok(
+            new ProductKeywordResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD KEYWORD",
+                "연관 검색어 불러오기 성공",
+                productService.getKeyword(keyword)));
     }
 
 }
