@@ -16,7 +16,7 @@ public class ProductBooleanBuilder {
             builder.and(makeKeywordBooleanBuilder(requestParameter.getKeyword()));
         }
         // AAFCO 기준
-        if (requestParameter.getAafco() != null) {
+        if (requestParameter.getAafco() != null && requestParameter.getAafco() == true) {
             builder.and(qProduct.isAAFCOSatisfied.eq(true));
         }
         // 브랜드
@@ -89,7 +89,7 @@ public class ProductBooleanBuilder {
         BooleanBuilder builder = new BooleanBuilder();
         QProduct qproduct = QProduct.product;
         for (String ingredient : ingredients) {
-
+            System.out.println(ingredient);
             if ("beef".equals(ingredient)) {
                 builder.and(qproduct.beef.eq(false));
             } else if ("mutton".equals(ingredient)) {
