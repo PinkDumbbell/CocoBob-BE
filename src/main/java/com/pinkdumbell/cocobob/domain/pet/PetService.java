@@ -107,6 +107,8 @@ public class PetService {
         ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
 
+        productSpecificSearchDto.initTypes();
+
         //초소형 성장기
         if (pet.getBreed().getSize().equals(BreedSize.초소형) && pet.getAge() <= 7) {
             productSpecificSearchDto.addType("growing");
@@ -137,6 +139,8 @@ public class PetService {
 
         ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
+
+        productSpecificSearchDto.initTypes();
 
         if (pet.getIsPregnant()) {
             productSpecificSearchDto.addType("pregnant");
