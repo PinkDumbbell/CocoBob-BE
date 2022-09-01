@@ -54,7 +54,7 @@ class ProductRepositoryTest {
 
         List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
             .from(qProduct)
-            .where(ProductPredicate.makeKeywordBooleanBuilder("test"))
+            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder("test"))
             .fetch();
         Assertions.assertThat(result).isNotNull();
     }
