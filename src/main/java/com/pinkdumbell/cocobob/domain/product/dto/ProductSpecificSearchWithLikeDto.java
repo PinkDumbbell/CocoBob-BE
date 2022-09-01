@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,10 @@ public class ProductSpecificSearchWithLikeDto {
     public void setSize(Integer size) {
 
         this.size = (size != null) ? size.intValue() : 20;
+    }
+
+    public void initTypes() {
+        this.types = new ArrayList<>();
     }
 
     public void setPage(Integer page) {
