@@ -93,13 +93,13 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
     public List<String> findProductNamesByKeyword(String keyword) {
         QProduct qProduct = QProduct.product;
 
-        List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
+        List<String> result = jpaQueryFactory
+            .select(qProduct.brand.concat(" ").concat(qProduct.name))
+            .distinct()
             .from(qProduct)
             .where(ProductPredicate.makeKeywordBooleanBuilder(keyword))
             .fetch();
 
-        return result.stream()
-            .map((tuple) -> tuple.get(qProduct.brand) + " " + tuple.get(qProduct.name))
-            .collect(Collectors.toList());
+        return result;
     }
 }
