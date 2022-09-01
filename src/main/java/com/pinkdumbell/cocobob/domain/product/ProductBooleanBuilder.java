@@ -11,23 +11,40 @@ public class ProductBooleanBuilder {
         BooleanBuilder builder = new BooleanBuilder();
         QProduct qProduct = QProduct.product;
 
+        // keyword로 검색
+        if (requestParameter.getKeyword() != null) {
+            builder.and(makeKeywordBooleanBuilder(requestParameter.getKeyword()));
+        }
+        // AAFCO 기준
         if (requestParameter.getAafco() != null) {
             builder.and(qProduct.isAAFCOSatisfied.eq(true));
         }
-
+        // 브랜드
+        if (requestParameter.getBrands() != null) {
+            builder.and(makeBrandBooleanBuilder(requestParameter.getBrands()));
+        }
+        // 카테고리
+        if (requestParameter.getCodes() != null) {
+            builder.and(makeCodeBooleanBuilder(requestParameter.getCodes()));
+        }
+        // 원하는 포함 재료
         if (requestParameter.getIngredient() != null) {
             builder.and(makeIngredientBooleanBuilder(requestParameter.getIngredient()));
         }
-
+        // 알러지 유발 재료
         if (requestParameter.getAllergyIngredient() != null) {
             builder.and(
                 makeAllergyIngredientBooleanBuilder(requestParameter.getAllergyIngredient()));
+        }
+        // 유형별
+        if (requestParameter.getTypes() != null) {
+            builder.and(makeTypeBooleanBuilder(requestParameter.getTypes()));
         }
 
         return builder;
     }
 
-    public static BooleanBuilder makeIngredientBooleanBuilder(List<String> ingredients) {
+    private static BooleanBuilder makeIngredientBooleanBuilder(List<String> ingredients) {
         BooleanBuilder builder = new BooleanBuilder();
         QProduct qproduct = QProduct.product;
         for (String ingredient : ingredients) {
@@ -68,7 +85,7 @@ public class ProductBooleanBuilder {
         return builder;
     }
 
-    public static BooleanBuilder makeAllergyIngredientBooleanBuilder(List<String> ingredients) {
+    private static BooleanBuilder makeAllergyIngredientBooleanBuilder(List<String> ingredients) {
         BooleanBuilder builder = new BooleanBuilder();
         QProduct qproduct = QProduct.product;
         for (String ingredient : ingredients) {
@@ -103,6 +120,48 @@ public class ProductBooleanBuilder {
                 //meat - > pork 데이터 베이스 스키마에는 meat로 되어 그대로 사용
             } else if ("hydrolyticSalmon".equals(ingredient)) {
                 builder.and(qproduct.hydrolyticSalmon.eq(false));
+            }
+        }
+
+        return builder;
+    }
+
+    private static BooleanBuilder makeBrandBooleanBuilder(List<String> brands) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QProduct qProduct = QProduct.product;
+
+        for (String brand : brands) {
+            builder.or(qProduct.brand.contains(brand));
+        }
+
+        return builder;
+    }
+
+    private static BooleanBuilder makeCodeBooleanBuilder(List<String> codes) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QProduct qProduct = QProduct.product;
+
+        for (String code : codes) {
+            builder.or(qProduct.code.contains(code));
+        }
+
+        return builder;
+    }
+
+    private static BooleanBuilder makeTypeBooleanBuilder(List<String> types) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QProduct qProduct = QProduct.product;
+
+        for (String type : types) {
+            if ("aged".equals(type)) {
+                builder.or(qProduct.aged.eq(true));
+            } else if ("growing".equals(type)) {
+                builder.or(qProduct.growing.eq(true));
+
+            } else if ("obesity".equals(type)) {
+                builder.or(qProduct.obesity.eq(true));
+            } else if ("pregnant".equals(type)) {
+                builder.or(qProduct.pregnant.eq(true));
             }
         }
 

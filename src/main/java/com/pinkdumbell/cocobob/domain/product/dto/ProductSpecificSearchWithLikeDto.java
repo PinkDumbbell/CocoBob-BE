@@ -18,6 +18,8 @@ public class ProductSpecificSearchWithLikeDto {
     private List<String> ingredient;
     @ApiModelProperty(notes = "미포함을 원하는 재료명", example = "pork, chicken")
     private List<String> allergyIngredient;
+    @ApiModelProperty(notes = "브랜드", example = "로얄캐닌, 웰츠독")
+    private List<String> brands;
     @ApiModelProperty(notes = "유형에 따른 사료", example = "obesity, pregnant")
     private List<String> types;
     @ApiModelProperty(notes = "상품 코드", example = "101202, 101201")
