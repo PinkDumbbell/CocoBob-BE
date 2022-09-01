@@ -33,8 +33,10 @@ public class ProductBooleanBuilder {
                 builder.or(qproduct.mutton.eq(true));
             } else if ("chicken".equals(ingredient)) {
                 builder.or(qproduct.chicken.eq(true));
-            } else if ("chicken".equals(ingredient)) {
-                builder.or(qproduct.chicken.eq(true));
+            } else if ("duck".equals(ingredient)) {
+                builder.or(qproduct.duck.eq(true));
+            } else if ("turkey".equals(ingredient)) {
+                builder.or(qproduct.turkey.eq(true));
             }
 
         }
