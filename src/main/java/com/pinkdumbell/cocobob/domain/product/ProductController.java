@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
-@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 @RestController
 public class ProductController {
@@ -72,7 +71,7 @@ public class ProductController {
         @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
 
     })
-    @GetMapping("/{productId}")
+    @GetMapping("/v1/products/{productId}")
     public ResponseEntity<ProductDetailResponseClass> productDetail(@PathVariable Long productId,
         @LoginUser LoginUserInfo loginUserInfo) {
 
@@ -97,7 +96,7 @@ public class ProductController {
         @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
-    @GetMapping("/search")
+    @GetMapping("/v1/products/search")
     public ResponseEntity<ProvideAllResponseClass> searchAllProducts(
         ProductSpecificSearchDto productSpecificSearchDto, Pageable pageable) {
 
@@ -122,7 +121,7 @@ public class ProductController {
         @ApiImplicitParam(name = "sort", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)")
     })
-    @GetMapping("/search/likes")
+    @GetMapping("/v2/products/search")
     public ResponseEntity<ProvideAllResponseClass> searchAllProductsWithLikes(
         ProductSpecificSearchWithLikeDto productSpecificSearchWithLikeDto,
         @LoginUser LoginUserInfo loginUserInfo) {
@@ -145,7 +144,7 @@ public class ProductController {
         @ApiImplicitParam(name = "sort", dataType = "string", paramType = "query",
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
-    @GetMapping("/recommendation/{type}")
+    @GetMapping("/v1/products/recommendation/{type}")
     public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, Integer page,
         Integer size, String sort, @LoginUser LoginUserInfo loginUserInfo,
         @PathVariable String type) {
@@ -192,7 +191,7 @@ public class ProductController {
         @ApiImplicitParam(name = "petId", dataType = "integer", paramType = "query",
             value = "반려동물 Id"),
     })
-    @GetMapping("/wishlist")
+    @GetMapping("/v1/products/wishlist")
     public ResponseEntity<ProvideAllResponseClass> provideWishList(
         @LoginUser LoginUserInfo loginUserInfo, Pageable pageable) {
 
@@ -215,8 +214,12 @@ public class ProductController {
         @ApiImplicitParam(name = "keyword", dataType = "String", paramType = "query",
             value = "검색 keyword"),
     })
-    @GetMapping("/keyword")
+    @GetMapping("/v1/products/keyword")
     public ResponseEntity<ProductKeywordResponseClass> getProductsKeyword(String keyword) {
+
+        if (keyword == null) {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok(
             new ProductKeywordResponseClass(HttpStatus.OK.value(),
