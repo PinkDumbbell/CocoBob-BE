@@ -126,6 +126,7 @@ public class ProductPredicate {
 
         builder.or(qProduct.brand.contains(keyword));
         builder.or(qProduct.name.contains(keyword));
+        builder.or(qProduct.brand.concat(" ").concat(qProduct.name).contains(keyword));
 
         return builder;
     }
