@@ -120,4 +120,14 @@ public class ProductPredicate {
         return builder;
     }
 
+    public static BooleanBuilder makeKeywordBooleanBuilder(String keyword) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QProduct qProduct = QProduct.product;
+
+        builder.or(qProduct.brand.contains(keyword));
+        builder.or(qProduct.name.contains(keyword));
+
+        return builder;
+    }
+
 }

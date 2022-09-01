@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUser;
 import com.pinkdumbell.cocobob.domain.pet.PetService;
 import com.pinkdumbell.cocobob.domain.product.dto.FindAllResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
@@ -53,6 +52,15 @@ public class ProductController {
 
         public ProductDetailResponseClass(int status, String code, String message,
             ProductDetailResponseDto data) {
+            super(status, code, message, data);
+        }
+    }
+
+    private static class ProductKeywordResponseClass extends
+        CommonResponseDto<ProductKeywordDto> {
+
+        public ProductKeywordResponseClass(int status, String code, String message,
+            ProductKeywordDto data) {
             super(status, code, message, data);
         }
     }
@@ -138,8 +146,9 @@ public class ProductController {
             value = "정렬(사용법: 컬럼명,ASC|DESC)"),
     })
     @GetMapping("/recommendation/{type}")
-    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, int page,
-        int size,String sort, @LoginUser LoginUserInfo loginUserInfo, @PathVariable String type) {
+    public ResponseEntity<ProvideAllResponseClass> recommendWithAge(Long petId, Integer page,
+        Integer size, String sort, @LoginUser LoginUserInfo loginUserInfo,
+        @PathVariable String type) {
 
         if (petId == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
@@ -193,6 +202,27 @@ public class ProductController {
                 "찜한 상품 불러오기 성공",
                 productService.findAllWishList(loginUserInfo.getEmail(), pageable)));
 
+    }
+
+    @ApiOperation(value = "getProductsKeyword", notes = "연관된 검색어 목록 제공")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProductKeywordResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "keyword", dataType = "String", paramType = "query",
+            value = "검색 keyword"),
+    })
+    @GetMapping("/keyword")
+    public ResponseEntity<ProductKeywordResponseClass> getProductsKeyword(String keyword) {
+
+        return ResponseEntity.ok(
+            new ProductKeywordResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD KEYWORD",
+                "연관 검색어 불러오기 성공",
+                productService.getKeyword(keyword)));
     }
 
 }

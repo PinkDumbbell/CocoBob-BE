@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -12,8 +13,10 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -80,11 +83,23 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .offset(productSpecificSearchWithLikeDto.calOffset())
             .limit(productSpecificSearchWithLikeDto.getSize())
             .fetch();
-        
 
         Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
             productSpecificSearchWithLikeDto.getSize());
 
         return new PageImpl<>(result, pageable, (long) totalElements);
+    }
+
+    public List<String> findProductNamesByKeyword(String keyword) {
+        QProduct qProduct = QProduct.product;
+
+        List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
+            .from(qProduct)
+            .where(ProductPredicate.makeKeywordBooleanBuilder(keyword))
+            .fetch();
+
+        return result.stream()
+            .map((tuple) -> tuple.get(qProduct.brand) + " " + tuple.get(qProduct.name))
+            .collect(Collectors.toList());
     }
 }
