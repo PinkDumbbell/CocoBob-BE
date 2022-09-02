@@ -1,66 +1,34 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
 public class ProductSpecificSearchWithLikeDto {
 
-    @ApiModelProperty(notes = "상품 코드", example = "101202")
-    private String code;
-    @ApiModelProperty(notes = "상품 이름", example = "더리얼 밀 닭고기 200g")
-    private String name;
-    @ApiModelProperty(notes = "상품 브랜드", example = "하림펫푸드")
-    private String brand;
-    @ApiModelProperty(notes = "상품 내용", example = "눈물 자국")
-    private String description;
-    @ApiModelProperty(notes = "AFFCO 기준 충족", example = "true")
+    @ApiModelProperty(notes = "포함을 원하는 재료명", example = "salmon, hydrolyticDuck")
+    private List<String> ingredient;
+    @ApiModelProperty(notes = "미포함을 원하는 재료명", example = "pork, chicken")
+    private List<String> allergyIngredient;
+    @ApiModelProperty(notes = "브랜드", example = "로얄캐닌, 웰츠독")
+    private List<String> brands;
+    @ApiModelProperty(notes = "유형에 따른 사료", example = "obesity, pregnant")
+    private List<String> types;
+    @ApiModelProperty(notes = "상품 코드", example = "101202, 101201")
+    private List<String> codes;
+    @ApiModelProperty(notes = "검색 키워드", example = "로얄캐닌 다이어트")
+    private String keyword;
+    @ApiModelProperty(notes = "아프코 기준 만족", example = "true")
     private Boolean aafco;
-    @ApiModelProperty(notes = "소고기 햠유", example = "ture")
-    private Boolean beef;
-    @ApiModelProperty(notes = "양고기 햠유", example = "false")
-    private Boolean mutton;
-    @ApiModelProperty(notes = "닭고기 햠유", example = "ture")
-    private Boolean chicken;
-    @ApiModelProperty(notes = "오리고기 햠유", example = "false")
-    private Boolean duck;
-    @ApiModelProperty(notes = "칠면조 햠유", example = "false")
-    private Boolean turkey;
-    @ApiModelProperty(notes = "돼지고기 햠유", example = "ture")
-    private Boolean pork;
-    @ApiModelProperty(notes = "연어 햠유", example = "false")
-    private Boolean salmon;
-    @ApiModelProperty(notes = "가수분해 소고기 햠유", example = "false")
-    private Boolean hydrolyticBeef;
-    @ApiModelProperty(notes = "가수분해 양고기 햠유", example = "false")
-    private Boolean hydrolyticMutton;
-    @ApiModelProperty(notes = "가수분해 닭고기 햠유", example = "false")
-    private Boolean hydrolyticChicken;
-    @ApiModelProperty(notes = "가수분해 오리고기 햠유", example = "false")
-    private Boolean hydrolyticDuck;
-    @ApiModelProperty(notes = "가수분해 칠면조 햠유", example = "false")
-    private Boolean hydrolyticTurkey;
-    @ApiModelProperty(notes = "가수분해 돼지고기 햠유", example = "false")
-    private Boolean hydrolyticPork;
-    @ApiModelProperty(notes = "가수분해 연어고기 햠유", example = "false")
-    private Boolean hydrolyticSalmon;
-    @ApiModelProperty(notes = "노령견 기준 충족", example = "false")
-    private Boolean aged;
-    @ApiModelProperty(notes = "성장기 기준 충족", example = "true")
-    private Boolean growing;
-    @ApiModelProperty(notes = "임신/수유 기준 충족", example = "false")
-    private Boolean pregnant;
-    @ApiModelProperty(notes = "비만견 기준 충족", example = "false")
-    private Boolean obesity;
     @ApiModelProperty(notes = "정렬 기준", example = "ID,ASC | PRICE,ASC |LIKE,DESC")
     private String sort;
     @ApiModelProperty(notes = "페이지", example = "페이지 번호(0...N)")
@@ -73,9 +41,17 @@ public class ProductSpecificSearchWithLikeDto {
         this.size = (size != null) ? size.intValue() : 20;
     }
 
+    public void initTypes() {
+        this.types = new ArrayList<>();
+    }
+
     public void setPage(Integer page) {
-        
+
         this.page = (page != null) ? page.intValue() : 0;
+    }
+
+    public void addType(String type) {
+        this.types.add(type);
     }
 
     public int calOffset() {

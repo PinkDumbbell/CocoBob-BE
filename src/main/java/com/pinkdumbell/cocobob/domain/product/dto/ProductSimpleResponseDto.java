@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pinkdumbell.cocobob.domain.product.Product;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,8 @@ public class ProductSimpleResponseDto {
     @ApiModelProperty(notes = "좋아요 수", example = "12312")
     private Long likes;
     @ApiModelProperty(notes = "사용자가 좋아요 누른 게시물", example = "false")
-    private boolean isUserLike;
+    @JsonProperty(value = "isLiked")
+    private boolean isLiked;
 
     public ProductSimpleResponseDto(Product product) {
         this.productId = product.getId();

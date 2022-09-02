@@ -2,7 +2,16 @@ package com.pinkdumbell.cocobob.domain.product;
 
 
 import com.pinkdumbell.cocobob.config.TestConfig;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
+import com.pinkdumbell.cocobob.domain.product.like.QLike;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -43,7 +52,6 @@ class ProductRepositoryTest {
 
         //ProductId 10을 가지고 있는 상품 조회
         Product result = productRepository.findById(10L).get();
-
         Assertions.assertThat(result.getId()).isEqualTo(10L);
     }
 
@@ -54,7 +62,38 @@ class ProductRepositoryTest {
 
         List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
             .from(qProduct)
-            .where(ProductPredicate.makeKeywordBooleanBuilder("test"))
+            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder("test"))
+            .fetch();
+        Assertions.assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("동적 조건을 통해서 상품을 필터링을 할 수 있다.")
+    void productFilteringByDynamicQuery() {
+        QProduct qProduct = QProduct.product;
+        QLike qLike = QLike.like;
+        NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes");
+
+        List<ProductSimpleResponseDto> result = jpaQueryFactory.select(
+                Projections.constructor(ProductSimpleResponseDto.class,
+                    qProduct.id.as("productId"), qProduct.code.as("code"), qProduct.name.as("name"),
+                    qProduct.brand.as("brand"), qProduct.category.as("category"),
+                    qProduct.price.as("price"), qProduct.thumbnail.as("thumbnail"),
+                    qProduct.description.as("description"),
+                    qProduct.isAAFCOSatisfied.as("isAAFCOSatisfied"), qProduct.aged.as("aged"),
+                    qProduct.growing.as("growing"), qProduct.pregnant.as("pregnant"),
+                    qProduct.obesity.as("obesity"),
+                    ExpressionUtils.as(JPAExpressions.select(qLike.count())
+                        .from(qLike)
+                        .where(qLike.product.eq(qProduct)), likes),
+                    ExpressionUtils.as(
+                        JPAExpressions.select(qLike.isNotNull())
+                            .from(qLike)
+                            .where(qLike.user.id.eq(1L), qLike.product.id.eq(qProduct.id)),
+                        "isUserLike")))
+            .from(qProduct)
+            .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
+            .where(new BooleanBuilder())
             .fetch();
         Assertions.assertThat(result).isNotNull();
     }

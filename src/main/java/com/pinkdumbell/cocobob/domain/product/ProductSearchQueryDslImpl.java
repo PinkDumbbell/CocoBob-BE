@@ -2,10 +2,8 @@ package com.pinkdumbell.cocobob.domain.product;
 
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
-import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -13,10 +11,8 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -54,10 +50,11 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         JPAExpressions.select(qLike.isNotNull())
                             .from(qLike)
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
-                        "isUserLike")))
+                        "isLiked")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
+            .where(
+                ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
         int totalElements = query.fetch().size();
 
@@ -97,7 +94,7 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .select(qProduct.brand.concat(" ").concat(qProduct.name))
             .distinct()
             .from(qProduct)
-            .where(ProductPredicate.makeKeywordBooleanBuilder(keyword))
+            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder(keyword))
             .fetch();
 
         return result;
