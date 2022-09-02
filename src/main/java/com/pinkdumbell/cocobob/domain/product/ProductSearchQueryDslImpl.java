@@ -50,7 +50,7 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         JPAExpressions.select(qLike.isNotNull())
                             .from(qLike)
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
-                        "isUserLike")))
+                        "isLiked")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
             .where(
