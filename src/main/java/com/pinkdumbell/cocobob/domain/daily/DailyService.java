@@ -4,7 +4,6 @@ import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.daily.dto.*;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
-import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
@@ -47,7 +46,7 @@ public class DailyService {
                         .daily(daily)
                         .path(imageService.saveImage(
                                 image,
-                                DAILY_IMAGE_PREFIX + daily.getId() + "_" + UUID.randomUUID().toString()
+                                DAILY_IMAGE_PREFIX + daily.getId() + "_" + UUID.randomUUID()
                         ))
                     .build()));
         }
@@ -67,8 +66,8 @@ public class DailyService {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND));
         List<DailyImage> images = dailyImageRepository.findAllByDaily(daily);
-        images.forEach(dailyImage -> dailyImageRepository.delete(dailyImage));
-        getImageNames(images).forEach(name -> imageService.deleteImage(name));
+        dailyImageRepository.deleteAll(images);
+        getImageNames(images).forEach(imageService::deleteImage);
         dailyRepository.delete(daily);
     }
 
