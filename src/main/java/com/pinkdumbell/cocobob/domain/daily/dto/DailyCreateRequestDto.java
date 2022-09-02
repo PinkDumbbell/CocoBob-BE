@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.daily.dto;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +16,12 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class DailyCreateRequestDto {
+    @ApiModelProperty(notes = "데일리 기록 날짜", example = "2000-01-01", required = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
     private LocalDate date;
+    @ApiModelProperty(notes = "텍스트 기록", example = "오늘 우리 코코는 ...")
     private String note;
+    @ApiModelProperty(notes = "사진")
     private List<MultipartFile> images;
 }
