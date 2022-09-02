@@ -6,6 +6,7 @@ import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
+import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -29,46 +31,75 @@ public class DailyService {
     private final DailyImageRepository dailyImageRepository;
     private final PetRepository petRepository;
     private final ImageService imageService;
+    private static final String DAILY_IMAGE_PREFIX = "daily/";
 
     @Transactional
-    public void createDaily(TempDailyRequestDto requestDto, Long petId) {
-
-        dailyRepository.save(new Daily(requestDto, petRepository.findById(petId)
-                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))));
-    }
-
-    @Transactional(readOnly = true)
-    public TempDailyDatesResponseDto getDatesOfRecordedDailyOfMonth(YearMonth date, Long petId) {
-
-        return new TempDailyDatesResponseDto(dailyRepository.findAllByPetAndDateBetweenOrderByIdDesc(
-                petRepository.findById(petId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)),
-                date.atDay(1),
-                date.atEndOfMonth()
-        ));
-    }
-
-    @Transactional(readOnly = true)
-    public TempDailyResponseDto getDaily(Long dailyId) {
-
-        return new TempDailyResponseDto(dailyRepository.findById(dailyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND)));
+    public void createDaily(DailyCreateRequestDto requestDto, LoginUserInfo loginUserInfo, Long petId) {
+        Daily daily = dailyRepository.save(Daily.builder()
+                .date(requestDto.getDate())
+                .note(requestDto.getNote())
+                .pet(petRepository.findById(petId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))
+                )
+                .build());
+        saveImages(daily, requestDto.getImages());
     }
 
     @Transactional
-    public void updateDaily(TempDailyRequestDto requestDto, Long dailyId) {
-
-        dailyRepository.findById(dailyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND))
-                .tempUpdateDaily(requestDto);
+    public void saveImages(Daily daily, List<MultipartFile> images) {
+        if (images != null) {
+            AtomicInteger indexHolder = new AtomicInteger();
+            images.stream().forEach(image -> {
+                dailyImageRepository.save(DailyImage.builder()
+                            .daily(daily)
+                            .path(imageService.saveImage(
+                                    image,
+                                    DAILY_IMAGE_PREFIX + daily.getId() + "_" + indexHolder.getAndIncrement()
+                            ))
+                        .build());
+            });
+        }
     }
 
-    @Transactional
-    public void deleteDaily(Long dailyId) {
-
-        dailyRepository.delete(dailyRepository.findById(dailyId)
-                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND)));
-    }
+//    @Transactional
+//    public void createDaily(TempDailyRequestDto requestDto, Long petId) {
+//
+//        dailyRepository.save(new Daily(requestDto, petRepository.findById(petId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))));
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public TempDailyDatesResponseDto getDatesOfRecordedDailyOfMonth(YearMonth date, Long petId) {
+//
+//        return new TempDailyDatesResponseDto(dailyRepository.findAllByPetAndDateBetweenOrderByIdDesc(
+//                petRepository.findById(petId)
+//                        .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)),
+//                date.atDay(1),
+//                date.atEndOfMonth()
+//        ));
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public TempDailyResponseDto getDaily(Long dailyId) {
+//
+//        return new TempDailyResponseDto(dailyRepository.findById(dailyId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND)));
+//    }
+//
+//    @Transactional
+//    public void updateDaily(TempDailyRequestDto requestDto, Long dailyId) {
+//
+//        dailyRepository.findById(dailyId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND))
+//                .tempUpdateDaily(requestDto);
+//    }
+//
+//    @Transactional
+//    public void deleteDaily(Long dailyId) {
+//
+//        dailyRepository.delete(dailyRepository.findById(dailyId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND)));
+//    }
 
 //    @Transactional
 //    public DailyRecordRegisterResponseDto createDailyRecord(

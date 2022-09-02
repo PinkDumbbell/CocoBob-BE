@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.daily;
 
 import com.pinkdumbell.cocobob.common.BaseEntity;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyRecordRegisterRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
