@@ -66,7 +66,7 @@ class ProductServiceTest {
             userEmail);
 
         Assertions.assertThat(result.getLikes()).isEqualTo(100L);
-        Assertions.assertThat(result.getIsUserLike()).isEqualTo(true);
+        Assertions.assertThat(result.getIsLiked()).isEqualTo(true);
 
 
     }
