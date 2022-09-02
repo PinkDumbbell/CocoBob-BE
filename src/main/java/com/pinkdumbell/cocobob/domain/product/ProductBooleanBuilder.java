@@ -89,7 +89,6 @@ public class ProductBooleanBuilder {
         BooleanBuilder builder = new BooleanBuilder();
         QProduct qproduct = QProduct.product;
         for (String ingredient : ingredients) {
-            System.out.println(ingredient);
             if ("beef".equals(ingredient)) {
                 builder.and(qproduct.beef.eq(false));
             } else if ("mutton".equals(ingredient)) {
