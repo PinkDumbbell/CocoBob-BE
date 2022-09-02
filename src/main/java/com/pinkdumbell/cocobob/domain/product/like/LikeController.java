@@ -37,17 +37,4 @@ public class LikeController {
             build());
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<CommonResponseDto> unLike(@LoginUser LoginUserInfo loginUserInfo,@RequestBody LikeRequestDto likeRequestDto) {
-
-        likeService.unLike(likeRequestDto,loginUserInfo);
-
-        return ResponseEntity.ok(CommonResponseDto.builder()
-            .status(HttpStatus.OK.value()).
-            code("Unlike Product Success").
-            message("좋아요 해제 성공").
-            data(null).
-            build());
-    }
-
 }

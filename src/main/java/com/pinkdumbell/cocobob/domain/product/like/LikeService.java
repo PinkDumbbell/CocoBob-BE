@@ -40,23 +40,6 @@ public class LikeService {
     }
 
     @Transactional
-    public void unLike(LikeRequestDto likeRequestDto, LoginUserInfo loginUserInfo) {
-
-        User user = userRepository.findByEmail(loginUserInfo.getEmail()).orElseThrow(() -> {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        });
-
-        LikeId target = new LikeId(user.getId(), likeRequestDto.getProductId());
-
-        if (likeRepository.findByLikeId(target).isEmpty()) {
-            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
-        }
-
-        Like like = makeLikeByLikeId(target);
-        likeRepository.delete(like);
-    }
-
-    @Transactional
     public Like makeLikeByLikeId(LikeId likeId) {
 
         User user = userRepository.findById(likeId.getUserId())
