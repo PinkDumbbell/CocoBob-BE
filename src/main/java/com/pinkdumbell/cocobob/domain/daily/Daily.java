@@ -30,4 +30,8 @@ public class Daily extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    public void updateNote(String note) {
+        this.note = note;
+    }
 }
