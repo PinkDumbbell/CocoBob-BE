@@ -41,12 +41,11 @@ public class DailyService {
     @Transactional
     public void saveImages(Daily daily, List<MultipartFile> images) {
         if (images != null) {
-            AtomicInteger indexHolder = new AtomicInteger();
             images.forEach(image -> dailyImageRepository.save(DailyImage.builder()
                         .daily(daily)
                         .path(imageService.saveImage(
                                 image,
-                                DAILY_IMAGE_PREFIX + daily.getId() + "_" + indexHolder.getAndIncrement()
+                                DAILY_IMAGE_PREFIX + daily.getId() + "_" + UUID.randomUUID().toString()
                         ))
                     .build()));
         }
