@@ -62,13 +62,30 @@ public class DailyService {
     }
 
     @Transactional
+    public void updateDaily(DailyUpdateRequestDto requestDto, Long dailyId) {
+        Daily daily = dailyRepository.findById(dailyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND));
+        daily.updateNote(requestDto.getNote());
+        if (requestDto.getNewImages() != null) {
+            saveImages(daily, requestDto.getNewImages());
+        }
+        if (requestDto.getImageIdsToDelete() != null) {
+            deleteImages(dailyImageRepository.findAllById(requestDto.getImageIdsToDelete()));
+        }
+    }
+
+    @Transactional
     public void deleteDaily(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND));
-        List<DailyImage> images = dailyImageRepository.findAllByDaily(daily);
+        deleteImages(dailyImageRepository.findAllByDaily(daily));
+        dailyRepository.delete(daily);
+    }
+
+    @Transactional
+    public void deleteImages(List<DailyImage> images) {
         dailyImageRepository.deleteAll(images);
         getImageNames(images).forEach(imageService::deleteImage);
-        dailyRepository.delete(daily);
     }
 
     private List<String> getImageNames(List<DailyImage> images) {

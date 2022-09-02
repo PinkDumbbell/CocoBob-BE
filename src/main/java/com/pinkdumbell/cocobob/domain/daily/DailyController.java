@@ -19,7 +19,6 @@ public class DailyController {
 
     private final DailyService dailyService;
 
-    // 데일리 생성
     @PostMapping("/pets/{petId}")
     public ResponseEntity<CommonResponseDto> createDaily(
             @ModelAttribute @Valid DailyCreateRequestDto requestDto,
@@ -35,7 +34,6 @@ public class DailyController {
                 .build());
     }
 
-    // 특정 데일리 조회
     @GetMapping("/{dailyId}")
     public ResponseEntity<DailyResponseClass.DailyDetailResponseClass> getDaily(
             @PathVariable Long dailyId
@@ -49,10 +47,19 @@ public class DailyController {
     }
 
     @PutMapping("/{dailyId}")
-    public void updateDaily() {
-
+    public ResponseEntity<CommonResponseDto> updateDaily(
+            @ModelAttribute DailyUpdateRequestDto requestDto,
+            @PathVariable Long dailyId
+    ) {
+        dailyService.updateDaily(requestDto, dailyId);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .code("SUCCESS_TO_UPDATE_DAILY_RECORD")
+                        .message("데일리 기록 수정을 성공했습니다")
+                        .data(null)
+                .build());
     }
-    // 특정 데일리 삭제
+
     @DeleteMapping("/{dailyId}")
     public ResponseEntity<CommonResponseDto> deleteDaily(
             @PathVariable Long dailyId
