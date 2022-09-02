@@ -7,7 +7,7 @@ import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DailyCreateRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotBlank
+    @NotNull
     private LocalDate date;
     private String note;
     private List<MultipartFile> images;
