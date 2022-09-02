@@ -54,7 +54,16 @@ public class DailyController {
     }
     // 특정 데일리 삭제
     @DeleteMapping("/{dailyId}")
-    public void deleteDaily() {
-
+    public ResponseEntity<CommonResponseDto> deleteDaily(
+            @PathVariable Long dailyId
+    ) {
+        dailyService.deleteDaily(dailyId);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .code("SUCCESS_TO_DELETE_DAILY_RECORD")
+                .message("데일리 기록 삭제를 성공했습니다")
+                .data(null)
+                .build()
+        );
     }
 }

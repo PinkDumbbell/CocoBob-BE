@@ -10,7 +10,9 @@ import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,5 +60,22 @@ public class DailyService {
         List<DailyImage> images = dailyImageRepository.findAllByDaily(daily);
 
         return new DailyDetailResponseDto(daily, images);
+    }
+
+    @Transactional
+    public void deleteDaily(Long dailyId) {
+        Daily daily = dailyRepository.findById(dailyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND));
+        List<DailyImage> images = dailyImageRepository.findAllByDaily(daily);
+        images.forEach(dailyImage -> dailyImageRepository.delete(dailyImage));
+        getImageNames(images).forEach(name -> imageService.deleteImage(name));
+        dailyRepository.delete(daily);
+    }
+
+    private List<String> getImageNames(List<DailyImage> images) {
+        final String amazonDomain = "amazonaws.com/";
+        return images.stream().map(dailyImage -> dailyImage.getPath().substring(
+                dailyImage.getPath().indexOf(amazonDomain) + amazonDomain.length()
+        )).collect(Collectors.toList());
     }
 }
