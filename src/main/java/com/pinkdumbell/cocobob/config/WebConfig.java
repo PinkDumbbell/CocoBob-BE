@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/v1/**")
+        registry.addMapping("/{version:v[0-9]+}/**")
             .allowedOrigins("http://localhost:3000","http://3.37.136.84/","http://petalog.us/","https://petalog.us/", "https://appleid.apple.com")
             .allowedMethods(
                 HttpMethod.GET.name(),
