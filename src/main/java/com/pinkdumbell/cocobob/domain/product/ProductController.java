@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @ApiOperation("Product API")
@@ -56,10 +56,10 @@ public class ProductController {
     }
 
     private static class ProductKeywordResponseClass extends
-        CommonResponseDto<ProductKeywordDto> {
+        CommonResponseDto<List<ProductKeywordDto>> {
 
         public ProductKeywordResponseClass(int status, String code, String message,
-            ProductKeywordDto data) {
+            List<ProductKeywordDto> data) {
             super(status, code, message, data);
         }
     }

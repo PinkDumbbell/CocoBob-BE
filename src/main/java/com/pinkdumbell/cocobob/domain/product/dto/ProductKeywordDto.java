@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,11 @@ import lombok.Setter;
 @Setter
 public class ProductKeywordDto {
 
-    @ApiModelProperty(notes = "상품 리스트", example = "[펫 더 리얼, 리얼, ...]")
-    private List<String> names;
+    @ApiModelProperty(notes = "상품 브랜드", example = "로얄 캐닌")
+    private String brand;
+    @ApiModelProperty(notes = "상품명", example = "더 리얼..")
+    private String name;
+    @ApiModelProperty(notes = "상품 Id", example = "12")
+    private Long productId;
 
 }
