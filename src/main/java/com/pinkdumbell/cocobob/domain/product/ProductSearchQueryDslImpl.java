@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
@@ -56,7 +57,7 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .where(
                 ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
-        int totalElements = query.fetch().size();
+        long totalElements = query.fetch().size();
 
         if (productSpecificSearchWithLikeDto.getSort() != null) {
             String sortCriteria = productSpecificSearchWithLikeDto.getSort();
@@ -84,19 +85,22 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
         Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
             productSpecificSearchWithLikeDto.getSize());
 
-        return new PageImpl<>(result, pageable, (long) totalElements);
+        return new PageImpl<>(result, pageable, totalElements);
     }
 
-    public List<String> findProductNamesByKeyword(String keyword) {
+    public List<ProductKeywordDto> findProductNamesByKeyword(String keyword) {
         QProduct qProduct = QProduct.product;
 
-        List<String> result = jpaQueryFactory
-            .select(qProduct.brand.concat(" ").concat(qProduct.name))
+        return jpaQueryFactory
+            .select(Projections.constructor(
+                ProductKeywordDto.class,
+                qProduct.brand.as("brand"),
+                qProduct.name.as("name"),
+                qProduct.id.as("productId")
+            ))
             .distinct()
             .from(qProduct)
             .where(ProductBooleanBuilder.makeKeywordBooleanBuilder(keyword))
             .fetch();
-
-        return result;
     }
 }
