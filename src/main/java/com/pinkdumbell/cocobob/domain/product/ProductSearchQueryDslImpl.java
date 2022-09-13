@@ -2,7 +2,6 @@ package com.pinkdumbell.cocobob.domain.product;
 
 
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
-import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
 import com.querydsl.core.types.ExpressionUtils;
@@ -51,10 +50,11 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         JPAExpressions.select(qLike.isNotNull())
                             .from(qLike)
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
-                        "isUserLike")))
+                        "isLiked")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
+            .where(
+                ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
         int totalElements = query.fetch().size();
 
@@ -80,11 +80,23 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .offset(productSpecificSearchWithLikeDto.calOffset())
             .limit(productSpecificSearchWithLikeDto.getSize())
             .fetch();
-        
 
         Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
             productSpecificSearchWithLikeDto.getSize());
 
         return new PageImpl<>(result, pageable, (long) totalElements);
+    }
+
+    public List<String> findProductNamesByKeyword(String keyword) {
+        QProduct qProduct = QProduct.product;
+
+        List<String> result = jpaQueryFactory
+            .select(qProduct.brand.concat(" ").concat(qProduct.name))
+            .distinct()
+            .from(qProduct)
+            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder(keyword))
+            .fetch();
+
+        return result;
     }
 }

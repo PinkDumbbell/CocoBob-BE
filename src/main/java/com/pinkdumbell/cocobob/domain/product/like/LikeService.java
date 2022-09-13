@@ -29,31 +29,14 @@ public class LikeService {
         });
 
         LikeId target = new LikeId(user.getId(), likeRequestDto.getProductId());
+        Like like = makeLikeByLikeId(target);
 
         if (likeRepository.findByLikeId(target).isPresent()) {
-            throw new CustomException(ErrorCode.ALREADY_LIKED);
+            likeRepository.delete(like);
+        } else {
+            likeRepository.save(like);
         }
 
-        Like like = makeLikeByLikeId(target);
-
-        likeRepository.save(like);
-    }
-
-    @Transactional
-    public void unLike(LikeRequestDto likeRequestDto,LoginUserInfo loginUserInfo) {
-
-        User user = userRepository.findByEmail(loginUserInfo.getEmail()).orElseThrow(() -> {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        });
-
-        LikeId target = new LikeId(user.getId(), likeRequestDto.getProductId());
-
-        if (likeRepository.findByLikeId(target).isEmpty()) {
-            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
-        }
-
-        Like like = makeLikeByLikeId(target);
-        likeRepository.delete(like);
     }
 
     @Transactional
