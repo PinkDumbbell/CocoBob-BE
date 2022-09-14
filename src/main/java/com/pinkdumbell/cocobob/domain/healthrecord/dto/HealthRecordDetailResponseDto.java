@@ -48,6 +48,7 @@ public class HealthRecordDetailResponseDto {
         private final Long mealId;
         private final ProductSimpleInfoDto productInfo;
         private final Double kcal;
+        private final Integer amount;
 
         @Getter
         public static class ProductSimpleInfoDto {
@@ -63,6 +64,7 @@ public class HealthRecordDetailResponseDto {
         public MealResponseDto(Meal entity) {
             this.mealId = entity.getId();
             this.kcal = entity.getKcal();
+            this.amount = entity.getAmount();
             Product product = entity.getProduct();
             if (product != null) {
                 this.productInfo = new ProductSimpleInfoDto(product.getId(), product.getName());

@@ -20,6 +20,7 @@ public class Meal {
     private Long id;
     private String productName;
     private Double kcal;
+    private Integer amount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
