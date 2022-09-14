@@ -1,9 +1,6 @@
 package com.pinkdumbell.cocobob.domain.healthrecord.abnormal;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
