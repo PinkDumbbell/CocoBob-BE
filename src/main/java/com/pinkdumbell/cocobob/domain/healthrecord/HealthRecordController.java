@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.healthrecord;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealCreateRequestDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,20 @@ public class HealthRecordController {
                 .code("SUCCESS_TO_CREATE_HEALTH_RECORD")
                 .message("건강 기록 생성을 성공했습니다.")
                 .data(null)
+                .build());
+    }
+
+    @PostMapping("/{healthRecordId}/meals")
+    public ResponseEntity<CommonResponseDto> createMeal(
+            @PathVariable Long healthRecordId,
+            @RequestBody MealCreateRequestDto requestDto
+    ) {
+        healthRecordService.createMeal(healthRecordId, requestDto);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .code("SUCCESS_TO_CREATE_MEAL")
+                        .message("식사 기록 생성을 성공했습니다.")
+                        .data(null)
                 .build());
     }
 

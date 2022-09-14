@@ -8,9 +8,13 @@ import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequest
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImage;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImageRepository;
+import com.pinkdumbell.cocobob.domain.healthrecord.meal.Meal;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.MealRepository;
+import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
+import com.pinkdumbell.cocobob.domain.product.Product;
+import com.pinkdumbell.cocobob.domain.product.ProductRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,7 @@ public class HealthRecordService {
     private final HealthRecordImageRepository healthRecordImageRepository;
     private final PetRepository petRepository;
     private final MealRepository mealRepository;
+    private final ProductRepository productRepository;
     private final ImageService imageService;
     private static final String HEALTH_RECORD_IMAGE_PREFIX = "health-record/";
 
@@ -89,5 +94,23 @@ public class HealthRecordService {
                         .stream().map(HealthRecordAbnormal::getAbnormal).collect(Collectors.toList()),
                 mealRepository.findAllByHealthRecord(healthRecord)
         );
+    }
+
+    @Transactional
+    public void createMeal(Long healthRecordId, MealCreateRequestDto requestDto) {
+        HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
+        Product product = null;
+        if (requestDto.getProductId() != null) {
+            product = productRepository.findById(requestDto.getProductId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+        }
+        mealRepository.save(Meal.builder()
+                        .kcal(requestDto.getKcal())
+                        .amount(requestDto.getAmount())
+                        .product(product)
+                        .productName(requestDto.getProductName())
+                        .healthRecord(healthRecord)
+                .build());
     }
 }
