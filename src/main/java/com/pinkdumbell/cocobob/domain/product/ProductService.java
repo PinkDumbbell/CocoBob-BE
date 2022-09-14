@@ -11,6 +11,7 @@ import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -72,7 +73,7 @@ public class ProductService {
         return new FindAllResponseDto(likeRepository.findAllByUserLike(user, pageable));
     }
 
-    public ProductKeywordDto getKeyword(String keyword) {
-        return new ProductKeywordDto(productRepository.findProductNamesByKeyword(keyword));
+    public List<ProductKeywordDto> getKeyword(String keyword) {
+        return productRepository.findProductNamesByKeyword(keyword);
     }
 }

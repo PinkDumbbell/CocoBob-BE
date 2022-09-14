@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.product;
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
@@ -13,5 +14,5 @@ public interface ProductSearchQueryDsl {
     PageImpl<ProductSimpleResponseDto> findAllWithLikes(
         ProductSpecificSearchWithLikeDto productSpecificSearchDto, Long userId);
 
-    List<String> findProductNamesByKeyword(String keyword);
+    List<ProductKeywordDto> findProductNamesByKeyword(String keyword);
 }

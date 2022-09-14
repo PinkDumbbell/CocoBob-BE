@@ -1,11 +1,10 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
-import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.QLike;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -13,10 +12,8 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -54,12 +51,13 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                         JPAExpressions.select(qLike.isNotNull())
                             .from(qLike)
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
-                        "isUserLike")))
+                        "isLiked")))
             .from(qProduct)
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(ProductPredicate.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
+            .where(
+                ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
-        int totalElements = query.fetch().size();
+        long totalElements = query.fetch().size();
 
         if (productSpecificSearchWithLikeDto.getSort() != null) {
             String sortCriteria = productSpecificSearchWithLikeDto.getSort();
@@ -87,19 +85,22 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
         Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
             productSpecificSearchWithLikeDto.getSize());
 
-        return new PageImpl<>(result, pageable, (long) totalElements);
+        return new PageImpl<>(result, pageable, totalElements);
     }
 
-    public List<String> findProductNamesByKeyword(String keyword) {
+    public List<ProductKeywordDto> findProductNamesByKeyword(String keyword) {
         QProduct qProduct = QProduct.product;
 
-        List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
+        return jpaQueryFactory
+            .select(Projections.constructor(
+                ProductKeywordDto.class,
+                qProduct.brand.as("brand"),
+                qProduct.name.as("name"),
+                qProduct.id.as("productId")
+            ))
+            .distinct()
             .from(qProduct)
-            .where(ProductPredicate.makeKeywordBooleanBuilder(keyword))
+            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder(keyword))
             .fetch();
-
-        return result.stream()
-            .map((tuple) -> tuple.get(qProduct.brand) + " " + tuple.get(qProduct.name))
-            .collect(Collectors.toList());
     }
 }

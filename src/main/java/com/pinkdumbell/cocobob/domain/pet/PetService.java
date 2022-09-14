@@ -107,24 +107,26 @@ public class PetService {
         ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
 
+        productSpecificSearchDto.initTypes();
+
         //초소형 성장기
         if (pet.getBreed().getSize().equals(BreedSize.초소형) && pet.getAge() <= 7) {
-            productSpecificSearchDto.setGrowing(true);
+            productSpecificSearchDto.addType("growing");
             //소형
         } else if (pet.getBreed().getSize().equals(BreedSize.소형) && pet.getAge() <= 10) {
-            productSpecificSearchDto.setGrowing(true);
+            productSpecificSearchDto.addType("growing");
             //중형 성장기
         } else if (pet.getBreed().getSize().equals(BreedSize.중형) && pet.getAge() <= 12) {
-            productSpecificSearchDto.setGrowing(true);
+            productSpecificSearchDto.addType("growing");
             //대형 성장기
         } else if (pet.getBreed().getSize().equals(BreedSize.대형) && pet.getAge() <= 18) {
-            productSpecificSearchDto.setGrowing(true);
+            productSpecificSearchDto.addType("growing");
             //초대형 성장기
         } else if (pet.getBreed().getSize().equals(BreedSize.초대형) && pet.getAge() <= 24) {
-            productSpecificSearchDto.setGrowing(true);
+            productSpecificSearchDto.addType("growing");
         } //견종 노년기
         else if (pet.getAge() >= 72) {
-            productSpecificSearchDto.setAged(true);
+            productSpecificSearchDto.addType("aged");
         }
         return productSpecificSearchDto;
     }
@@ -138,8 +140,10 @@ public class PetService {
         ProductSpecificSearchWithLikeDto productSpecificSearchDto = ProductSpecificSearchWithLikeDto.builder()
             .aafco(true).build();
 
+        productSpecificSearchDto.initTypes();
+
         if (pet.getIsPregnant()) {
-            productSpecificSearchDto.setPregnant(true);
+            productSpecificSearchDto.addType("pregnant");
         }
 
         return productSpecificSearchDto;

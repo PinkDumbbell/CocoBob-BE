@@ -17,7 +17,5 @@ public interface LikeRepository extends JpaRepository<Like,LikeId> {
     @Query(value = "select l.product from Like l where l.user = :User")
     Page<Product> findAllByUserLike(@Param("User") User user, Pageable pageable);
 
-    Optional<Like> findByProduct(Product product);
-
     Optional<Like> findByProductAndUser(Product product,User user);
 }
