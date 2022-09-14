@@ -28,4 +28,15 @@ public class HealthRecordController {
                 .data(null)
                 .build());
     }
+
+    @GetMapping("/{healthRecordId}")
+    public ResponseEntity<HealthRecordResponseClass.HealthRecordDetailResponseClass> getHealthRecord(
+            @PathVariable Long healthRecordId
+    ) {
+        return ResponseEntity.ok(new HealthRecordResponseClass.HealthRecordDetailResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS_TO_GET_HEALTH_RECORD",
+                "건강 기록 불러오기를 성공했습니다.",
+                healthRecordService.getHealthRecord(healthRecordId)));
+    }
 }

@@ -5,8 +5,10 @@ import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormal;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImage;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImageRepository;
+import com.pinkdumbell.cocobob.domain.healthrecord.meal.MealRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class HealthRecordService {
     private final HealthRecordAbnormalRepository healthRecordAbnormalRepository;
     private final HealthRecordImageRepository healthRecordImageRepository;
     private final PetRepository petRepository;
+    private final MealRepository mealRepository;
     private final ImageService imageService;
     private static final String HEALTH_RECORD_IMAGE_PREFIX = "health-record/";
 
@@ -71,5 +75,19 @@ public class HealthRecordService {
                                     .build()
                     ));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public HealthRecordDetailResponseDto getHealthRecord(Long healthRecordId) {
+        HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
+
+        return new HealthRecordDetailResponseDto(
+                healthRecord,
+                healthRecordImageRepository.findAllByHealthRecord(healthRecord),
+                healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecordId)
+                        .stream().map(HealthRecordAbnormal::getAbnormal).collect(Collectors.toList()),
+                mealRepository.findAllByHealthRecord(healthRecord)
+        );
     }
 }
