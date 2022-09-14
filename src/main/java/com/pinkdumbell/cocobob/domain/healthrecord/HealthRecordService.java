@@ -97,7 +97,7 @@ public class HealthRecordService {
                 healthRecordImageRepository.findAllByHealthRecord(healthRecord),
                 healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecordId)
                         .stream().map(HealthRecordAbnormal::getAbnormal).collect(Collectors.toList()),
-                mealRepository.findAllByHealthRecord(healthRecord)
+                mealRepository.findAllByHealthRecordId(healthRecord.getId())
         );
     }
 
