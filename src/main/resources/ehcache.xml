@@ -3,16 +3,11 @@
   <!-- 캐시 파일이 생성되는 경로 -->
   <persistence directory="cache/data"/>
 
-  <cache alias="breedsInfo"> <!-- 캐시의 이름을 지정 -->
+  <cache-template name="defaultCacheTemplate">
     <key-type>java.lang.Object
     </key-type> <!-- Cache 인스턴스에 저장될 캐시의 키의 FQCN을 지정. 기본 값은 java.lang.Object -->
     <value-type>java.lang.Object
     </value-type> <!-- value-type 요소는 Cache 인스턴스에 저장된 값의 FQCN을 지정. 기본 값은 java.lang.Object -->
-    <expiry> <!-- 캐시 만료기간 -->
-      <ttl unit="minutes">1</ttl> <!-- 12시간이 지나면 만료되도록 설정함 -->
-      <!-- unit : days, hours, minutes, seconds, millis, micros, nanos -->
-    </expiry>
-
     <!-- 캐시가 생성되고 삭제되는 이벤트를 모니터링 하고 싶을 때의 설정 -->
     <listeners>
       <listener>
@@ -21,11 +16,46 @@
         <event-ordering-mode>UNORDERED</event-ordering-mode>
         <events-to-fire-on>CREATED</events-to-fire-on>
         <events-to-fire-on>EXPIRED</events-to-fire-on>
+        <events-to-fire-on>EVICTED</events-to-fire-on>
       </listener>
     </listeners>
+
+  </cache-template>
+
+  <cache alias="breedsInfo" uses-template="defaultCacheTemplate"> <!-- 반려 견종 정보 -->
+
+    <expiry> <!-- 캐시 만료기간 -->
+      <ttl unit="hours">1</ttl> <!-- 12시간이 지나면 만료되도록 설정함 -->
+      <!-- unit : days, hours, minutes, seconds, millis, micros, nanos -->
+    </expiry>
 
     <resources> <!-- 캐시 데이터의 저장 공간과 용량을 지정  -->
       <heap>1</heap>
     </resources>
+
+  </cache>
+
+  <cache alias="productDetails" uses-template="defaultCacheTemplate"> <!-- 상품 상세 정보 -->
+    <expiry> <!-- 캐시 만료기간 -->
+      <ttl unit="hours">1</ttl> <!-- 12시간이 지나면 만료되도록 설정함 -->
+      <!-- unit : days, hours, minutes, seconds, millis, micros, nanos -->
+    </expiry>
+
+    <resources> <!-- 캐시 데이터의 저장 공간과 용량을 지정  -->
+      <heap>1000</heap>
+    </resources>
+
+  </cache>
+
+  <cache alias="productKeywords" uses-template="defaultCacheTemplate"> <!-- 상품 상세 정보 -->
+    <expiry> <!-- 캐시 만료기간 -->
+      <ttl unit="minutes">30</ttl> <!-- 12시간이 지나면 만료되도록 설정함 -->
+      <!-- unit : days, hours, minutes, seconds, millis, micros, nanos -->
+    </expiry>
+
+    <resources> <!-- 캐시 데이터의 저장 공간과 용량을 지정  -->
+      <heap>1000</heap>
+    </resources>
+
   </cache>
 </config>
