@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.healthrecord;
 import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormal;
+import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormalId;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordDetailResponseDto;
@@ -75,6 +76,10 @@ public class HealthRecordService {
             abnormalRepository.findAllById(abnormalIds)
                     .forEach(abnormal -> healthRecordAbnormalRepository.save(
                             HealthRecordAbnormal.builder()
+                                    .healthRecordAbnormalId(new HealthRecordAbnormalId(
+                                            healthRecord.getId(),
+                                            abnormal.getId()
+                                    ))
                                     .healthRecord(healthRecord)
                                     .abnormal(abnormal)
                                     .build()
