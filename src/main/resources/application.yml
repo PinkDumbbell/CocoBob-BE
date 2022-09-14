@@ -3,5 +3,8 @@ spring:
     include: setting
   config:
     use-legacy-processing: true
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 server:
   port: 8080
