@@ -12,6 +12,7 @@ import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImageReposi
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.Meal;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.MealRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.product.Product;
@@ -102,13 +103,27 @@ public class HealthRecordService {
     }
 
     @Transactional
+    public Product findProductById(Long productId) {
+
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+    }
+
+    @Transactional
+    public Meal findMealById(Long mealId) {
+
+        return mealRepository.findById(mealId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEAL_NOT_FOUND));
+    }
+
+    @Transactional
     public void createMeal(Long healthRecordId, MealCreateRequestDto requestDto) {
         HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
                 .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
         Product product = null;
         if (requestDto.getProductId() != null) {
-            product = productRepository.findById(requestDto.getProductId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+            product = findProductById(requestDto.getProductId());
         }
         mealRepository.save(Meal.builder()
                         .kcal(requestDto.getKcal())
@@ -117,5 +132,24 @@ public class HealthRecordService {
                         .productName(requestDto.getProductName())
                         .healthRecord(healthRecord)
                 .build());
+    }
+
+    @Transactional
+    public void updateMeal(Long mealId, MealUpdateRequestDto requestDto) {
+        Meal meal = findMealById(mealId);
+        Product product = null;
+        if (requestDto.getProductId() != null) {
+            product = findProductById(requestDto.getProductId());
+        }
+        meal.updateMeal(
+                requestDto.getProductName(),
+                requestDto.getKcal(),
+                requestDto.getAmount(),
+                product);
+    }
+
+    @Transactional
+    public void deleteMeal(Long mealId) {
+        mealRepository.delete(findMealById(mealId));
     }
 }

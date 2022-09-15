@@ -27,4 +27,11 @@ public class Meal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "health_record_id")
     private HealthRecord healthRecord;
+
+    public void updateMeal(String productName, Double kcal, Integer amount, Product product) {
+        this.productName = productName;
+        this.kcal = kcal;
+        this.amount = amount;
+        this.product = product;
+    }
 }
