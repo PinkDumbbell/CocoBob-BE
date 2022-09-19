@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.healthrecord;
 
 import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.dto.MealUpdateRequestDto;
 import io.swagger.annotations.ApiOperation;
@@ -54,6 +55,33 @@ public class HealthRecordController {
                 "SUCCESS_TO_GET_HEALTH_RECORD",
                 "건강 기록 불러오기를 성공했습니다.",
                 healthRecordService.getHealthRecord(healthRecordId)));
+    }
+
+    @PutMapping("/{healthRecordId}")
+    public ResponseEntity<CommonResponseDto> updateHealthRecord(
+            @PathVariable Long healthRecordId,
+            @ModelAttribute HealthRecordUpdateRequestDto requestDto
+    ) {
+        healthRecordService.updateHealthRecord(healthRecordId, requestDto);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .code("SUCCESS_TO_UPDATE_HEALTH_RECORD")
+                        .message("건강 기록 수정을 성공했습니다.")
+                        .data(null)
+                .build());
+    }
+
+    @DeleteMapping("/{healthRecordId}")
+    public ResponseEntity<CommonResponseDto> deleteHealthRecord(
+            @PathVariable Long healthRecordId
+    ) {
+        healthRecordService.deleteHealthRecord(healthRecordId);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                        .status(HttpStatus.OK.value())
+                        .code("SUCCESS_TO_DELETE_HEALTH_RECORD")
+                        .message("건강 기록 삭제를 성공했습니다.")
+                        .data(null)
+                .build());
     }
 
     @PutMapping("/meals/{mealId}")
