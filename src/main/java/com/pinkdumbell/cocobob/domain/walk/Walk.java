@@ -23,6 +23,7 @@ public class Walk {
     private LocalDateTime finishedAt;
     private String photoPath;
     private Double distance;
+    private Integer totalTime;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
