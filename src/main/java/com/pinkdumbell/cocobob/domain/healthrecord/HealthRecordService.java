@@ -116,7 +116,7 @@ public class HealthRecordService {
     public Meal findMealById(Long mealId) {
 
         return mealRepository.findById(mealId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEAL_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEAL_RECORD_NOT_FOUND));
     }
 
     @Transactional
