@@ -1,12 +1,14 @@
 package com.pinkdumbell.cocobob.domain.healthrecord;
 
 import com.pinkdumbell.cocobob.common.ImageService;
+import com.pinkdumbell.cocobob.domain.abnormal.Abnormal;
 import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormal;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormalId;
 import com.pinkdumbell.cocobob.domain.healthrecord.abnormal.HealthRecordAbnormalRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.healthrecord.dto.HealthRecordUpdateRequestDto;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImage;
 import com.pinkdumbell.cocobob.domain.healthrecord.image.HealthRecordImageRepository;
 import com.pinkdumbell.cocobob.domain.healthrecord.meal.Meal;
@@ -132,6 +134,62 @@ public class HealthRecordService {
                         .productName(requestDto.getProductName())
                         .healthRecord(healthRecord)
                 .build());
+    }
+
+    @Transactional
+    public void updateHealthRecord(Long healthRecordId, HealthRecordUpdateRequestDto requestDto) {
+        HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
+        healthRecord.update(requestDto.getNote());
+        saveImages(healthRecord, requestDto.getNewImages());
+        deleteImages(requestDto.getImageIdsToDelete());
+        updateHealthRecordAbnormals(healthRecord, requestDto.getAbnormalIds());
+    }
+
+    @Transactional
+    public void deleteImages(List<Long> imageIdsToDelete) {
+        if (imageIdsToDelete == null) {
+            return;
+        }
+        List<HealthRecordImage> images = healthRecordImageRepository.findAllById(imageIdsToDelete);
+        healthRecordImageRepository.deleteAll(images);
+        getImageNames(images).forEach(imageService::deleteImage);
+    }
+
+    private List<String> getImageNames(List<HealthRecordImage> images) {
+        final String amazonPattern = "amazonaws.com/";
+        return images.stream().map(healthRecordImage ->
+                healthRecordImage.getPath().split(amazonPattern)[1])
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateHealthRecordAbnormals(HealthRecord healthRecord, List<Long> abnormalIds) {
+        List<Long> abnormalIdsToDelete = healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecord.getId())
+                .stream().map(healthRecordAbnormal -> healthRecordAbnormal.getAbnormal().getId()).collect(Collectors.toList());
+        List<Long> abnormalIdsToAdd = abnormalIds.stream().collect(Collectors.toList());
+        // 추가될 것
+        abnormalIdsToAdd.removeAll(abnormalIdsToDelete);
+        // 삭제될 것
+        abnormalIdsToDelete.removeAll(abnormalIds);
+        healthRecordAbnormalRepository.deleteAllByHealthRecordIdAndAbnormalId(healthRecord.getId(), abnormalIdsToDelete);
+        List<Abnormal> abnormalsToAdd = abnormalRepository.findAllById(abnormalIdsToAdd);
+        healthRecordAbnormalRepository.saveAll(abnormalsToAdd.stream().map(abnormal -> HealthRecordAbnormal.builder()
+                .healthRecordAbnormalId(new HealthRecordAbnormalId(healthRecord.getId(), abnormal.getId()))
+                .healthRecord(healthRecord)
+                .abnormal(abnormal)
+                .build()
+        ).collect(Collectors.toList()));
+    }
+
+    @Transactional
+    public void deleteHealthRecord(Long healthRecordId) {
+        HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
+        healthRecordAbnormalRepository.deleteAllByHealthRecordId(healthRecordId);
+        mealRepository.deleteAllByHealthRecordId(healthRecordId);
+        healthRecordImageRepository.deleteAllByHealthRecordId(healthRecordId);
+        healthRecordRepository.delete(healthRecord);
     }
 
     @Transactional

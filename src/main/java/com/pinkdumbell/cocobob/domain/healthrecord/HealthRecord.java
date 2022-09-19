@@ -23,4 +23,8 @@ public class HealthRecord {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    public void update(String note) {
+        this.note = note;
+    }
 }
