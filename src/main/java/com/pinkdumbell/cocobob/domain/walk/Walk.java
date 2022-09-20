@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Builder
 @AllArgsConstructor
@@ -19,8 +19,8 @@ public class Walk {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "walk_id")
     private Long id;
-    private LocalDateTime startedAt;
-    private LocalDateTime finishedAt;
+    private LocalTime startedAt;
+    private LocalTime finishedAt;
     private String photoPath;
     private Double distance;
     private Integer totalTime;
@@ -29,4 +29,8 @@ public class Walk {
     private Pet pet;
     private LocalDate date;
     private Double spentKcal;
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
 }
