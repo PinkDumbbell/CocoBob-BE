@@ -57,4 +57,19 @@ public class WalkService {
                 .orElseThrow(() -> new CustomException(ErrorCode.WALK_RECORD_NOT_FOUND)));
 
     }
+
+    @Transactional
+    public void deleteWalk(Long walkId) {
+        Walk walk = walkRepository.findById(walkId)
+                .orElseThrow(() -> new CustomException(ErrorCode.WALK_RECORD_NOT_FOUND));
+        walkRepository.delete(walk);
+        if (walk.getPhotoPath() == null)
+            return;
+        deleteImage(walk.getPhotoPath());
+    }
+
+    private void deleteImage(String photoPath) {
+        final String amazonPattern = "amazonaws.com/";
+        imageService.deleteImage(photoPath.split(amazonPattern)[1]);
+    }
 }

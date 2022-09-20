@@ -34,10 +34,23 @@ public class WalkController {
             @PathVariable Long walkId
     ) {
         return ResponseEntity.ok(new WalkResponseClass.WalkDetailResponseClass(
-           HttpStatus.OK.value(),
-           "SUCCESS_TO_GET_WALK",
-           "산책기록을 불러왔습니다",
-           walkService.getWalk(walkId)
+                HttpStatus.OK.value(),
+                "SUCCESS_TO_GET_WALK",
+                "산책기록을 불러왔습니다",
+                walkService.getWalk(walkId)
         ));
+    }
+
+    @DeleteMapping("/{walkId}")
+    public ResponseEntity<CommonResponseDto> deleteWalk(
+            @PathVariable Long walkId
+    ) {
+        walkService.deleteWalk(walkId);
+        return ResponseEntity.ok(CommonResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .code("SUCCESS_TO_DELETE_WALK")
+                .message("산책 기록을 삭제했습니다.")
+                .data(null)
+                .build());
     }
 }
