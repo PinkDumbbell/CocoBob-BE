@@ -228,7 +228,7 @@ public class ProductController {
                 productService.getKeyword(keyword)));
     }
 
-    @GetMapping("v2/relatedProuct/")
+    @GetMapping("v2/relatedProduct/")
     public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long ProductId) {
 
         return ResponseEntity.ok(
