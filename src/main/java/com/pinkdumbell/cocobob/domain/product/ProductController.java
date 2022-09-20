@@ -228,4 +228,15 @@ public class ProductController {
                 productService.getKeyword(keyword)));
     }
 
+    @GetMapping("v2/relatedProuct/")
+    public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long ProductId) {
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD RECOMMENDATION PRODUCT",
+                "연관 상품 가져오기 성공",
+                null));
+    }
+
+
 }
