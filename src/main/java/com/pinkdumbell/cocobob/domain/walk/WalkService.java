@@ -4,6 +4,7 @@ import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.walk.dto.WalkCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.walk.dto.WalkDetailResponseDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,12 @@ public class WalkService {
                         WALK_RECORD_IMAGE_PREFIX + walk.getId() + "_" + UUID.randomUUID()
                 )
         );
+    }
+
+    @Transactional(readOnly = true)
+    public WalkDetailResponseDto getWalk(Long walkId) {
+        return new WalkDetailResponseDto(walkRepository.findById(walkId)
+                .orElseThrow(() -> new CustomException(ErrorCode.WALK_RECORD_NOT_FOUND)));
+
     }
 }

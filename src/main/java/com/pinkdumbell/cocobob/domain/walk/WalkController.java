@@ -28,4 +28,16 @@ public class WalkController {
                         .data(null)
                 .build());
     }
+
+    @GetMapping("/{walkId}")
+    public ResponseEntity<WalkResponseClass.WalkDetailResponseClass> getWalk(
+            @PathVariable Long walkId
+    ) {
+        return ResponseEntity.ok(new WalkResponseClass.WalkDetailResponseClass(
+           HttpStatus.OK.value(),
+           "SUCCESS_TO_GET_WALK",
+           "산책기록을 불러왔습니다",
+           walkService.getWalk(walkId)
+        ));
+    }
 }
