@@ -1,4 +1,6 @@
 package com.pinkdumbell.cocobob.domain.walk;
 
-public interface WalkRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface WalkRepository extends JpaRepository<Walk, Long> {
 }
