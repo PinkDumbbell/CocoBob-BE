@@ -239,7 +239,7 @@ public class ProductController {
         @ApiImplicitParam(name = "productId", dataType = "String", paramType = "query",
             value = "현재 상품 ID"),
     })
-    @GetMapping("v2/relatedProduct/")
+    @GetMapping("v2/relatedProduct")
     public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long productId,
         @LoginUser LoginUserInfo loginUserInfo) {
 
