@@ -233,7 +233,7 @@ public class ProductController {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(),
-                "SUCCESS LOAD RECOMMENDATION PRODUCT",
+                "SUCCESS LOAD RELATION PRODUCT",
                 "연관 상품 가져오기 성공",
                 null));
     }
