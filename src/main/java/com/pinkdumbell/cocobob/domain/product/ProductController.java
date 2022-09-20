@@ -229,13 +229,14 @@ public class ProductController {
     }
 
     @GetMapping("v2/relatedProduct/")
-    public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long ProductId) {
+    public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long productId,
+        @LoginUser LoginUserInfo loginUserInfo) {
 
         return ResponseEntity.ok(
             new ProvideAllResponseClass(HttpStatus.OK.value(),
                 "SUCCESS LOAD RELATION PRODUCT",
                 "연관 상품 가져오기 성공",
-                null));
+                productService.getRelationProduct(productId, loginUserInfo.getEmail())));
     }
 
 
