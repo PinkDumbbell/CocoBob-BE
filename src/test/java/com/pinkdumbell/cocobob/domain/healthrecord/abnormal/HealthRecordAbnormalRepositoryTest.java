@@ -2,9 +2,12 @@ package com.pinkdumbell.cocobob.domain.healthrecord.abnormal;
 
 import com.pinkdumbell.cocobob.domain.abnormal.Abnormal;
 import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
-import com.pinkdumbell.cocobob.domain.healthrecord.HealthRecord;
-import com.pinkdumbell.cocobob.domain.healthrecord.HealthRecordRepository;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecord;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecordRepository;
 import com.pinkdumbell.cocobob.domain.product.ProductSearchQueryDslImpl;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormal;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalId;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

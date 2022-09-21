@@ -2,11 +2,14 @@ package com.pinkdumbell.cocobob.domain.daily;
 
 
 import com.pinkdumbell.cocobob.common.ImageService;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyDetailResponseDto;
-import com.pinkdumbell.cocobob.domain.daily.dto.DailyUpdateRequestDto;
-import com.pinkdumbell.cocobob.domain.daily.image.DailyImage;
-import com.pinkdumbell.cocobob.domain.daily.image.DailyImageRepository;
+import com.pinkdumbell.cocobob.domain.record.daily.Daily;
+import com.pinkdumbell.cocobob.domain.record.daily.DailyRepository;
+import com.pinkdumbell.cocobob.domain.record.daily.DailyService;
+import com.pinkdumbell.cocobob.domain.record.daily.dto.DailyCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.record.daily.dto.DailyDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.record.daily.dto.DailyUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.record.daily.image.DailyImage;
+import com.pinkdumbell.cocobob.domain.record.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
