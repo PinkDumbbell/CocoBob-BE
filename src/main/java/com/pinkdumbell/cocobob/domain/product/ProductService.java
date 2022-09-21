@@ -14,6 +14,7 @@ import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +74,7 @@ public class ProductService {
         return new FindAllResponseDto(likeRepository.findAllByUserLike(user, pageable));
     }
 
+    @Cacheable(cacheNames = "productKeywords", key = "#keyword")
     public List<ProductKeywordDto> getKeyword(String keyword) {
         return productRepository.findProductNamesByKeyword(keyword);
     }

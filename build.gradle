@@ -61,6 +61,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
 	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 
+	// EHcache
+	implementation "org.springframework.boot:spring-boot-starter-cache"
+	implementation 'org.ehcache:ehcache'
+	implementation 'javax.cache:cache-api'
+
 
 	implementation 'org.springframework:spring-test:5.3.21'
 

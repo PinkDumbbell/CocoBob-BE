@@ -6,7 +6,6 @@ import com.pinkdumbell.cocobob.domain.pet.breed.BreedSize;
 import com.pinkdumbell.cocobob.domain.pet.dto.*;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImage;
 import com.pinkdumbell.cocobob.domain.pet.image.PetImageRepository;
-import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
@@ -14,6 +13,7 @@ import com.pinkdumbell.cocobob.domain.user.dto.LoginUserInfo;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +60,7 @@ public class PetService {
             .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "breedsInfo")
     @Transactional(readOnly = true)
     public List<BreedsInfoResponseDto> provideBreedsInfo() {
 
