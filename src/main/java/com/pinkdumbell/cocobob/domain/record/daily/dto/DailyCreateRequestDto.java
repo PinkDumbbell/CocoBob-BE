@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,9 @@ public class DailyCreateRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
     private LocalDate date;
+    @ApiModelProperty(notes = "데일리 제목", example = "오늘의 일기")
+    @NotBlank(message = "제목을 작성해주세요.")
+    private String title;
     @ApiModelProperty(notes = "텍스트 기록", example = "오늘 우리 코코는 ...")
     private String note;
     @ApiModelProperty(notes = "사진")

@@ -32,11 +32,12 @@ public class DailyService {
     @Transactional
     public void createDaily(DailyCreateRequestDto requestDto, LoginUserInfo loginUserInfo, Long petId) {
         Daily daily = dailyRepository.save(Daily.builder()
-                .date(requestDto.getDate())
-                .note(requestDto.getNote())
-                .pet(petRepository.findById(petId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))
-                )
+                        .title(requestDto.getTitle())
+                        .date(requestDto.getDate())
+                        .note(requestDto.getNote())
+                        .pet(petRepository.findById(petId)
+                                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND))
+                        )
                 .build());
         saveImages(daily, requestDto.getImages());
     }
@@ -67,7 +68,7 @@ public class DailyService {
     public void updateDaily(DailyUpdateRequestDto requestDto, Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DAILY_NOT_FOUND));
-        daily.updateNote(requestDto.getNote());
+        daily.updateNote(requestDto);
         if (requestDto.getNewImages() != null) {
             saveImages(daily, requestDto.getNewImages());
         }

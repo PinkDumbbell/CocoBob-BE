@@ -14,12 +14,14 @@ public class DailyDetailResponseDto {
     private final Long dailyId;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate date;
+    private final String title;
     private final String note;
     private final List<DailyImageResponseDto> images;
 
     public DailyDetailResponseDto(Daily entity, List<DailyImage> dailyImages) {
         this.dailyId = entity.getId();
         this.date = entity.getDate();
+        this.title = entity.getTitle();
         this.note = entity.getNote();
         this.images = dailyImages.stream().map(DailyImageResponseDto::new).collect(Collectors.toList());
     }
