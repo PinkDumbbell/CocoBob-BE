@@ -1,0 +1,1 @@
+alter table health_record add column body_weight double null ;

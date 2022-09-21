@@ -18,6 +18,7 @@ public class HealthRecordDetailResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate date;
     private final String note;
+    private final Double bodyWeight;
     private final List<HealthRecordImageResponseDto> images;
     private final List<AbnormalResponseDto> abnormals;
     private final List<MealResponseDto> meals;
@@ -83,6 +84,7 @@ public class HealthRecordDetailResponseDto {
         this.healthRecordId = healthRecord.getId();
         this.date = healthRecord.getDate();
         this.note = healthRecord.getNote();
+        this.bodyWeight = healthRecord.getBodyWeight();
         this.images = images.stream().map(HealthRecordImageResponseDto::new).collect(Collectors.toList());
         this.abnormals = abnormals.stream().map(AbnormalResponseDto::new).collect(Collectors.toList());
         this.meals = meals.stream().map(MealResponseDto::new).collect(Collectors.toList());

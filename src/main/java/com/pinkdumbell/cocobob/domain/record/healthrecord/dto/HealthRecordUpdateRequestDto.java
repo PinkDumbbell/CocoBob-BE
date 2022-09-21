@@ -13,6 +13,7 @@ import java.util.List;
 public class HealthRecordUpdateRequestDto {
     private List<MultipartFile> newImages;
     private String note;
+    private Double bodyWeight;
     private List<Long> imageIdsToDelete;
     private List<Long> abnormalIds;
 }

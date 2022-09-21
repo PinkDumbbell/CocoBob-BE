@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.record.healthrecord;
 
 import com.pinkdumbell.cocobob.domain.pet.Pet;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordUpdateRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +21,13 @@ public class HealthRecord {
     private Long id;
     private LocalDate date;
     private String note;
+    private Double bodyWeight;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    public void update(String note) {
-        this.note = note;
+    public void update(HealthRecordUpdateRequestDto requestDto) {
+        this.note = requestDto.getNote();
+        this.bodyWeight = requestDto.getBodyWeight();
     }
 }

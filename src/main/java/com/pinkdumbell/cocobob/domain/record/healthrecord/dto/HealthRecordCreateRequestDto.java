@@ -21,4 +21,5 @@ public class HealthRecordCreateRequestDto {
     private String note;
     private List<MultipartFile> images;
     private List<Long> abnormalIds;
+    private Double bodyWeight;
 }

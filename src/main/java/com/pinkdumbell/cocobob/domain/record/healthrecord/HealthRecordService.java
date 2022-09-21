@@ -52,6 +52,7 @@ public class HealthRecordService {
         HealthRecord healthRecord = healthRecordRepository.save(HealthRecord.builder()
                 .date(requestDto.getDate())
                 .note(requestDto.getNote())
+                .bodyWeight(requestDto.getBodyWeight())
                 .pet(pet)
                 .build());
         saveImages(healthRecord, requestDto.getImages());
@@ -140,7 +141,7 @@ public class HealthRecordService {
     public void updateHealthRecord(Long healthRecordId, HealthRecordUpdateRequestDto requestDto) {
         HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
                 .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
-        healthRecord.update(requestDto.getNote());
+        healthRecord.update(requestDto);
         saveImages(healthRecord, requestDto.getNewImages());
         deleteImages(requestDto.getImageIdsToDelete());
         updateHealthRecordAbnormals(healthRecord, requestDto.getAbnormalIds());
