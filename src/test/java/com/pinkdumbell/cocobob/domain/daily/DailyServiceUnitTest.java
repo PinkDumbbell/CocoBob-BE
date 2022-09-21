@@ -107,6 +107,7 @@ class DailyServiceUnitTest {
                         new MockMultipartFile("3", (byte[]) null)
                 }),
                 "changed",
+                "changed",
                 images.stream().map(DailyImage::getId).collect(Collectors.toList())
         );
         given(dailyRepository.findById(1L)).willReturn(Optional.ofNullable(daily));
