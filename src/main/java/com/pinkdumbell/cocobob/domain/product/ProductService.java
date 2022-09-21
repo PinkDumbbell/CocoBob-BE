@@ -6,18 +6,23 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
+import com.pinkdumbell.cocobob.domain.product.dto.RelationProductDto;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +31,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-
     private final LikeRepository likeRepository;
 
     public ProductDetailResponseDto findProductDetailById(Long productId, String userEmail) {
@@ -77,5 +81,23 @@ public class ProductService {
     @Cacheable(cacheNames = "productKeywords", key = "#keyword")
     public List<ProductKeywordDto> getKeyword(String keyword) {
         return productRepository.findProductNamesByKeyword(keyword);
+    }
+
+    public FindAllResponseDto getRelationProduct(Long productId, String userEmail) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        List<RelationProductDto> relatedProducts = Arrays.asList(
+            Objects.requireNonNull(restTemplate.getForObject(
+                "http://localhost:8000/related?productId=" + productId,
+                RelationProductDto[].class)));
+
+        List<Long> productIds = relatedProducts.stream().map(RelationProductDto::getProductId)
+            .collect(Collectors.toList());
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        });
+
+        return new FindAllResponseDto(
+            productRepository.findAllRelatedProductsById(productIds, user.getId()));
     }
 }

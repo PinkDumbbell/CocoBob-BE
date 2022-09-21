@@ -228,4 +228,27 @@ public class ProductController {
                 productService.getKeyword(keyword)));
     }
 
+    @ApiOperation(value = "provideRelatedProducts", notes = "현재 상품과 연관된 상품 정보 제공")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "", response = ProvideAllResponseClass.class),
+        @ApiResponse(code = 400, message = "", response = ErrorResponse.class),
+        @ApiResponse(code = 500, message = "INTERNAL SERVER ERROR", response = ErrorResponse.class)
+
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "productId", dataType = "String", paramType = "query",
+            value = "현재 상품 ID"),
+    })
+    @GetMapping("v2/related-product")
+    public ResponseEntity<ProvideAllResponseClass> provideRelatedProducts(Long productId,
+        @LoginUser LoginUserInfo loginUserInfo) {
+
+        return ResponseEntity.ok(
+            new ProvideAllResponseClass(HttpStatus.OK.value(),
+                "SUCCESS LOAD RELATION PRODUCT",
+                "연관 상품 가져오기 성공",
+                productService.getRelationProduct(productId, loginUserInfo.getEmail())));
+    }
+
+
 }
