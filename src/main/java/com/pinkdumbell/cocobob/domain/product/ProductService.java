@@ -88,7 +88,7 @@ public class ProductService {
         RestTemplate restTemplate = new RestTemplate();
         List<RelationProductDto> relatedProducts = Arrays.asList(
             Objects.requireNonNull(restTemplate.getForObject(
-                "http://localhost:8000/related?productId=" + productId,
+                "http://host.docker.internal:8000/related?productId=" + productId,
                 RelationProductDto[].class)));
 
         List<Long> productIds = relatedProducts.stream().map(RelationProductDto::getProductId)
