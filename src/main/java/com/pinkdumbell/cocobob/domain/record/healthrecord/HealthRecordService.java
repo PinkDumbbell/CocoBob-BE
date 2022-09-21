@@ -22,6 +22,7 @@ import com.pinkdumbell.cocobob.domain.product.ProductRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,6 +99,11 @@ public class HealthRecordService {
 
         return new HealthRecordDetailResponseDto(
                 healthRecord,
+                healthRecordRepository.findRecentHealthRecords(
+                        healthRecord.getPet().getId(),
+                        healthRecord.getDate(),
+                        Pageable.ofSize(10)
+                ).getContent(),
                 healthRecordImageRepository.findAllByHealthRecord(healthRecord),
                 healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecordId)
                         .stream().map(HealthRecordAbnormal::getAbnormal).collect(Collectors.toList()),

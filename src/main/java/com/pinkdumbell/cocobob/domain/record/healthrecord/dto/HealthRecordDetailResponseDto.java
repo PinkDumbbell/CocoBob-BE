@@ -9,6 +9,7 @@ import com.pinkdumbell.cocobob.domain.product.Product;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,22 @@ public class HealthRecordDetailResponseDto {
     private final LocalDate date;
     private final String note;
     private final Double bodyWeight;
+    private final List<RecentBodyWeightResponseDto> bodyWeights;
     private final List<HealthRecordImageResponseDto> images;
     private final List<AbnormalResponseDto> abnormals;
     private final List<MealResponseDto> meals;
+
+    @Getter
+    public static class RecentBodyWeightResponseDto {
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDate date;
+        private Double bodyWeight;
+
+        public RecentBodyWeightResponseDto(HealthRecord entity) {
+            this.date = entity.getDate();
+            this.bodyWeight = entity.getBodyWeight();
+        }
+    }
     @Getter
     public static class HealthRecordImageResponseDto {
         private final Long imageId;
@@ -77,6 +91,7 @@ public class HealthRecordDetailResponseDto {
 
     public HealthRecordDetailResponseDto(
             HealthRecord healthRecord,
+            List<HealthRecord> recentHealthRecords,
             List<HealthRecordImage> images,
             List<Abnormal> abnormals,
             List<Meal> meals
@@ -85,8 +100,15 @@ public class HealthRecordDetailResponseDto {
         this.date = healthRecord.getDate();
         this.note = healthRecord.getNote();
         this.bodyWeight = healthRecord.getBodyWeight();
-        this.images = images.stream().map(HealthRecordImageResponseDto::new).collect(Collectors.toList());
-        this.abnormals = abnormals.stream().map(AbnormalResponseDto::new).collect(Collectors.toList());
-        this.meals = meals.stream().map(MealResponseDto::new).collect(Collectors.toList());
+        List<RecentBodyWeightResponseDto> temp = recentHealthRecords.stream().map(RecentBodyWeightResponseDto::new)
+                .collect(Collectors.toList());
+        Collections.reverse(temp);
+        this.bodyWeights = temp;
+        this.images = images.stream().map(HealthRecordImageResponseDto::new)
+                .collect(Collectors.toList());
+        this.abnormals = abnormals.stream().map(AbnormalResponseDto::new)
+                .collect(Collectors.toList());
+        this.meals = meals.stream().map(MealResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
