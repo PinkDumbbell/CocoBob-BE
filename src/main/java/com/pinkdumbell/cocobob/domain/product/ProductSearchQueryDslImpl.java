@@ -53,6 +53,7 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
                         "isLiked")))
             .from(qProduct)
+            .distinct()
             .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
             .where(
                 ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
