@@ -53,7 +53,6 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
                             .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
                         "isLiked")))
             .from(qProduct)
-            .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
             .where(
                 ProductBooleanBuilder.makeProductBooleanBuilder(productSpecificSearchWithLikeDto));
 
@@ -102,5 +101,41 @@ public class ProductSearchQueryDslImpl implements ProductSearchQueryDsl {
             .from(qProduct)
             .where(ProductBooleanBuilder.makeKeywordBooleanBuilder(keyword))
             .fetch();
+    }
+
+    @Override
+    public PageImpl<ProductSimpleResponseDto> findAllRelatedProductsById(List<Long> ids,
+        Long userId) {
+        QProduct qProduct = QProduct.product;
+        QLike qLike = QLike.like;
+        NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes");
+
+        JPAQuery<ProductSimpleResponseDto> query = jpaQueryFactory.select(
+                Projections.constructor(ProductSimpleResponseDto.class,
+                    qProduct.id.as("productId"), qProduct.code.as("code"), qProduct.name.as("name"),
+                    qProduct.brand.as("brand"), qProduct.category.as("category"),
+                    qProduct.price.as("price"), qProduct.thumbnail.as("thumbnail"),
+                    qProduct.description.as("description"),
+                    qProduct.isAAFCOSatisfied.as("isAAFCOSatisfied"), qProduct.aged.as("aged"),
+                    qProduct.growing.as("growing"), qProduct.pregnant.as("pregnant"),
+                    qProduct.obesity.as("obesity"),
+                    ExpressionUtils.as(JPAExpressions.select(qLike.count())
+                        .from(qLike)
+                        .where(qLike.product.eq(qProduct)), likes),
+                    ExpressionUtils.as(
+                        JPAExpressions.select(qLike.isNotNull())
+                            .from(qLike)
+                            .where(qLike.user.id.eq(userId), qLike.product.id.eq(qProduct.id)),
+                        "isLiked")))
+            .from(qProduct)
+            .where(qProduct.id.in(ids));
+
+        long totalElements = query.fetch().size();
+
+        List<ProductSimpleResponseDto> result = query.fetch();
+
+        Pageable pageable = PageRequest.of(0, (int) totalElements); // 무조건 페이지는 1개
+
+        return new PageImpl<>(result, pageable, totalElements);
     }
 }
