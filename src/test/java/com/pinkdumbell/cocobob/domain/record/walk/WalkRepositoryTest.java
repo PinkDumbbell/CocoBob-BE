@@ -43,12 +43,13 @@ class WalkRepositoryTest {
                         .totalTime(Math.toIntExact(number))
                         .distance(number + 0.1)
                 .build())).collect(Collectors.toList());
-        em.flush();
-        em.clear();
     }
 
     @Test
     void testGetTotalTimeAndTotalDistance() {
+        em.flush();
+        em.clear();
+
         WalkBriefInfoDto result = walkRepository.getTotalTimeAndTotalDistance(1L, date);
 
         assertThat(result.getTotalTime()).isEqualTo(6);
