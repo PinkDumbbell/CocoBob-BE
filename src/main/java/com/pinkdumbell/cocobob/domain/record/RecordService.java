@@ -2,10 +2,14 @@ package com.pinkdumbell.cocobob.domain.record;
 
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
+import com.pinkdumbell.cocobob.domain.record.daily.Daily;
 import com.pinkdumbell.cocobob.domain.record.daily.DailyRepository;
 import com.pinkdumbell.cocobob.domain.record.dto.RecordExistResponseDto;
+import com.pinkdumbell.cocobob.domain.record.dto.RecordsSimpleResponseDto;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecord;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecordRepository;
 import com.pinkdumbell.cocobob.domain.record.walk.WalkRepository;
+import com.pinkdumbell.cocobob.domain.record.walk.dto.WalkBriefInfoDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -88,5 +93,48 @@ public class RecordService {
                                 .build());
                     }
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public RecordsSimpleResponseDto getSimpleRecordsOfDay(Long petId, LocalDate date) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+
+        boolean isAbnormal = false;
+        Long healthRecordId = null;
+        HealthRecord healthRecord;
+        Long dailyId = null;
+        String dailyTitle = null;
+        int mealCount = 0;
+
+        Optional<HealthRecord> healthRecordOptional = healthRecordRepository.findAllByDateAndPetWithMeals(petId, date);
+        WalkBriefInfoDto totalTimeAndTotalDistance = walkRepository.getTotalTimeAndTotalDistance(petId, date);
+        Optional<Daily> dailyOptional = dailyRepository.findByPetAndDate(pet, date);
+
+        if (healthRecordOptional.isPresent()) {
+            healthRecord = healthRecordOptional.get();
+            healthRecordId = healthRecord.getId();
+            if (healthRecord.getHealthRecordAbnormals() != null) {
+                isAbnormal = true;
+            }
+            if (healthRecord.getMeals() != null) {
+                mealCount = healthRecord.getMeals().size();
+            }
+        }
+
+        if (dailyOptional.isPresent()) {
+            dailyTitle = dailyOptional.get().getTitle();
+            dailyId = dailyOptional.get().getId();
+        }
+
+        return new RecordsSimpleResponseDto(
+                Math.toIntExact(totalTimeAndTotalDistance.getTotalTime()),
+                totalTimeAndTotalDistance.getTotalDistance(),
+                mealCount,
+                isAbnormal,
+                dailyTitle,
+                healthRecordId,
+                dailyId
+        );
     }
 }
