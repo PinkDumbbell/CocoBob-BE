@@ -35,16 +35,16 @@ class WalkRepositoryTest {
     @BeforeEach
     void setup() {
         pet = petRepository.save(Pet.builder()
-                        .id(1L)
                 .build());
-        List<Long> walkIds = List.of(1L, 2L, 3L);
-        walks = walkIds.stream().map(walkId -> walkRepository.save(Walk.builder()
-                        .id(walkId)
+        List<Long> numbers = List.of(1L, 2L, 3L);
+        walks = numbers.stream().map(number -> walkRepository.save(Walk.builder()
                         .date(date)
                         .pet(pet)
-                        .totalTime(Math.toIntExact(walkId))
-                        .distance(walkId + 0.1)
+                        .totalTime(Math.toIntExact(number))
+                        .distance(number + 0.1)
                 .build())).collect(Collectors.toList());
+        em.flush();
+        em.clear();
     }
 
     @Test
