@@ -2,12 +2,16 @@ package com.pinkdumbell.cocobob.domain.healthrecord.abnormal;
 
 import com.pinkdumbell.cocobob.domain.abnormal.Abnormal;
 import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
+import com.pinkdumbell.cocobob.domain.pet.Pet;
+import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecord;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.HealthRecordRepository;
 import com.pinkdumbell.cocobob.domain.product.ProductSearchQueryDslImpl;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormal;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalId;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalRepository;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.Meal;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.MealRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
@@ -30,6 +35,10 @@ class HealthRecordAbnormalRepositoryTest {
     AbnormalRepository abnormalRepository;
     @Autowired
     HealthRecordAbnormalRepository healthRecordAbnormalRepository;
+    @Autowired
+    PetRepository petRepository;
+    @Autowired
+    MealRepository mealRepository;
     @PersistenceContext
     EntityManager em;
     @MockBean
@@ -68,5 +77,27 @@ class HealthRecordAbnormalRepositoryTest {
         List<HealthRecordAbnormal> result = healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecord.getId());
         assertThat(result.stream().map(healthRecordAbnormal -> healthRecordAbnormal.getAbnormal().getName()).collect(Collectors.toList()).toString())
                 .contains(abn1.getName(), abn2.getName(), abn3.getName());
+    }
+
+    @Test
+    void testGetCountOfMeals() {
+        Pet pet = petRepository.save(Pet.builder()
+                .build());
+        HealthRecord healthRecord = healthRecordRepository.save(HealthRecord.builder()
+                        .date(LocalDate.parse("2022-08-01"))
+                        .note("테스트 입니다.")
+                        .pet(pet)
+                .build());
+        for (int i = 0; i < 3; i++) {
+            mealRepository.save(Meal.builder()
+                    .healthRecord(healthRecord)
+                    .build());
+        }
+
+        em.flush();
+        em.clear();
+
+        Optional<HealthRecord> result = healthRecordRepository.findAllByDateAndPetWithMeals(pet.getId(), LocalDate.parse("2022-08-01"));
+        assertThat(result.get().getMeals().size()).isEqualTo(3);
     }
 }

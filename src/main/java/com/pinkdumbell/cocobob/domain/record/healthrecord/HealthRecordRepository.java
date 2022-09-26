@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long> {
@@ -24,4 +25,9 @@ public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long
     );
 
     List<HealthRecord> findAllByPetAndDateBetween(Pet pet, LocalDate startDay, LocalDate endDay);
+
+    @Query("select distinct h " +
+            "from HealthRecord h left join fetch h.meals m " +
+            "where h.date = :date and h.pet.id = :petId")
+    Optional<HealthRecord> findAllByDateAndPetWithMeals(@Param("petId") Long petId, @Param("date") LocalDate date);
 }
