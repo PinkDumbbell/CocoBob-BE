@@ -1,0 +1,1 @@
+alter table meal add column amount int null;
