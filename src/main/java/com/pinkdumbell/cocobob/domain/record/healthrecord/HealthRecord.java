@@ -1,7 +1,9 @@
 package com.pinkdumbell.cocobob.domain.record.healthrecord;
 
 import com.pinkdumbell.cocobob.domain.pet.Pet;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormal;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.Meal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -25,6 +28,10 @@ public class HealthRecord {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
+    @OneToMany(mappedBy = "healthRecord")
+    private List<Meal> meals;
+    @OneToMany(mappedBy = "healthRecord")
+    private List<HealthRecordAbnormal> healthRecordAbnormals;
 
     public void update(HealthRecordUpdateRequestDto requestDto) {
         this.note = requestDto.getNote();
