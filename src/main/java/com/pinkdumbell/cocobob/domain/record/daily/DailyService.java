@@ -2,6 +2,7 @@ package com.pinkdumbell.cocobob.domain.record.daily;
 
 import com.pinkdumbell.cocobob.common.ImageService;
 import com.pinkdumbell.cocobob.domain.record.daily.dto.DailyCreateRequestDto;
+import com.pinkdumbell.cocobob.domain.record.daily.dto.DailyCreateResponseDto;
 import com.pinkdumbell.cocobob.domain.record.daily.image.DailyImage;
 import com.pinkdumbell.cocobob.domain.record.daily.image.DailyImageRepository;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
@@ -30,7 +31,7 @@ public class DailyService {
     private static final String DAILY_IMAGE_PREFIX = "daily/";
 
     @Transactional
-    public void createDaily(DailyCreateRequestDto requestDto, LoginUserInfo loginUserInfo, Long petId) {
+    public DailyCreateResponseDto createDaily(DailyCreateRequestDto requestDto, LoginUserInfo loginUserInfo, Long petId) {
         Daily daily = dailyRepository.save(Daily.builder()
                         .title(requestDto.getTitle())
                         .date(requestDto.getDate())
@@ -40,6 +41,7 @@ public class DailyService {
                         )
                 .build());
         saveImages(daily, requestDto.getImages());
+        return new DailyCreateResponseDto(daily);
     }
 
     @Transactional
