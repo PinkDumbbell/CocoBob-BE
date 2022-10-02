@@ -30,18 +30,17 @@ public class DailyController {
             @ApiResponse(code = 400, message = "NOT_IMAGE", response = ErrorResponse.class)
     })
     @PostMapping("/pets/{petId}")
-    public ResponseEntity<CommonResponseDto> createDaily(
+    public ResponseEntity<DailyResponseClass.DailyCreateResponseClass> createDaily(
             @ModelAttribute @Valid DailyCreateRequestDto requestDto,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long petId
     ) {
-        dailyService.createDaily(requestDto, loginUserInfo, petId);
-        return ResponseEntity.ok(CommonResponseDto.builder()
-                        .status(HttpStatus.OK.value())
-                        .code("SUCCESS_CREATE_DAILY")
-                        .message("데일리 기록 생성을 성공하였습니다.")
-                        .data(null)
-                .build());
+        return ResponseEntity.ok(new DailyResponseClass.DailyCreateResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS_CREATE_DAILY",
+                "데일리 기록 생성을 성공하였습니다.",
+                dailyService.createDaily(requestDto, loginUserInfo, petId)
+        ));
     }
 
     @ApiOperation(value = "데일리 아이디로 데일리 기록 단건 조회")
