@@ -5,6 +5,7 @@ import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.record.walk.dto.WalkCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.record.walk.dto.WalkDetailResponseDto;
+import com.pinkdumbell.cocobob.domain.record.walk.dto.WalksBriefInfoDto;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -56,6 +58,14 @@ public class WalkService {
         return new WalkDetailResponseDto(walkRepository.findById(walkId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WALK_RECORD_NOT_FOUND)));
 
+    }
+
+    @Transactional(readOnly = true)
+    public WalksBriefInfoDto getWalks(Long petId, LocalDate date) {
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
+        return new WalksBriefInfoDto(walkRepository.findAllByPetAndDateBetween(pet, date, date));
     }
 
     @Transactional
