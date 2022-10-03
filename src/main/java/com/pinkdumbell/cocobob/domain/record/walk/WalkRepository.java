@@ -13,6 +13,8 @@ public interface WalkRepository extends JpaRepository<Walk, Long> {
 
     List<Walk> findAllByPetAndDateBetween(Pet pet, LocalDate startDay, LocalDate endDay);
 
+    List<Walk> findAllByPetAndDate(Pet pet, LocalDate date);
+
     @Query("select new com.pinkdumbell.cocobob.domain.record.walk.dto.WalkBriefInfoDto(sum(w.totalTime), sum(w.distance)) " +
             "from Walk w " +
             "where w.pet.id = :petId and w.date = :date")

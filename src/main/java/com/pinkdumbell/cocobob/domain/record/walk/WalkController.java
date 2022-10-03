@@ -4,9 +4,12 @@ import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.record.walk.dto.WalkCreateRequestDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @ApiOperation("Walk API")
 @RequestMapping("/v1/walks")
@@ -29,6 +32,18 @@ public class WalkController {
                 .build());
     }
 
+    @GetMapping("/pets/{petId}")
+    public ResponseEntity<WalkResponseClass.WalksBriefInfoClass> getWalksByDate(
+            @PathVariable Long petId,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+    ) {
+        return ResponseEntity.ok(new WalkResponseClass.WalksBriefInfoClass(
+                HttpStatus.OK.value(),
+                "SUCCESS_TO_GET_WALKS",
+                "산책기록 리스트를 불러왔습니다.",
+                walkService.getWalks(petId, date)
+        ));
+    }
     @GetMapping("/{walkId}")
     public ResponseEntity<WalkResponseClass.WalkDetailResponseClass> getWalk(
             @PathVariable Long walkId
