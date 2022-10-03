@@ -65,7 +65,7 @@ public class WalkService {
 
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
-        return new WalksBriefInfoDto(walkRepository.findAllByPetAndDateBetween(pet, date, date));
+        return new WalksBriefInfoDto(walkRepository.findAllByPetAndDate(pet, date));
     }
 
     @Transactional
