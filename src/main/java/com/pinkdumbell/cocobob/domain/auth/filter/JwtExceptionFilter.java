@@ -1,8 +1,6 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
-import com.pinkdumbell.cocobob.common.dto.CommonResponseDto;
 import com.pinkdumbell.cocobob.domain.auth.dto.JwtExceptionResponse;
-import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 
 import java.io.IOException;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
