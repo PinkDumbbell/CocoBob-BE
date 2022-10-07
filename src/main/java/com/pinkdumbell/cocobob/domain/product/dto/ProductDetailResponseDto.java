@@ -26,6 +26,8 @@ public class ProductDetailResponseDto {
     private String name;
     @ApiModelProperty(notes = "상품 브랜드", example = "하림펫푸드")
     private String brand;
+    @ApiModelProperty(notes = "상품 브랜드 이미지", example = "상품 브랜드 이미지 URL")
+    private String brandImage;
     @ApiModelProperty(notes = "상품 가격", example = "13260")
     private Integer price;
     @ApiModelProperty(notes = "상품 이미지", example = "상품 이미지 URL")
@@ -114,6 +116,7 @@ public class ProductDetailResponseDto {
         this.category = product.getCategory();
         this.name = product.getName();
         this.brand = product.getBrand();
+        this.brandImage = product.getBrandImage();
         this.price = product.getPrice();
         this.productImage = product.getProductImage();
         this.productDetailImage = product.getProductDetailImage();
