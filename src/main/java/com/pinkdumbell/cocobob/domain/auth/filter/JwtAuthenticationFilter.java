@@ -1,7 +1,6 @@
 package com.pinkdumbell.cocobob.domain.auth.filter;
 
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
-import com.pinkdumbell.cocobob.exception.CustomException;
 import io.jsonwebtoken.JwtException;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.MissingRequestHeaderException;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilter {
