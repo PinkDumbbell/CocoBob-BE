@@ -37,6 +37,9 @@ public class Product {
     @Column(length = 1000)
     private String productDetailImage;
 
+    @Column(length = 1000)
+    private String brandImage;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 

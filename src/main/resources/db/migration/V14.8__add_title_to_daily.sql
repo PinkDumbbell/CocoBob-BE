@@ -1,0 +1,1 @@
+alter table daily add column title varchar(200) null ;
