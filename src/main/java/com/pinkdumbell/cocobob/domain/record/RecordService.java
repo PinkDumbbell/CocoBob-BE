@@ -18,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -70,7 +67,7 @@ public class RecordService {
                         result.get(walk.getDate()).addWalkId(walk.getId());
                     } else {
                         result.put(walk.getDate(), RecordExistResponseDto.builder()
-                                        .walkIds(List.of(walk.getId()))
+                                        .walkIds(new ArrayList<>(List.of(walk.getId())))
                                 .build());
                     }
                 });
