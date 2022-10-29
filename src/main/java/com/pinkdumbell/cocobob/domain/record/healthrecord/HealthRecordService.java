@@ -9,6 +9,7 @@ import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordA
 import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordDetailResponseDto;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordUpdateRequestDto;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsResponseDto;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.image.HealthRecordImage;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.image.HealthRecordImageRepository;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.Meal;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -174,7 +176,7 @@ public class HealthRecordService {
     public void updateHealthRecordAbnormals(HealthRecord healthRecord, List<Long> abnormalIds) {
         List<Long> abnormalIdsToDelete = healthRecordAbnormalRepository.findAllAbnormalByHealthRecord(healthRecord.getId())
                 .stream().map(healthRecordAbnormal -> healthRecordAbnormal.getAbnormal().getId()).collect(Collectors.toList());
-        List<Long> abnormalIdsToAdd = abnormalIds.stream().collect(Collectors.toList());
+        List<Long> abnormalIdsToAdd = new ArrayList<>(abnormalIds);
         // 추가될 것
         abnormalIdsToAdd.removeAll(abnormalIdsToDelete);
         // 삭제될 것
@@ -216,5 +218,14 @@ public class HealthRecordService {
     @Transactional
     public void deleteMeal(Long mealId) {
         mealRepository.delete(findMealById(mealId));
+    }
+
+    @Transactional(readOnly = true)
+    public RecentWeightsResponseDto getRecentWeights(Long petId) {
+
+        return new RecentWeightsResponseDto(healthRecordRepository.findRecentWeightsWithDatesByPetId(
+                petId,
+                Pageable.ofSize(7)
+        ).getContent());
     }
 }
