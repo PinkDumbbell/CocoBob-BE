@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.record.healthrecord;
 
 import com.pinkdumbell.cocobob.domain.pet.Pet;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsPerDatesDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +31,13 @@ public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long
             "from HealthRecord h left join fetch h.meals m " +
             "where h.date = :date and h.pet.id = :petId")
     Optional<HealthRecord> findAllByDateAndPetWithMeals(@Param("petId") Long petId, @Param("date") LocalDate date);
+
+    @Query("select new com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsPerDatesDto(h.date, h.bodyWeight) " +
+            "from HealthRecord h " +
+            "where h.bodyWeight is not null " +
+            "order by h.date desc, h.id desc ")
+    Page<RecentWeightsPerDatesDto> findRecentWeightsWithDatesByPetId(
+            @Param("petId") Long petId,
+            Pageable pageable
+    );
 }
