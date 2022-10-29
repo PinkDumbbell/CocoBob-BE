@@ -110,4 +110,16 @@ public class HealthRecordController {
                 .data(null)
                 .build());
     }
+
+    @GetMapping("/pets/{petId}/recent-weights")
+    public ResponseEntity<HealthRecordResponseClass.RecentWeightsResponseClass> getRecentWeights(
+            @PathVariable Long petId
+    ) {
+       return ResponseEntity.ok(new HealthRecordResponseClass.RecentWeightsResponseClass(
+               HttpStatus.OK.value(),
+               "SUCCESS_TO_GET_RECENT_SEVEN_WEIGHTS",
+               "7개의 최근 몸무게 기록을 불러왔습니다.",
+               healthRecordService.getRecentWeights(petId)
+       ));
+    }
 }
