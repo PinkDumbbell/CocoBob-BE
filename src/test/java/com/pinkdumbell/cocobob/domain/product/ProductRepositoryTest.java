@@ -4,6 +4,7 @@ package com.pinkdumbell.cocobob.domain.product;
 import com.pinkdumbell.cocobob.config.TestConfig;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Arrays;
@@ -46,7 +47,6 @@ class ProductRepositoryTest {
         for (Long dummyIndex = 1L; dummyIndex < 30L; dummyIndex++) {
             Product dummyProduct = Product
                 .builder()
-                .id(dummyIndex)
                 .code("101101")
                 .category("건식")
                 .name("더리얼밀그레인프리닭고기60g6개")
@@ -184,6 +184,45 @@ class ProductRepositoryTest {
         //EXECUTE
         PageImpl<ProductSimpleResponseDto> result = productRepository.findAllRelatedProductsById(
             productIds, userId);
+
+        //EXPECT
+        Assertions.assertThat(result).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("JPA에서 제공하는 기본 specification으로 동적쿼리를 사용할 수 있다.")
+    void jpa_specification_dynamic_query() {
+        //given
+        ProductSpecificSearchDto request = ProductSpecificSearchDto.builder()
+            .code("101101")
+            .name("더리얼밀그레인프리닭고기60g6개")
+            .brand("하림펫푸드")
+            .description("소고기 함유")
+            .aafco(true)
+            .beef(true)
+            .mutton(true)
+            .chicken(true)
+            .duck(true)
+            .turkey(true)
+            .pork(true)
+            .salmon(true)
+            .hydrolyticBeef(true)
+            .hydrolyticMutton(true)
+            .hydrolyticChicken(true)
+            .hydrolyticDuck(true)
+            .hydrolyticTurkey(true)
+            .hydrolyticPork(true)
+            .hydrolyticSalmon(true)
+            .aged(true)
+            .growing(true)
+            .pregnant(true)
+            .obesity(true)
+            .build();
+
+        //EXECUTE
+        List<Product> result = productRepository.findAll(
+            ProductSearchSpecification.makeProductSpecification(request));
 
         //EXPECT
         Assertions.assertThat(result).isNotNull();
