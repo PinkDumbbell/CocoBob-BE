@@ -1,24 +1,19 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 
-
 import com.pinkdumbell.cocobob.config.TestConfig;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductKeywordDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
-import com.pinkdumbell.cocobob.domain.product.like.QLike;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Arrays;
 import java.util.List;
 
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,12 +37,72 @@ class ProductRepositoryTest {
     @Autowired
     JPAQueryFactory jpaQueryFactory;
 
+    @PersistenceContext
+    EntityManager em;
+
     @BeforeEach
     void init() {
-        for (int dummyIndex = 1; dummyIndex < 30; dummyIndex++) {
-            Product dummyProduct = new Product();
+
+        for (Long dummyIndex = 1L; dummyIndex < 30L; dummyIndex++) {
+            Product dummyProduct = Product
+                .builder()
+                .id(dummyIndex)
+                .code("101101")
+                .category("건식")
+                .name("더리얼밀그레인프리닭고기60g6개")
+                .brand("하림펫푸드")
+                .price(13260)
+                .thumbnail(
+                    "https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/product_img_resize/%5B2%2B1%5D%20%ED%95%98%EB%A6%BC%ED%8E%AB%ED%91%B8%EB%93%9C%20%EB%8D%94%EB%A6%AC%EC%96%BC%20%EB%B0%80%20%EA%B7%B8%EB%A0%88%EC%9D%B8%ED%94%84%EB%A6%AC%20%EB%8B%AD%EA%B3%A0%EA%B8%B0%2060g%206%EA%B0%9C.jpg")
+                .productImage(
+                    "https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/product_img/%5B2%2B1%5D%20%ED%95%98%EB%A6%BC%ED%8E%AB%ED%91%B8%EB%93%9C%20%EB%8D%94%EB%A6%AC%EC%96%BC%20%EB%B0%80%20%EA%B7%B8%EB%A0%88%EC%9D%B8%ED%94%84%EB%A6%AC%20%EB%8B%AD%EA%B3%A0%EA%B8%B0%2060g%206%EA%B0%9C.jpg")
+                .productDetailImage(
+                    "https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/product_detail/%5B2%2B1%5D%20%ED%95%98%EB%A6%BC%ED%8E%AB%ED%91%B8%EB%93%9C%20%EB%8D%94%EB%A6%AC%EC%96%BC%20%EB%B0%80%20%EA%B7%B8%EB%A0%88%EC%9D%B8%ED%94%84%EB%A6%AC%20%EB%8B%AD%EA%B3%A0%EA%B8%B0%2060g%206%EA%B0%9C.jpg")
+                .brandImage(
+                    "https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/brand_image/%ED%95%98%EB%A6%BC%ED%8E%AB%ED%91%B8%EB%93%9C.jpg")
+                .protein(30.93f)
+                .amountOfProteinPerMcal(30.93)
+                .fat(30.93f)
+                .amountOfFatPerMcal(30.93)
+                .fiber(30.93f)
+                .amountOfFiberPerMcal(30.93)
+                .mineral(30.93f)
+                .amountOfFiberPerMcal(30.93)
+                .calcium(30.93f)
+                .amountOfCalciumPerMcal(30.93)
+                .phosphorus(30.93f)
+                .amountOfPhosphorusPerMcal(30.93)
+                .moisture(30.93f)
+                .kcalPerKg(30.93)
+                .isAAFCOSatisfied(true)
+                .beef(true)
+                .mutton(true)
+                .chicken(true)
+                .duck(true)
+                .turkey(true)
+                .meat(true)
+                .salmon(true)
+                .hydrolyticBeef(true)
+                .hydrolyticMutton(true)
+                .hydrolyticChicken(true)
+                .hydrolyticDuck(true)
+                .hydrolyticTurkey(true)
+                .hydrolyticMeat(true)
+                .hydrolyticSalmon(true)
+                .aged(true)
+                .growing(true)
+                .pregnant(true)
+                .obesity(true)
+                .build();
             productRepository.save(dummyProduct);
         }
+    }
+
+    @AfterEach
+    public void teardown() {
+        productRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE product ALTER COLUMN `product_id` RESTART WITH 1")
+            .executeUpdate();
     }
 
     @Test
@@ -56,70 +111,32 @@ class ProductRepositoryTest {
 
         //ProductId 10을 가지고 있는 상품 조회
         Optional<Product> result = productRepository.findById(10L);
-
         Assertions.assertThat(result.isPresent()).isEqualTo(true);
 
     }
 
     @Test
-    @DisplayName("keyword를 통한 연관 상품 정보를 제공할 수 있어야 한다.")
-    void provideProductListByKeyword() {
-        QProduct qProduct = QProduct.product;
-
-        List<Tuple> result = jpaQueryFactory.select(qProduct.brand, qProduct.name)
-            .from(qProduct)
-            .where(ProductBooleanBuilder.makeKeywordBooleanBuilder("test"))
-            .fetch();
-        Assertions.assertThat(result).isNotNull();
-    }
-
-    @Test
-    @DisplayName("동적 조건을 통해서 상품을 필터링을 할 수 있다.")
-    void productFilteringByDynamicQuery() {
-        QProduct qProduct = QProduct.product;
-        QLike qLike = QLike.like;
-        NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes");
-
-        List<ProductSimpleResponseDto> result = jpaQueryFactory.select(
-                Projections.constructor(ProductSimpleResponseDto.class,
-                    qProduct.id.as("productId"), qProduct.code.as("code"), qProduct.name.as("name"),
-                    qProduct.brand.as("brand"), qProduct.category.as("category"),
-                    qProduct.price.as("price"), qProduct.thumbnail.as("thumbnail"),
-                    qProduct.description.as("description"),
-                    qProduct.isAAFCOSatisfied.as("isAAFCOSatisfied"), qProduct.aged.as("aged"),
-                    qProduct.growing.as("growing"), qProduct.pregnant.as("pregnant"),
-                    qProduct.obesity.as("obesity"),
-                    ExpressionUtils.as(JPAExpressions.select(qLike.count())
-                        .from(qLike)
-                        .where(qLike.product.eq(qProduct)), likes),
-                    ExpressionUtils.as(
-                        JPAExpressions.select(qLike.isNotNull())
-                            .from(qLike)
-                            .where(qLike.user.id.eq(1L), qLike.product.id.eq(qProduct.id)),
-                        "isUserLike")))
-            .from(qProduct)
-            .leftJoin(qLike).on(qProduct.id.eq(qLike.product.id))
-            .where(new BooleanBuilder())
-            .fetch();
-
-        Assertions.assertThat(result).isNotNull();
-    }
-
-    @Test
     @DisplayName("모든 검색 조건과 모든 정렬을 통해서 동적 쿼리를 실행할 수 있다.")
-    void search_condition_by_id_asc(){
+    void search_condition_by_id_asc() {
 
         //when
         int page = 1;
         int size = 10;
-        String[] sort_base = {"ID,ASC","ID,DESC","PRICE,ASC","PRICE,DESC","LIKE,ASC","LIKE,DESC"};
-        for(int i = 0 ; i < 6 ; i++){
+        String[] sort_base = {"ID,ASC", "ID,DESC", "PRICE,ASC", "PRICE,DESC", "LIKE,ASC",
+            "LIKE,DESC"};
+        for (int i = 0; i < 6; i++) {
 
             ProductSpecificSearchWithLikeDto productSpecificSearchWithLikeDto = ProductSpecificSearchWithLikeDto.builder()
-                .ingredient(Arrays.asList("beef","mutton","chicken","duck","turkey","pork","salmon","hydrolyticBeef","hydrolyticMutton","hydrolyticChicken","hydrolyticDuck","hydrolyticTurkey","hydrolyticPork","hydrolyticSalmon"))
-                .allergyIngredient(Arrays.asList("beef","mutton","chicken","duck","turkey","pork","salmon","hydrolyticBeef","hydrolyticMutton","hydrolyticChicken","hydrolyticDuck","hydrolyticTurkey","hydrolyticPork","hydrolyticSalmon"))
+                .ingredient(
+                    Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                        "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                        "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
+                .allergyIngredient(
+                    Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                        "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                        "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
                 .brands(Arrays.asList("로얄캐닌"))
-                .types(Arrays.asList("aged","growing","obesity","pregnant"))
+                .types(Arrays.asList("aged", "growing", "obesity", "pregnant"))
                 .codes(Arrays.asList("101202"))
                 .keyword("로얄캐닌")
                 .aafco(true)
@@ -129,8 +146,8 @@ class ProductRepositoryTest {
                 .build();
 
             //given
-            Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(), productSpecificSearchWithLikeDto.getSize());
-
+            Pageable pageable = PageRequest.of(productSpecificSearchWithLikeDto.getPage(),
+                productSpecificSearchWithLikeDto.getSize());
 
             //EXECUTE
             PageImpl<ProductSimpleResponseDto> result = productRepository.findAllWithLikes(
@@ -142,6 +159,36 @@ class ProductRepositoryTest {
         }
     }
 
+    @Test
+    @DisplayName("키워드를 통해서 상품을 검색할 수 있다.")
+    void findProductNamesByKeyword() {
+
+        //given
+        String keyword = "로얄캐닌";
+
+        //EXECUTE
+        List<ProductKeywordDto> result = productRepository.findProductNamesByKeyword(
+            keyword);
+
+        //EXPECT
+        Assertions.assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("여러 상품 id들을 얻었을 때 상품을 조회할 수 있다")
+    void findAllRelatedProductsById() {
+        //given
+        List<Long> productIds = List.of(0L, 1L, 3L);
+        Long userId = 0L;
+
+        //EXECUTE
+        PageImpl<ProductSimpleResponseDto> result = productRepository.findAllRelatedProductsById(
+            productIds, userId);
+
+        //EXPECT
+        Assertions.assertThat(result).isNotNull();
+
+    }
 
 
 }
