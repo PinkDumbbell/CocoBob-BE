@@ -9,13 +9,11 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.Like;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
-import com.pinkdumbell.cocobob.domain.user.AccountType;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -161,5 +159,6 @@ class ProductServiceTest {
         //EXPECTED
         Assertions.assertThat(result.size()).isEqualTo(expected.size());
     }
+
 
 }
