@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.product;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -8,7 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.PetService;
+import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.exception.ErrorCode;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.assertj.core.api.Assertions;
@@ -193,6 +196,106 @@ class ProductControllerTest {
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
         Assertions.assertThat(result.getResponse().getContentAsString()).contains("상품 가져오기 성공");
 
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("반려동물 정보에 맞추어 추천된 상품을 얻을 수 있다.")
+    void get_recommend_product_with_age() throws Exception {
+
+        //given
+        String[] types = {"aged", "pregnancy"};
+        int page = 1;
+        int size = 10;
+        ProductSpecificSearchWithLikeDto testRequest = ProductSpecificSearchWithLikeDto.builder()
+            .ingredient(
+                Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                    "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                    "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
+            .allergyIngredient(
+                Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                    "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                    "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
+            .brands(Arrays.asList("로얄캐닌"))
+            .types(Arrays.asList("aged", "growing", "obesity", "pregnant"))
+            .codes(Arrays.asList("101202"))
+            .keyword("로얄캐닌")
+            .aafco(true)
+            .sort("ID,ASC")
+            .page(page)
+            .size(size)
+            .build();
+
+        given(petService.makeRecommendationWithAge(anyLong())).willReturn(testRequest);
+        given(petService.makeRecommendationWithPregnancy(anyLong())).willReturn(testRequest);
+
+        //EXECUTE & EXPECT
+        for (int i = 0; i < 2; i++) {
+
+            //EXECUTE
+            MvcResult result = mvc.perform(
+                    get(String.format("/v1/products/recommendation/%s", types[i]))
+                        .param("petId", "1")
+                        .param("size", String.format("%d", size))
+                        .param("page", String.format("%d", page)))
+                .andReturn();
+
+            //EXPECT
+            Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+            Assertions.assertThat(result.getResponse().getContentAsString())
+                .contains("추천 상품 검색 성공");
+
+        }
+
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("반려동물 정보가 없으면 BAD_REQUEST_EROOR으로 응답할 수 있다.")
+    void incorrect_request_recommend_product_with_age() throws Exception {
+        //given
+        String[] types = {"aged", "pregnancy"};
+        int page = 1;
+        int size = 10;
+        ProductSpecificSearchWithLikeDto testRequest = ProductSpecificSearchWithLikeDto.builder()
+            .ingredient(
+                Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                    "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                    "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
+            .allergyIngredient(
+                Arrays.asList("beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                    "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                    "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon"))
+            .brands(Arrays.asList("로얄캐닌"))
+            .types(Arrays.asList("aged", "growing", "obesity", "pregnant"))
+            .codes(Arrays.asList("101202"))
+            .keyword("로얄캐닌")
+            .aafco(true)
+            .sort("ID,ASC")
+            .page(page)
+            .size(size)
+            .build();
+
+        given(petService.makeRecommendationWithAge(anyLong())).willReturn(testRequest);
+        given(petService.makeRecommendationWithPregnancy(anyLong())).willReturn(testRequest);
+
+        //EXECUTE & EXPECT
+        for (int i = 0; i < 2; i++) {
+
+            //EXECUTE
+            MvcResult result = mvc.perform(
+                    get(String.format("/v1/products/recommendation/%s", types[i]))
+                        .param("size", String.format("%d", size))
+                        .param("page", String.format("%d", page)))
+                .andReturn();
+
+            //EXPECT
+            Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(400);
+            Assertions.assertThat(result.getResponse().getContentAsString())
+                .contains(ErrorCode.BAD_REQUEST.getMessage());
+
+        }
+       
     }
 
 
