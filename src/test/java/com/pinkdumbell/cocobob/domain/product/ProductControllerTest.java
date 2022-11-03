@@ -118,4 +118,34 @@ class ProductControllerTest {
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
 
     }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("사용자가 조건을 통해서 상품을 검색할 수 있고 또한, 좋아요 상태도 파악할 수 있다.")
+    void search_product_by_condition_with_likes() throws Exception {
+
+        //EXECUTE
+        MvcResult result = mvc.perform(get("/v2/products/search")
+            .param("ingredient", "beef", "mutton", "chicken", "duck", "turkey", "pork", "salmon",
+                "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon")
+            .param("allergyIngredient", "beef", "mutton", "chicken", "duck", "turkey", "pork",
+                "salmon",
+                "hydrolyticBeef", "hydrolyticMutton", "hydrolyticChicken", "hydrolyticDuck",
+                "hydrolyticTurkey", "hydrolyticPork", "hydrolyticSalmon")
+            .param("brands", "로얄캐닌")
+            .param("types", "aged", "growing", "obesity", "pregnant")
+            .param("codes", "101101")
+            .param("keyword", "로얄캐닌")
+            .param("aafco", "true")
+            .param("sort", "ID,ASC")
+            .param("page", "1")
+            .param("size", "10")
+        ).andReturn();
+
+        //EXPECT
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+    }
+
+
 }
