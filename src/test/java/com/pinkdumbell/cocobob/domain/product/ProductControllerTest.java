@@ -117,6 +117,7 @@ class ProductControllerTest {
 
         //EXPECT
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("연관 상품 가져오기 성공");
 
     }
 
@@ -146,6 +147,7 @@ class ProductControllerTest {
 
         //EXPECT
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("상품 검색 성공");
     }
 
     @Test
@@ -161,6 +163,7 @@ class ProductControllerTest {
         //EXPECT
 
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("연관 검색어 불러오기 성공");
     }
 
     @Test
@@ -174,6 +177,22 @@ class ProductControllerTest {
 
         //EXPECT
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(400);
+        Assertions.assertThat(result.getResponse().getContentAsString())
+            .contains(ErrorCode.BAD_REQUEST.getMessage());
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("상품 아이디를 통해서 상품에 대한 정보를 얻을 수 있다.")
+    void find_product_info_by_product_id() throws Exception {
+
+        //EXECUTE
+        MvcResult result = mvc.perform(get("/v1/products/1")).andReturn();
+
+        //EXPECT
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        Assertions.assertThat(result.getResponse().getContentAsString()).contains("상품 가져오기 성공");
+
     }
 
 
