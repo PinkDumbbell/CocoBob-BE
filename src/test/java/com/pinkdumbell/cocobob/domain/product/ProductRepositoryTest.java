@@ -51,6 +51,7 @@ class ProductRepositoryTest {
                 .category("건식")
                 .name("더리얼밀그레인프리닭고기60g6개")
                 .brand("하림펫푸드")
+                .description("하림 사료는 정말 맛있어요!")
                 .price(13260)
                 .thumbnail(
                     "https://cocobob-storage.s3.ap-northeast-2.amazonaws.com/product_img_resize/%5B2%2B1%5D%20%ED%95%98%EB%A6%BC%ED%8E%AB%ED%91%B8%EB%93%9C%20%EB%8D%94%EB%A6%AC%EC%96%BC%20%EB%B0%80%20%EA%B7%B8%EB%A0%88%EC%9D%B8%ED%94%84%EB%A6%AC%20%EB%8B%AD%EA%B3%A0%EA%B8%B0%2060g%206%EA%B0%9C.jpg")
