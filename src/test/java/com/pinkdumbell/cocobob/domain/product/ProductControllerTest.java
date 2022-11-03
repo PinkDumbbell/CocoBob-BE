@@ -100,4 +100,22 @@ class ProductControllerTest {
         Assertions.assertThat(result.getResponse().getContentAsString()).contains("찜한 상품 불러오기 성공");
 
     }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("선택한 상품과 연관된 상품 정보들을 제공할 수 있다.")
+    void get_relation_products() throws Exception {
+
+        //given
+        String productId = "1";
+
+        //EXECUTE
+        MvcResult result = mvc.perform(get("/v2/related-product")
+                .param("productId", productId))
+            .andReturn();
+
+        //EXPECT
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+
+    }
 }
