@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.PetService;
+import com.pinkdumbell.cocobob.exception.ErrorCode;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.assertj.core.api.Assertions;
@@ -145,6 +146,34 @@ class ProductControllerTest {
 
         //EXPECT
         Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("키워드를 통해서 상품 정보를 검색할 수 있다.")
+    void correct_keyword_search() throws Exception {
+
+        //EXECUTE
+        MvcResult result = mvc.perform(get("/v1/products/keyword")
+                .param("keyword", "로얄캐닌"))
+            .andReturn();
+
+        //EXPECT
+
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(200);
+    }
+
+    @Test
+    @WithMockUser("USER")
+    @DisplayName("키워드가 없으면 상품 정보를 없을 수 없고 에러 값을 얻게 된다.")
+    void incorrect_keyword_search() throws Exception {
+
+        //EXECUTE
+        MvcResult result = mvc.perform(get("/v1/products/keyword"))
+            .andReturn();
+
+        //EXPECT
+        Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(400);
     }
 
 
