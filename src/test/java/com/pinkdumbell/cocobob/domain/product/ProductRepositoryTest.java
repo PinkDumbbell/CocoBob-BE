@@ -68,7 +68,7 @@ class ProductRepositoryTest {
                 .fiber(30.93f)
                 .amountOfFiberPerMcal(30.93)
                 .mineral(30.93f)
-                .amountOfFiberPerMcal(30.93)
+                .amountOfMineralPerMcal(30.93)
                 .calcium(30.93f)
                 .amountOfCalciumPerMcal(30.93)
                 .phosphorus(30.93f)
