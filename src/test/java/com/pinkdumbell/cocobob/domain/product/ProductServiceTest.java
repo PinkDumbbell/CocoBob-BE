@@ -9,6 +9,7 @@ import com.pinkdumbell.cocobob.domain.product.dto.ProductSimpleResponseDto;
 import com.pinkdumbell.cocobob.domain.product.dto.ProductSpecificSearchWithLikeDto;
 import com.pinkdumbell.cocobob.domain.product.like.Like;
 import com.pinkdumbell.cocobob.domain.product.like.LikeRepository;
+import com.pinkdumbell.cocobob.domain.user.AccountType;
 import com.pinkdumbell.cocobob.domain.user.User;
 import com.pinkdumbell.cocobob.domain.user.UserRepository;
 import com.pinkdumbell.cocobob.exception.CustomException;
@@ -23,8 +24,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -79,13 +82,13 @@ class ProductServiceTest {
         String userEmail = "test@test.com";
         Long productId = 10000L;
 
-        given(productRepository.findById(anyLong())).willThrow(new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+        given(productRepository.findById(anyLong())).willThrow(
+            new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
         //Execute
         try {
             productService.findProductDetailById(productId, userEmail);
-        }
-        catch (CustomException e) {
+        } catch (CustomException e) {
             Assertions.assertThat(e.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
         }
     }
@@ -102,13 +105,13 @@ class ProductServiceTest {
         given(productRepository.findById(anyLong())).willReturn(
             Optional.ofNullable(expectedProduct));
 
-        given(userRepository.findByEmail(anyString())).willThrow(new CustomException(ErrorCode.USER_NOT_FOUND));
+        given(userRepository.findByEmail(anyString())).willThrow(
+            new CustomException(ErrorCode.USER_NOT_FOUND));
 
         //Execute
         try {
             productService.findProductDetailById(productId, userEmail);
-        }
-        catch (CustomException e) {
+        } catch (CustomException e) {
             Assertions.assertThat(e.getErrorCode()).isEqualTo(ErrorCode.USER_NOT_FOUND);
         }
     }
@@ -147,8 +150,8 @@ class ProductServiceTest {
         String keyword = "로얄캐닌";
         List<ProductKeywordDto> expected = new ArrayList<>();
 
-        for(Long i = 0L; i<100L;i++){
-            expected.add(new ProductKeywordDto(keyword,"강아지 사료",i));
+        for (Long i = 0L; i < 100L; i++) {
+            expected.add(new ProductKeywordDto(keyword, "강아지 사료", i));
         }
 
         given(productRepository.findProductNamesByKeyword(keyword)).willReturn(expected);
@@ -158,6 +161,59 @@ class ProductServiceTest {
 
         //EXPECTED
         Assertions.assertThat(result.size()).isEqualTo(expected.size());
+    }
+
+    @Test
+    @DisplayName("연관된 상품들을 정보들을 가져올 수 있다")
+    void get_relation_product_info() {
+
+        //given
+        int page = 1;
+        int size = 10;
+        User testUser = User.builder()
+            .username("tester")
+            .email("test@test.com")
+            .accountType(AccountType.OWN)
+            .password("password")
+            .build();
+
+        List<ProductSimpleResponseDto> dummySimpleResponse = new ArrayList<>();
+        for (Long i = 0L; i < 10L; i++) {
+
+            dummySimpleResponse.add(
+                ProductSimpleResponseDto
+                    .builder()
+                    .productId(i)
+                    .code("101201")
+                    .name("하림")
+                    .brand("로얄캐닌")
+                    .category("건식")
+                    .description("맛있어요")
+                    .isAAFCOSatisfied(true)
+                    .aged(true)
+                    .growing(false)
+                    .pregnant(false)
+                    .obesity(true)
+                    .likes(300L)
+                    .isLiked(false)
+                    .thumbnail("URL:PATH")
+                    .build()
+            );
+        }
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<ProductSimpleResponseDto> dummyData = new PageImpl<>(dummySimpleResponse, pageable,
+            size);
+
+        given(userRepository.findByEmail(anyString())).willReturn(Optional.of(testUser));
+
+        given(productRepository.findAllRelatedProductsById(any(), any())).willReturn(
+            (PageImpl<ProductSimpleResponseDto>) dummyData);
+
+        //EXECUTE
+        FindAllResponseDto result = productService.getRelationProduct(1L, "test@test.com");
+
+        //EXPECT
+        Assertions.assertThat(result).isNotNull();
     }
 
 
