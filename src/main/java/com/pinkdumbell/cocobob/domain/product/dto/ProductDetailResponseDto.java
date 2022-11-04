@@ -122,7 +122,7 @@ public class ProductDetailResponseDto {
         this.price = product.getPrice();
         this.productImage = product.getProductImage();
         this.productDetailImage = product.getProductDetailImage();
-        this.productDetailImageWebp = getProductDetailImageWebp();
+        this.productDetailImageWebp = product.getProductDetailImageWebp();
         this.description = product.getDescription();
         this.protein = product.getProtein();
         this.amountOfProteinPerMcal = product.getAmountOfProteinPerMcal();
