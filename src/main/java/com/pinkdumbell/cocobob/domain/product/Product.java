@@ -38,6 +38,9 @@ public class Product {
     private String productDetailImage;
 
     @Column(length = 1000)
+    private String productDetailImageWebp;
+
+    @Column(length = 1000)
     private String brandImage;
 
     @Column(columnDefinition = "TEXT")

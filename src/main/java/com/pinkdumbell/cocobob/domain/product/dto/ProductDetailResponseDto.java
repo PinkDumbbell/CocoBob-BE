@@ -34,6 +34,8 @@ public class ProductDetailResponseDto {
     private String productImage;
     @ApiModelProperty(notes = "상품 상세 이미지", example = "상품 상세 이미지 URL")
     private String productDetailImage;
+    @ApiModelProperty(notes = "상품 상세 이미지 webp", example = "상품 상세 이미지 URL")
+    private String productDetailImageWebp;
     @ApiModelProperty(notes = "상품 설명", example = "펫탈로그의 사료는...")
     private String description;
     @ApiModelProperty(notes = "조단백 함량", example = "24")
@@ -120,6 +122,7 @@ public class ProductDetailResponseDto {
         this.price = product.getPrice();
         this.productImage = product.getProductImage();
         this.productDetailImage = product.getProductDetailImage();
+        this.productDetailImageWebp = product.getProductDetailImageWebp();
         this.description = product.getDescription();
         this.protein = product.getProtein();
         this.amountOfProteinPerMcal = product.getAmountOfProteinPerMcal();
