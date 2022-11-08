@@ -88,11 +88,9 @@ class ProductServiceTest {
             new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
         //Execute
-        try {
+        Assertions.assertThatThrownBy(() -> {
             productService.findProductDetailById(productId, userEmail);
-        } catch (CustomException e) {
-            Assertions.assertThat(e.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
-        }
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -111,11 +109,9 @@ class ProductServiceTest {
             new CustomException(ErrorCode.USER_NOT_FOUND));
 
         //Execute
-        try {
-            productService.findProductDetailById(productId, userEmail);
-        } catch (CustomException e) {
-            Assertions.assertThat(e.getErrorCode()).isEqualTo(ErrorCode.USER_NOT_FOUND);
-        }
+        Assertions.assertThatThrownBy(
+                () -> productService.findProductDetailById(productId, userEmail))
+            .isInstanceOf(CustomException.class);
     }
 
     @Test
