@@ -210,6 +210,7 @@ class ProductServiceTest {
         FindAllResponseDto result = productService.getRelationProduct(1L, "test@test.com");
 
         //EXPECT
+        System.out.println(result.getPageSize());
         Assertions.assertThat(result).isNotNull();
     }
 
@@ -260,6 +261,8 @@ class ProductServiceTest {
 
         //EXPECT
         Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPageSize()).isEqualTo(size);
+        Assertions.assertThat(result.getPageNumber()).isEqualTo(page);
 
     }
 
@@ -326,6 +329,8 @@ class ProductServiceTest {
 
         //EXPECT
         Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getPageSize()).isEqualTo(size);
+        Assertions.assertThat(result.getPageNumber()).isEqualTo(page);
     }
 
 
