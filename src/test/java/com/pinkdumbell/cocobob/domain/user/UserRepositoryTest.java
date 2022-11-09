@@ -45,6 +45,7 @@ public class UserRepositoryTest {
     @DisplayName("사용자 생성 시 생성시간 등록 여부를 테스트한다.")
     void testAuditing() {
         LocalDateTime now = LocalDateTime.now();
+        now = now.minusNanos(1L); // 1나노세컨드만 뒤로
         User user = userRepository.save(User.builder().build());
 
         Assertions.assertThat(user.getCreatedAt()).isAfter(now);
