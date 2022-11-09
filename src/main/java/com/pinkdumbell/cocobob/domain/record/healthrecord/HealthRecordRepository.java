@@ -34,7 +34,7 @@ public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long
 
     @Query("select new com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsPerDatesDto(h.date, h.bodyWeight) " +
             "from HealthRecord h " +
-            "where h.bodyWeight is not null " +
+            "where h.pet.id = :petId and h.bodyWeight is not null " +
             "order by h.date desc, h.id desc ")
     Page<RecentWeightsPerDatesDto> findRecentWeightsWithDatesByPetId(
             @Param("petId") Long petId,
