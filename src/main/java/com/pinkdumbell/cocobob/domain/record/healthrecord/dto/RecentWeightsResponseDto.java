@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,8 @@ public class RecentWeightsResponseDto {
     private final Map<LocalDate, Double> weightPerDate;
 
     public RecentWeightsResponseDto(List<RecentWeightsPerDatesDto> recentWeightsPerDatesDtos) {
-        Map<LocalDate, Double> weightPerDate = null;
-        recentWeightsPerDatesDtos.stream().map(recentWeightsPerDatesDto -> weightPerDate.put(
+        Map<LocalDate, Double> weightPerDate = new HashMap<>();
+        recentWeightsPerDatesDtos.forEach(recentWeightsPerDatesDto -> weightPerDate.put(
                 recentWeightsPerDatesDto.getDate(),
                 recentWeightsPerDatesDto.getWeight()
             ));
