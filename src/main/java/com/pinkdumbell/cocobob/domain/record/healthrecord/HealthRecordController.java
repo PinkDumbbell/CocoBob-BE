@@ -7,9 +7,12 @@ import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.dto.MealCreateReq
 import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.dto.MealUpdateRequestDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @ApiOperation("HealthRecord API")
 @RequiredArgsConstructor
@@ -19,31 +22,31 @@ public class HealthRecordController {
 
     private final HealthRecordService healthRecordService;
     @PostMapping("/pets/{petId}")
-    public ResponseEntity<CommonResponseDto> createHealthRecord(
+    public ResponseEntity<HealthRecordResponseClass.HealthRecordCreateResponseClass> createHealthRecord(
             @PathVariable Long petId,
             @ModelAttribute HealthRecordCreateRequestDto requestDto
     ) {
-        healthRecordService.createHealthRecord(petId, requestDto);
-        return ResponseEntity.ok(CommonResponseDto.builder()
-                .status(HttpStatus.OK.value())
-                .code("SUCCESS_TO_CREATE_HEALTH_RECORD")
-                .message("건강 기록 생성을 성공했습니다.")
-                .data(null)
-                .build());
+
+        return ResponseEntity.ok(new HealthRecordResponseClass.HealthRecordCreateResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS_TO_CREATE_HEALTH_RECORD",
+                "건강 기록 생성을 성공했습니다.",
+                healthRecordService.createHealthRecord(petId, requestDto)
+        ));
     }
 
-    @PostMapping("/{healthRecordId}/meals")
-    public ResponseEntity<CommonResponseDto> createMeal(
-            @PathVariable Long healthRecordId,
+    @PostMapping("/pets/{petId}/dates/{date}/meal")
+    public ResponseEntity<HealthRecordResponseClass.HealthRecordCreateResponseClass> createMeal(
+            @PathVariable Long petId,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @RequestBody MealCreateRequestDto requestDto
     ) {
-        healthRecordService.createMeal(healthRecordId, requestDto);
-        return ResponseEntity.ok(CommonResponseDto.builder()
-                        .status(HttpStatus.OK.value())
-                        .code("SUCCESS_TO_CREATE_MEAL")
-                        .message("식사 기록 생성을 성공했습니다.")
-                        .data(null)
-                .build());
+        return ResponseEntity.ok(new HealthRecordResponseClass.HealthRecordCreateResponseClass(
+                HttpStatus.OK.value(),
+                "SUCCESS_TO_CREATE_MEAL",
+                "식사 기록 생성을 성공했습니다.",
+                healthRecordService.createMeal(petId, date, requestDto)
+        ));
     }
 
     @GetMapping("/{healthRecordId}")
