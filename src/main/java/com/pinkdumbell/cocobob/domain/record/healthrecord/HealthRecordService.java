@@ -6,10 +6,7 @@ import com.pinkdumbell.cocobob.domain.abnormal.AbnormalRepository;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormal;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalId;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.abnormal.HealthRecordAbnormalRepository;
-import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordCreateRequestDto;
-import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordDetailResponseDto;
-import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.HealthRecordUpdateRequestDto;
-import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsResponseDto;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.*;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.image.HealthRecordImage;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.image.HealthRecordImageRepository;
 import com.pinkdumbell.cocobob.domain.record.healthrecord.meal.Meal;
@@ -28,8 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class HealthRecordService {
     private static final String HEALTH_RECORD_IMAGE_PREFIX = "health-record/";
 
     @Transactional
-    public void createHealthRecord(Long petId, HealthRecordCreateRequestDto requestDto) {
+    public HealthRecordCreateResponseDto createHealthRecord(Long petId, HealthRecordCreateRequestDto requestDto) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND));
         HealthRecord healthRecord = healthRecordRepository.save(HealthRecord.builder()
@@ -60,6 +59,8 @@ public class HealthRecordService {
                 .build());
         saveImages(healthRecord, requestDto.getImages());
         registerAbnormal(healthRecord, requestDto.getAbnormalIds());
+
+        return new HealthRecordCreateResponseDto(healthRecord);
     }
 
     @Transactional
@@ -129,9 +130,17 @@ public class HealthRecordService {
     }
 
     @Transactional
-    public void createMeal(Long healthRecordId, MealCreateRequestDto requestDto) {
-        HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HEALTH_RECORD_NOT_FOUND));
+    public HealthRecordCreateResponseDto createMeal(Long petId, LocalDate date, MealCreateRequestDto requestDto) {
+        Optional<HealthRecord> healthRecordOptional = healthRecordRepository.findAllByDateAndPetWithMeals(petId, date);
+        HealthRecord healthRecord;
+
+        healthRecord = healthRecordOptional.orElseGet(() -> healthRecordRepository.save(
+                HealthRecord.builder()
+                        .pet(petRepository.findById(petId)
+                                .orElseThrow(() -> new CustomException(ErrorCode.PET_NOT_FOUND)))
+                        .date(date)
+                        .build()));
+
         Product product = null;
         if (requestDto.getProductId() != null) {
             product = findProductById(requestDto.getProductId());
@@ -143,6 +152,8 @@ public class HealthRecordService {
                         .productName(requestDto.getProductName())
                         .healthRecord(healthRecord)
                 .build());
+
+        return new HealthRecordCreateResponseDto(healthRecord);
     }
 
     @Transactional
