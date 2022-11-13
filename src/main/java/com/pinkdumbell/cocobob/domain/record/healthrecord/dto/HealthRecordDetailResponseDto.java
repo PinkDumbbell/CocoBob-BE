@@ -28,8 +28,8 @@ public class HealthRecordDetailResponseDto {
     @Getter
     public static class RecentBodyWeightResponseDto {
         @JsonFormat(pattern = "yyyy-MM-dd")
-        private LocalDate date;
-        private Double bodyWeight;
+        private final LocalDate date;
+        private final Double bodyWeight;
 
         public RecentBodyWeightResponseDto(HealthRecord entity) {
             this.date = entity.getDate();
@@ -69,10 +69,14 @@ public class HealthRecordDetailResponseDto {
         public static class ProductSimpleInfoDto {
             private final Long productId;
             private final String productName;
+            private final String brand;
+            private final String thumbnail;
 
-            public ProductSimpleInfoDto(Long productId, String productName) {
+            public ProductSimpleInfoDto(Long productId, String productName, String brand, String thumbnail) {
                 this.productId = productId;
                 this.productName = productName;
+                this.brand = brand;
+                this.thumbnail = thumbnail;
             }
         }
 
@@ -82,9 +86,9 @@ public class HealthRecordDetailResponseDto {
             this.amount = entity.getAmount();
             Product product = entity.getProduct();
             if (product != null) {
-                this.productInfo = new ProductSimpleInfoDto(product.getId(), product.getName());
+                this.productInfo = new ProductSimpleInfoDto(product.getId(), product.getName(), product.getBrand(), product.getThumbnail());
             } else {
-                this.productInfo = new ProductSimpleInfoDto(null, entity.getProductName());
+                this.productInfo = new ProductSimpleInfoDto(null, entity.getProductName(), null, null);
             }
         }
     }
