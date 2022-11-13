@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface ProductRepository extends JpaRepository<Product, Long>,
     JpaSpecificationExecutor<Product>,ProductSearchQueryDsl {
 
-    @Cacheable(cacheNames = "productDetails", key = "#productId")
+    @Cacheable(cacheNames = "productDetails")
     @Override
     Optional<Product> findById(Long productId);
 
