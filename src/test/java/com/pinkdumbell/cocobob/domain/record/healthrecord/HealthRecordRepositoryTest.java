@@ -3,6 +3,7 @@ package com.pinkdumbell.cocobob.domain.record.healthrecord;
 import com.pinkdumbell.cocobob.domain.pet.Pet;
 import com.pinkdumbell.cocobob.domain.pet.PetRepository;
 import com.pinkdumbell.cocobob.domain.product.ProductSearchQueryDslImpl;
+import com.pinkdumbell.cocobob.domain.record.healthrecord.dto.RecentWeightsPerDatesDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,29 +33,24 @@ class HealthRecordRepositoryTest {
     ProductSearchQueryDslImpl productSearchQueryDsl;
     @PersistenceContext
     EntityManager em;
-    Pet pet;
-    LocalDate criteria;
 
-    @BeforeEach
-    void setup() {
-        pet = petRepository.save(Pet.builder()
+    @Test
+    void testFindRecentBodyWeights() {
+        Pet pet = petRepository.save(Pet.builder()
                 .build());
-        criteria = LocalDate.parse("2022-08-01");
+        LocalDate criteria = LocalDate.parse("2022-08-01");
         for (int i = 0; i < 20; i++) {
             if (i % 2 == 0) {
                 healthRecordRepository.save(HealthRecord.builder()
-                                .date(criteria.plusDays(i))
-                                .bodyWeight((double) (10 + i))
-                                .pet(pet)
+                        .date(criteria.plusDays(i))
+                        .bodyWeight((double) (10 + i))
+                        .pet(pet)
                         .build());
             }
         }
         em.flush();
         em.clear();
-    }
 
-    @Test
-    void testFindRecentBodyWeights() {
         List<LocalDate> resultDate = new ArrayList<>();
         List<Double> resultBodyWeight = new ArrayList<>();
 
@@ -76,5 +72,24 @@ class HealthRecordRepositoryTest {
         assertThat(result.size()).isEqualTo(10);
         assertThat(result.stream().map(HealthRecord::getDate).collect(Collectors.toList())).isEqualTo(resultDate);
         assertThat(result.stream().map(HealthRecord::getBodyWeight).collect(Collectors.toList())).isEqualTo(resultBodyWeight);
+    }
+
+    @Test
+    void testFindRecentWeightsWithDatesByPetId() {
+        Pet pet = petRepository.save(Pet.builder().build());
+        LocalDate criteria = LocalDate.parse("2022-10-10");
+        for (int i = 0; i < 10; i++) {
+            healthRecordRepository.save(HealthRecord.builder()
+                            .pet(pet)
+                            .date(criteria.plusDays(i))
+                            .bodyWeight((double) (10 + i))
+                    .build());
+        }
+        List<RecentWeightsPerDatesDto> result = healthRecordRepository.findRecentWeightsWithDatesByPetId(pet.getId(), Pageable.ofSize(7))
+                .getContent();
+
+        assertThat(result.size()).isEqualTo(7);
+        assertThat(result.stream().map(RecentWeightsPerDatesDto::getWeight)
+                .collect(Collectors.toList()).toString()).doesNotContain("null");
     }
 }

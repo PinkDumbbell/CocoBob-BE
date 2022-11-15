@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
 
+import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateResponseDto;
@@ -26,6 +27,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -42,6 +45,8 @@ class PetControllerTest {
     PetService mockPetService;
     @Autowired
     private WebApplicationContext context;
+    @MockBean
+    ApiLogInterceptor apiLogInterceptor;
 
     @BeforeEach
     void setUp() {
@@ -49,6 +54,11 @@ class PetControllerTest {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .apply(springSecurity())
                 .build();
+        given(apiLogInterceptor.preHandle(
+                any(HttpServletRequest.class),
+                any(HttpServletResponse.class),
+                any(Object.class)
+        )).willReturn(true);
     }
 
     @Test

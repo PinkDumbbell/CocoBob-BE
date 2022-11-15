@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUserArgumentResolver;
 import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
 import com.pinkdumbell.cocobob.domain.auth.GoogleOauthInfo;
@@ -23,6 +24,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,6 +53,8 @@ public class UserControllerUnitTest {
     KakaoOauthInfo kakaoOauthInfo;
     @MockBean
     AppleUtil appleUtil;
+    @MockBean
+    ApiLogInterceptor apiLogInterceptor;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +75,11 @@ public class UserControllerUnitTest {
                 any(NativeWebRequest.class),
                 any(WebDataBinderFactory.class)
         )).willReturn(loginUserInfo);
+        given(apiLogInterceptor.preHandle(
+                any(HttpServletRequest.class),
+                any(HttpServletResponse.class),
+                any(Object.class)
+                )).willReturn(true);
 
         mvc.perform(get("/v1/users"))
                 .andExpect(status().isOk())
