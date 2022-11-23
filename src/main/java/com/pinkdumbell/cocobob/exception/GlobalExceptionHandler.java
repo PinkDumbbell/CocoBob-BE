@@ -1,5 +1,7 @@
 package com.pinkdumbell.cocobob.exception;
 
+import com.pinkdumbell.cocobob.common.SlackService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -8,11 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final SlackService slackService;
+
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
         log.error(e.getMessage(), e);
@@ -38,6 +45,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error(e.getMessage(), e);
+        StringBuilder stringBuilder = new StringBuilder();
+        Arrays.stream(e.getStackTrace()).iterator().forEachRemaining(msg -> stringBuilder.append(msg).append("\n"));
+        slackService.postSlackMessage(String.valueOf(stringBuilder));
         return ErrorResponse.toResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 }
