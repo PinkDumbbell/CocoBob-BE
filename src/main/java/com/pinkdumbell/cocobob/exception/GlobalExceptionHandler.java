@@ -46,6 +46,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error(e.getMessage(), e);
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(e.getClass()).append(":").append(e.getMessage()).append("\n");
         Arrays.stream(e.getStackTrace()).iterator().forEachRemaining(msg -> stringBuilder.append(msg).append("\n"));
         slackService.postSlackMessage(String.valueOf(stringBuilder));
         return ErrorResponse.toResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
