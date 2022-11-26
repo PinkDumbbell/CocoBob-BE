@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+import com.pinkdumbell.cocobob.common.SlackService;
 import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.PetService;
@@ -43,6 +44,8 @@ class ProductControllerTest {
     private WebApplicationContext context;
     @MockBean
     ApiLogInterceptor apiLogInterceptor;
+    @MockBean
+    SlackService slackService;
 
     @BeforeEach
     void setUp() {

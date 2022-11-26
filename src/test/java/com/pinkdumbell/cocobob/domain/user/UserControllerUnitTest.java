@@ -1,5 +1,6 @@
 package com.pinkdumbell.cocobob.domain.user;
 
+import com.pinkdumbell.cocobob.common.SlackService;
 import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.config.annotation.loginuser.LoginUserArgumentResolver;
 import com.pinkdumbell.cocobob.domain.auth.AppleUtil;
@@ -55,6 +56,9 @@ public class UserControllerUnitTest {
     AppleUtil appleUtil;
     @MockBean
     ApiLogInterceptor apiLogInterceptor;
+
+    @MockBean
+    SlackService slackService;
 
     @BeforeEach
     void setUp() {
