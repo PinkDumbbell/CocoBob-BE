@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.pet;
 
 
+import com.pinkdumbell.cocobob.common.SlackService;
 import com.pinkdumbell.cocobob.common.apilog.ApiLogInterceptor;
 import com.pinkdumbell.cocobob.domain.auth.JwtTokenProvider;
 import com.pinkdumbell.cocobob.domain.pet.dto.PetCreateRequestDto;
@@ -47,6 +48,8 @@ class PetControllerTest {
     private WebApplicationContext context;
     @MockBean
     ApiLogInterceptor apiLogInterceptor;
+    @MockBean
+    SlackService slackService;
 
     @BeforeEach
     void setUp() {

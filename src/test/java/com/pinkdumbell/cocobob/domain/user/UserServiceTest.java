@@ -1,6 +1,7 @@
 package com.pinkdumbell.cocobob.domain.user;
 
 import com.pinkdumbell.cocobob.common.EmailUtil;
+import com.pinkdumbell.cocobob.common.SlackService;
 import com.pinkdumbell.cocobob.common.dto.EmailSendResultDto;
 import com.pinkdumbell.cocobob.config.MailConfig;
 import com.pinkdumbell.cocobob.domain.auth.AppleOauthInfo;
@@ -48,6 +49,9 @@ class UserServiceTest {
 
     @MockBean
     AppleOauthInfo appleOauthInfo;
+
+    @MockBean
+    SlackService slackService;
 
 
     @Test
