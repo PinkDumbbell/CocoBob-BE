@@ -67,6 +67,10 @@ dependencies {
 	implementation 'org.ehcache:ehcache'
 	implementation 'javax.cache:cache-api'
 
+	// Slack
+	implementation("com.slack.api:bolt:1.27.1")
+	implementation("com.slack.api:bolt-servlet:1.27.1")
+	implementation("com.slack.api:bolt-jetty:1.27.1")
 
 	implementation 'org.springframework:spring-test:5.3.21'
 
