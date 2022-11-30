@@ -22,7 +22,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/{version:v[0-9]+}/**")
-            .allowedOrigins("http://localhost:3000","http://3.37.136.84/","http://petalog.us/","https://petalog.us/", "https://appleid.apple.com", "http://10.0.2.2:3000")
+            .allowedOrigins(
+                    "http://localhost:3000",
+                    "http://3.37.136.84/",
+                    "http://petalog.us/",
+                    "https://petalog.us/",
+                    "https://appleid.apple.com",
+                    "http://10.0.2.2:3000",
+                    "https://petalog.xyz")
             .allowedMethods(
                 HttpMethod.GET.name(),
                 HttpMethod.HEAD.name(),
