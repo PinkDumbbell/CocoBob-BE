@@ -1,7 +1,13 @@
 steps:
+  - entrypoint: 'bash'
+    args: ['echo', '1']
+
   - id: Grant execute permission for gradlew
     entrypoint: 'bash'
     args: ["-c", "chmod", "+x", "gradlew"]
+
+  - entrypoint: 'bash'
+    args: [ 'echo', '2' ]
 
   - id: Generate Application Environment Variables File(decryption)
     entrypoint: "bash"
@@ -12,19 +18,34 @@ steps:
     ]
     secretEnv: ["GNUPG2_PASSPHRASE"]
 
+  - entrypoint: 'bash'
+    args: [ 'echo', '3' ]
+
   - name: 'java:11'
     entrypoint: "bash"
     args: ["-c", "./gradlew build -x test"]
+
+  - entrypoint: 'bash'
+    args: [ 'echo', '4' ]
 
   - name: 'java:11'
     entrypoint: "bash"
     args: ["-c", "./gradlew test"]
 
+  - entrypoint: 'bash'
+    args: [ 'echo', '5' ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'asia.gcr.io/$PROJECT_ID/petalog-be-dev:$COMMIT_SHA', '.']
 
+  - entrypoint: 'bash'
+    args: [ 'echo', '6' ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'asia.gcr.io/$PROJECT_ID/petalog-be-dev:$COMMIT_SHA']
+
+  - entrypoint: 'bash'
+    args: [ 'echo', '7' ]
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
