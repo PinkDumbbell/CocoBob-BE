@@ -1,0 +1,35 @@
+steps:
+  - id: Grant execute permission for gradlew
+    entrypoint: 'bash'
+    args: ["-c", "chmod", "+x", "gradlew"]
+
+  - id: Generate Application Environment Variables File(decryption)
+    entrypoint: "bash"
+    args: [
+      "-c",
+      "gpg --quiet --batch --yes --decrypt --passphrase=\"$$GNUPG2_PASSPHRASE\" --output src/main/resources/AuthKey_33CM4RFUVC.p8 src/main/resources/AuthKey_33CM4RFUVC.p8.gpg",
+      "gpg --quiet --batch --yes --decrypt --passphrase=\"$$GNUPG2_PASSPHRASE\" --output src/main/resources/application-secret.yml src/main/resources/application-secret.yml.gpg"
+    ]
+    secretEnv: ["GNUPG2_PASSPHRASE"]
+
+  - name: 'java:11'
+    entrypoint: "bash"
+    args: ["-c", "./gradlew build -x test"]
+
+  - name: 'java:11'
+    entrypoint: "bash"
+    args: ["-c", "./gradlew test"]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia.gcr.io/$PROJECT_ID/petalog-be-dev:$COMMIT_SHA', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia.gcr.io/$PROJECT_ID/petalog-be-dev:$COMMIT_SHA']
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/9031771856/secrets/GNUPG2_PASSPHRASE/versions/latest
+      env: 'GNUPG2_PASSPHRASE'
+
+
+
